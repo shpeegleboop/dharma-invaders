@@ -1,6 +1,8 @@
+> See NOTES.md for design vision, future ideas, and session history.
+
 # Dharma Invaders
 
-A Buddhist-themed Space Invaders/Galaga-style shmup. Player (Buddha/meditating figure) shoots virtue projectiles at enemies spawning from a samsara wheel, defeats Mara boss, achieves nirvana.
+A Buddhist-themed arena shooter. Player (Buddha/meditating figure) shoots virtue projectiles at enemies spawning from screen edges, defeats Mara boss, achieves nirvana.
 
 ## Game Style
 
@@ -33,6 +35,13 @@ events.emit('enemy:killed', { id, karmaValue });
 import { karma } from './karma';
 karma.add(enemy.value);
 ```
+
+### Event Listener Cleanup
+Use Option B: Clear all events on scene start. At the top of `createGameScene()`:
+```typescript
+events.clear();
+```
+This prevents duplicate listeners stacking on scene restart. If we later need persistent cross-scene listeners (audio manager, achievements), refactor those specific systems to Option A (manual unsubscribe).
 
 ### File Size Limit
 No file over 150 lines. If a file is growing, split it. This keeps context clean and Claude's suggestions accurate.
@@ -117,15 +126,15 @@ State machine with phases: entering → phase1 → phase2 → phase3 → defeate
 
 Follow this sequence. Each step must be testable before moving on:
 
-1. Game shell (empty canvas, Kaplay running)
-2. Player rectangle movement
-3. Basic shooting
-4. Single enemy spawning
-5. Collision detection
-6. Karma counter
-7. Wave spawner
-8. Enemy variants
-9. Player health + death
+1. ~~Game shell (empty canvas, Kaplay running)~~ ✓
+2. ~~Player rectangle movement~~ ✓
+3. ~~Basic shooting~~ ✓
+4. ~~Single enemy spawning~~ ✓
+5. ~~Collision detection~~ ✓
+6. ~~Karma counter~~ ✓
+7. Wave spawner (data-driven waves.json)
+8. Enemy variants (Asura, Deva)
+9. ~~Player health + death~~ ✓
 10. Power-up drops + effects
 11. Samsara wheel visual
 12. Quote system
@@ -154,7 +163,7 @@ Follow this sequence. Each step must be testable before moving on:
 | Direct object references | Use event bus |
 | Skip delta time | Always multiply by dt() |
 | Art before gameplay | Colored rectangles first |
-| Forget cleanup on destroy | Unsubscribe listeners |
+| Forget cleanup on destroy | Use events.clear() on scene start |
 | Work without commits | Commit every working feature |
 
 ## Placeholder Art Convention
@@ -175,7 +184,7 @@ Until real art is added:
 - Use `add()` to create game objects with components
 - Use `destroy()` to remove objects
 - Access delta time with `dt()`
-- Screen dimensions: 800x600
+- Screen dimensions: 800x600 (with HUD border above gameplay area)
 
 ## Testing Each Feature
 

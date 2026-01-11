@@ -1,7 +1,8 @@
-// Player entity - movement + mouse aiming
+// Player entity - movement + mouse aiming + health
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { createProjectile } from './projectile';
+import { events } from '../utils/events';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
@@ -12,8 +13,11 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     k.anchor('center'),
     k.area(),
     k.rotate(0),
+    k.health(config.player.health),
+    k.opacity(1),
     k.color(0, 128, 255), // Blue rectangle
     'player',
+    { invincible: false },
   ]);
 
   // Get angle to mouse
@@ -42,6 +46,52 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   // Shoot with spacebar or mouse click
   k.onKeyDown('space', shoot);
   k.onMouseDown('left', shoot);
+
+  // Handle getting hit - invincibility frames
+  events.on('player:hit', () => {
+    if (player.invincible) return;
+
+    player.invincible = true;
+
+    // Flash effect
+    let flashCount = 0;
+    const flashInterval = k.loop(0.1, () => {
+      player.opacity = player.opacity === 1 ? 0.3 : 1;
+      flashCount++;
+      if (flashCount >= config.player.invincibilityDuration / 100) {
+        flashInterval.cancel();
+        player.opacity = 1;
+        player.invincible = false;
+      }
+    });
+  });
+
+  // Handle death - respawn at center
+  events.on('player:died', () => {
+    k.wait(0.5, () => {
+      player.pos.x = config.arena.width / 2;
+      player.pos.y = config.arena.offsetY + config.arena.height / 2;
+      player.setHP(config.player.health);
+      player.invincible = true;
+
+      // Brief invincibility after respawn
+      k.wait(config.player.invincibilityDuration / 1000, () => {
+        player.invincible = false;
+        player.opacity = 1;
+      });
+
+      // Flash during respawn invincibility
+      let flashCount = 0;
+      const flashInterval = k.loop(0.1, () => {
+        player.opacity = player.opacity === 1 ? 0.3 : 1;
+        flashCount++;
+        if (flashCount >= config.player.invincibilityDuration / 100) {
+          flashInterval.cancel();
+          player.opacity = 1;
+        }
+      });
+    });
+  });
 
   // Movement with delta time
   player.onUpdate(() => {
