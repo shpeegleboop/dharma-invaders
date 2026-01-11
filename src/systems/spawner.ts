@@ -1,49 +1,126 @@
-// Enemy spawner system
+// Wave-based enemy spawner system
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
+import waves from '../data/waves.json';
 import { events } from '../utils/events';
 import { createHungryGhost } from '../entities/enemies/hungryGhost';
+import { createAsura } from '../entities/enemies/asura';
+import { createDeva } from '../entities/enemies/deva';
+
+type EnemyType = 'hungryGhost' | 'asura' | 'deva';
 
 type SpawnerState = {
   active: boolean;
+  waveIndex: number;
   spawnTimer: number;
-  spawnInterval: number;
+  enemyQueue: EnemyType[];
+  betweenWaves: boolean;
 };
 
 const state: SpawnerState = {
   active: false,
+  waveIndex: 0,
   spawnTimer: 0,
-  spawnInterval: 1.5,
+  enemyQueue: [],
+  betweenWaves: false,
 };
 
 export function setupSpawner(k: KAPLAYCtx): void {
   state.active = true;
+  state.waveIndex = 0;
   state.spawnTimer = 0;
+  state.enemyQueue = [];
+  state.betweenWaves = false;
 
-  // Spawn loop
+  startWave(k);
+
   k.onUpdate(() => {
-    if (!state.active) return;
+    if (!state.active || state.betweenWaves) return;
+
+    const currentWave = waves.waves[state.waveIndex];
+    if (!currentWave) return;
 
     state.spawnTimer += k.dt();
-    if (state.spawnTimer >= state.spawnInterval) {
+    if (state.spawnTimer >= currentWave.spawnInterval && state.enemyQueue.length > 0) {
       state.spawnTimer = 0;
-      spawnFromEdge(k);
+      spawnNextEnemy(k);
+    }
+
+    // Check if wave complete (queue empty and no enemies left)
+    if (state.enemyQueue.length === 0 && k.get('enemy').length === 0) {
+      completeWave(k);
     }
   });
 
-  // Listen for player death to pause spawning briefly
+  // Listen for player death to reset wave
   events.on('player:died', () => {
     state.active = false;
     k.wait(1.5, () => {
-      state.active = true;
       destroyAllEnemies(k);
+      restartCurrentWave(k);
+      state.active = true;
     });
   });
 }
 
-function spawnFromEdge(k: KAPLAYCtx): void {
+function startWave(_k: KAPLAYCtx): void {
+  const wave = waves.waves[state.waveIndex];
+  if (!wave) {
+    // All waves complete - trigger boss or victory
+    events.emit('boss:started', {});
+    return;
+  }
+
+  // Build enemy queue from wave definition
+  state.enemyQueue = [];
+  for (const enemyDef of wave.enemies) {
+    for (let i = 0; i < enemyDef.count; i++) {
+      state.enemyQueue.push(enemyDef.type as EnemyType);
+    }
+  }
+  // Shuffle the queue for variety
+  shuffleArray(state.enemyQueue);
+
+  state.spawnTimer = 0;
+  state.betweenWaves = false;
+
+  events.emit('wave:started', { waveNumber: wave.number });
+}
+
+function completeWave(k: KAPLAYCtx): void {
+  const wave = waves.waves[state.waveIndex];
+  events.emit('wave:complete', { waveNumber: wave.number });
+
+  state.betweenWaves = true;
+  state.waveIndex++;
+
+  // Pause between waves
+  k.wait(waves.timeBetweenWaves / 1000, () => {
+    startWave(k);
+  });
+}
+
+function restartCurrentWave(k: KAPLAYCtx): void {
+  startWave(k);
+}
+
+function spawnNextEnemy(k: KAPLAYCtx): void {
+  const type = state.enemyQueue.shift();
+  if (!type) return;
+
   const pos = getRandomEdgePosition(k);
-  createHungryGhost(k, pos.x, pos.y);
+
+  switch (type) {
+    case 'hungryGhost':
+      createHungryGhost(k, pos.x, pos.y);
+      break;
+    case 'asura':
+      createAsura(k, pos.x, pos.y);
+      break;
+    case 'deva':
+      createDeva(k, pos.x, pos.y);
+      break;
+  }
 }
 
 function getRandomEdgePosition(k: KAPLAYCtx): { x: number; y: number } {
@@ -51,15 +128,16 @@ function getRandomEdgePosition(k: KAPLAYCtx): { x: number; y: number } {
   const margin = 30;
   const arenaTop = config.arena.offsetY;
   const arenaBottom = config.screen.height;
+  const screenWidth = config.screen.width;
 
   switch (edge) {
-    case 0: // Top
-      return { x: k.rand(margin, config.screen.width - margin), y: arenaTop - margin };
-    case 1: // Right
-      return { x: config.screen.width + margin, y: k.rand(arenaTop + margin, arenaBottom - margin) };
-    case 2: // Bottom
-      return { x: k.rand(margin, config.screen.width - margin), y: arenaBottom + margin };
-    default: // Left
+    case 0:
+      return { x: k.rand(margin, screenWidth - margin), y: arenaTop - margin };
+    case 1:
+      return { x: screenWidth + margin, y: k.rand(arenaTop + margin, arenaBottom - margin) };
+    case 2:
+      return { x: k.rand(margin, screenWidth - margin), y: arenaBottom + margin };
+    default:
       return { x: -margin, y: k.rand(arenaTop + margin, arenaBottom - margin) };
   }
 }
@@ -68,8 +146,15 @@ function destroyAllEnemies(k: KAPLAYCtx): void {
   k.get('enemy').forEach((enemy) => enemy.destroy());
 }
 
-export function setSpawnInterval(interval: number): void {
-  state.spawnInterval = interval;
+function shuffleArray<T>(array: T[]): void {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+export function getCurrentWave(): number {
+  return state.waveIndex + 1;
 }
 
 export function pauseSpawner(): void {

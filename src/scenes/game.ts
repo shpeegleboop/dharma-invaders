@@ -5,6 +5,7 @@ import { setupCollisions } from '../systems/collision';
 import { setupKarma } from '../systems/karma';
 import { setupHealth } from '../systems/health';
 import { setupSpawner } from '../systems/spawner';
+import { setupWaveDisplay } from '../systems/waveDisplay';
 import { events } from '../utils/events';
 import config from '../data/config.json';
 
@@ -42,6 +43,7 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupCollisions(k);
   setupKarma(k);
   setupHealth(k);
+  setupWaveDisplay(k);
   setupSpawner(k);
 
   // Spawn player
