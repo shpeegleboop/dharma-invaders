@@ -1,0 +1,62 @@
+{
+  "screen": {
+    "width": 800,
+    "height": 600
+  },
+  "player": {
+    "speed": 300,
+    "health": 3,
+    "invincibilityDuration": 1500,
+    "shootCooldown": 200,
+    "size": { "width": 32, "height": 32 }
+  },
+  "projectile": {
+    "speed": 500,
+    "damage": 1,
+    "size": { "width": 8, "height": 16 }
+  },
+  "enemies": {
+    "hungryGhost": {
+      "speed": 100,
+      "health": 1,
+      "karmaValue": 10,
+      "size": { "width": 24, "height": 24 },
+      "color": "#FF4444"
+    },
+    "asura": {
+      "speed": 150,
+      "health": 2,
+      "karmaValue": 25,
+      "size": { "width": 28, "height": 28 },
+      "color": "#FF8C00"
+    },
+    "deva": {
+      "speed": 80,
+      "health": 3,
+      "karmaValue": 50,
+      "size": { "width": 32, "height": 32 },
+      "color": "#9370DB"
+    }
+  },
+  "waves": {
+    "timeBetweenWaves": 3000,
+    "timeBetweenSpawns": 500
+  },
+  "powerups": {
+    "dropChance": 0.15,
+    "fallSpeed": 100,
+    "duration": 8000,
+    "size": { "width": 16, "height": 16 }
+  },
+  "boss": {
+    "health": 100,
+    "phase1Threshold": 70,
+    "phase2Threshold": 30,
+    "size": { "width": 64, "height": 64 }
+  },
+  "debug": {
+    "showHitboxes": false,
+    "invincible": false,
+    "skipToWave": 0
+  }
+}
