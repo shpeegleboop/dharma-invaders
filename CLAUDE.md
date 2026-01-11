@@ -2,6 +2,15 @@
 
 A Buddhist-themed Space Invaders/Galaga-style shmup. Player (Buddha/meditating figure) shoots virtue projectiles at enemies spawning from a samsara wheel, defeats Mara boss, achieves nirvana.
 
+## Game Style
+
+Arena shooter, NOT classic shmup:
+- Player rotates to face mouse cursor
+- Shoot toward cursor (click or spacebar)
+- Enemies spawn from all screen edges
+
+
+
 ## Tech Stack (DO NOT SUBSTITUTE)
 
 - **Game Engine:** Kaplay (kaboom.js successor) — NOT Phaser, NOT PixiJS

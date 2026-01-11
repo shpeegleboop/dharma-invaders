@@ -1,17 +1,50 @@
 // Main game scene - orchestrates gameplay
 import type { KAPLAYCtx } from 'kaplay';
 import { createPlayer } from '../entities/player';
+import { spawnEnemyFromEdge, type EnemyType } from '../entities/enemy';
+import { setupCollisions } from '../systems/collision';
+import { setupKarma } from '../systems/karma';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
+  // Draw HUD background bar
+  k.add([
+    k.rect(config.screen.width, config.hud.height),
+    k.pos(0, 0),
+    k.color(20, 20, 35),
+    k.fixed(),
+    'hudBar',
+  ]);
+
+  // HUD separator line
+  k.add([
+    k.rect(config.screen.width, 2),
+    k.pos(0, config.hud.height - 2),
+    k.color(60, 60, 80),
+    k.fixed(),
+  ]);
+
+  // Title in HUD
+  k.add([
+    k.text('Dharma Invaders', { size: 24 }),
+    k.pos(config.screen.width / 2, config.hud.height / 2),
+    k.anchor('center'),
+    k.color(255, 255, 255),
+    k.fixed(),
+  ]);
+
+  // Setup systems
+  setupCollisions(k);
+  setupKarma(k);
+
   // Spawn player
   createPlayer(k);
 
-  // Title text (temporary)
-  k.add([
-    k.text('Dharma Invaders', { size: 32 }),
-    k.pos(config.screen.width / 2, 40),
-    k.anchor('center'),
-    k.color(255, 255, 255),
-  ]);
+  // Spawn enemies from all edges periodically
+  const enemyTypes: EnemyType[] = ['hungryGhost', 'asura', 'deva'];
+
+  k.loop(1.5, () => {
+    const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+    spawnEnemyFromEdge(k, type);
+  });
 }

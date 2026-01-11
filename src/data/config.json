@@ -3,6 +3,14 @@
     "width": 800,
     "height": 600
   },
+  "hud": {
+    "height": 50
+  },
+  "arena": {
+    "width": 800,
+    "height": 550,
+    "offsetY": 50
+  },
   "player": {
     "speed": 300,
     "health": 3,
