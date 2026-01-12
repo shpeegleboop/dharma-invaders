@@ -81,6 +81,10 @@
     "minionSpawnInterval": 5000,
     "karmaValue": 500
   },
+  "audio": {
+    "musicVolume": 0.5,
+    "sfxVolume": 0.7
+  },
   "debug": {
     "showHitboxes": false,
     "invincible": false,

@@ -5,6 +5,10 @@ import { createMenuScene } from './scenes/menu';
 import { createGameScene } from './scenes/game';
 import { createGameOverScene } from './scenes/gameOver';
 import { createNirvanaScene } from './scenes/nirvana';
+import { initAudio } from './systems/audio';
+
+// Initialize audio system
+initAudio();
 
 // Initialize Kaplay with game config
 const k = kaplay({

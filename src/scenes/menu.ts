@@ -1,8 +1,11 @@
 // Menu scene - title screen
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
+import { playMusic } from '../systems/audio';
 
 export function createMenuScene(k: KAPLAYCtx): void {
+  // Play menu music
+  playMusic('menu');
   // Dark background
   k.add([
     k.rect(config.screen.width, config.screen.height),

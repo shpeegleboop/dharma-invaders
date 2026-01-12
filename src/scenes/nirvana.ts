@@ -1,8 +1,11 @@
 // Nirvana scene - victory screen
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
+import { playMusic } from '../systems/audio';
 
 export function createNirvanaScene(k: KAPLAYCtx, karma: number): void {
+  // Play nirvana music
+  playMusic('nirvana');
   // Peaceful gradient background (deep purple to gold tint)
   k.add([
     k.rect(config.screen.width, config.screen.height),

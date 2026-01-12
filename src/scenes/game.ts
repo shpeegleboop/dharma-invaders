@@ -10,12 +10,17 @@ import { setupPowerupEffects } from '../systems/powerupEffects';
 import { setupBossHealthBar } from '../systems/bossHealthBar';
 import { setupMercyRule } from '../systems/mercyRule';
 import { setupDebug } from '../utils/debug';
+import { setupGameAudio } from '../systems/gameAudio';
 import { events } from '../utils/events';
+import { playMusic } from '../systems/audio';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
   // Clear all event listeners from previous scene
   events.clear();
+
+  // Play gameplay music
+  playMusic('gameplay');
 
   // Draw HUD background bar
   k.add([
@@ -52,6 +57,7 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupBossHealthBar(k);
   setupMercyRule();
   setupSpawner(k);
+  setupGameAudio();
   setupDebug(k);
 
   // Handle victory - go to nirvana scene

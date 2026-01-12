@@ -1,8 +1,11 @@
 // Game Over scene - mercy rule death
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
+import { playMusic } from '../systems/audio';
 
 export function createGameOverScene(k: KAPLAYCtx, karma: number): void {
+  // Play game over music
+  playMusic('gameover');
   // Dark red background
   k.add([
     k.rect(config.screen.width, config.screen.height),
