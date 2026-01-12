@@ -132,15 +132,15 @@ Follow this sequence. Each step must be testable before moving on:
 4. ~~Single enemy spawning~~ ✓
 5. ~~Collision detection~~ ✓
 6. ~~Karma counter~~ ✓
-7. Wave spawner (data-driven waves.json)
-8. Enemy variants (Asura, Deva)
+7. ~~Wave spawner (data-driven waves.json)~~ ✓
+8. ~~Enemy variants (Asura, Deva)~~ ✓
 9. ~~Player health + death~~ ✓
-10. Power-up drops + effects
+10. ~~Power-up drops + effects~~ ✓
 11. Samsara wheel visual
 12. Quote system
 13. Audio foundation
 14. Menu scene
-15. Mara boss fight
+15. **Mara boss fight** ← CURRENT
 16. Nirvana victory scene
 17. Save system
 18. Polish (screenshake, particles, juice)

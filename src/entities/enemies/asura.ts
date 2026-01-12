@@ -20,7 +20,7 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
     k.health(cfg.health),
     'enemy',
     'asura',
-    { enemyId, type: 'asura', karmaValue: cfg.karmaValue, speed: cfg.speed },
+    { enemyId, type: 'asura', karmaValue: cfg.karmaValue, speed: cfg.speed, stunned: false },
   ]);
 
   events.emit('enemy:spawned', {
@@ -30,6 +30,9 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
   });
 
   asura.onUpdate(() => {
+    // Don't move if stunned
+    if (asura.stunned) return;
+
     // Find player
     const player = k.get('player')[0];
     if (!player) return;

@@ -2,11 +2,14 @@
 import type { KAPLAYCtx } from 'kaplay';
 import { createPlayer } from '../entities/player';
 import { setupCollisions } from '../systems/collision';
-import { setupKarma } from '../systems/karma';
+import { setupKarma, getKarma } from '../systems/karma';
 import { setupHealth } from '../systems/health';
 import { setupSpawner } from '../systems/spawner';
 import { setupWaveDisplay } from '../systems/waveDisplay';
 import { setupPowerupEffects } from '../systems/powerupEffects';
+import { setupBossHealthBar } from '../systems/bossHealthBar';
+import { setupMercyRule } from '../systems/mercyRule';
+import { setupDebug } from '../utils/debug';
 import { events } from '../utils/events';
 import config from '../data/config.json';
 
@@ -46,7 +49,20 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupHealth(k);
   setupWaveDisplay(k);
   setupPowerupEffects(k);
+  setupBossHealthBar(k);
+  setupMercyRule();
   setupSpawner(k);
+  setupDebug(k);
+
+  // Handle victory - go to nirvana scene
+  events.on('game:victory', () => {
+    k.go('nirvana', getKarma());
+  });
+
+  // Handle game over - go to game over scene
+  events.on('game:over', () => {
+    k.go('gameOver', getKarma());
+  });
 
   // Spawn player
   createPlayer(k);

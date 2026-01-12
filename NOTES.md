@@ -19,6 +19,20 @@
 
 ---
 
+## Virtue Powerups (Implemented)
+
+| Virtue | Color | Effect | Duration |
+|--------|-------|--------|----------|
+| Compassion | Pink (#FF69B4) | 3-way spread shot | 8s |
+| Wisdom | Blue (#4169E1) | Shots pierce through enemies | 8s |
+| Patience | Green (#32CD32) | Enemies move at 50% speed | 8s |
+| Diligence | Gold (#FFD700) | 2x fire rate | 8s |
+| Meditation | Purple (#9370DB) | Absorb 1 hit (shield) | Until hit or 8s |
+
+Drop chance: 15% on enemy death. Collecting new powerup replaces current one.
+
+---
+
 ## Future Ideas (Not Yet Implemented)
 
 ### Rebirth System
@@ -37,6 +51,20 @@
 - Skill expression: how clean can you get there?
 - **Mercy rule:** 5 consecutive deaths with zero kills = actual game over (prevents infinite suffering)
 
+### Mercy Rule Death (TO IMPLEMENT)
+- Track consecutive deaths without kills
+- Currently player just respawns indefinitely — no mercy rule enforcement yet
+- When implementing: show special "game over" screen with Buddhist quote about persistence/trying again
+- Reset counter on any enemy kill
+
+### Mara Boss Ideas (Post-Implementation)
+- Multiple attack styles (spread shots, sweeping beams, targeted bursts)
+- Klesha projectiles that apply debuffs on hit (slowed, reversed controls, weakened shots)
+- Arena hazards during phase 3
+- Dramatic visual changes per phase
+- Taunts/dialogue during fight
+- Different music track for boss phase
+
 ### Level Progression & Story
 - Multiple levels with increasing difficulty
 - Story beats between levels or at milestones
@@ -51,8 +79,13 @@
 
 ### Powerup Polish
 - Visual indicator when powerup is about to expire
-- Stacking or combining virtues?
+- Consider stacking vs replacing — test single first, decide after playing
 - Rare "enlightenment" powerup that clears screen?
+
+### Title Screen / Menu
+- Intro title screen before gameplay
+- Sections: enemy bestiary, game lore/background, controls
+- Maybe unlockable entries as you encounter enemies?
 
 ---
 
@@ -75,6 +108,7 @@
 - Enemies: Red/Orange/Purple rectangles by type
 - Projectiles: Yellow rectangles (travel toward cursor direction)
 - Powerups: Colored circles
+- Mara: Dark red 64x64 rectangle
 
 ---
 
@@ -85,18 +119,19 @@
 - [x] Phase 1: Game shell, player movement, shooting
 - [x] Design pivot: Arena shooter with mouse aiming
 - [x] HUD moved to outer border
-- [x] Phase 2 (partial): Enemy spawner, Hungry Ghost, collision, player health
+- [x] Phase 2: Enemy spawner, all 3 enemy types, collision, player health
 - [x] Event listener audit — implemented Option B cleanup
-- [ ] Phase 2 (remaining): Asura + Deva enemy types
-- [ ] Phase 2 (remaining): Wave spawner with waves.json
-- [ ] Phase 2 (remaining): Power-up drops + effects
+- [x] Wave spawner with waves.json (8 waves)
+- [x] Power-up drops + all 5 virtue effects
+- [ ] Phase 4: Mara boss fight ← CURRENT
 
 ### Next Session Starting Point
-Continue Phase 2:
-1. Add Asura enemy (orange 28x28, aggressive direct movement, 2 HP, 25 karma)
-2. Add Deva enemy (purple 32x32, floaty graceful movement, 3 HP, 50 karma)
-3. Create waves.json for data-driven wave patterns
-4. Test all three enemy types spawning in waves
+Continue with Mara boss:
+1. Create mara.ts with state machine (entering, phase1, phase2, phase3, defeated)
+2. Boss projectiles that damage player
+3. Health bar in HUD
+4. Phase transitions at 70% and 30% health
+5. Victory event on defeat
 
 ---
 
@@ -104,8 +139,3 @@ Continue Phase 2:
 - How does karma persist between runs? High score only, or cumulative progression?
 - Is there a "win" state beyond defeating Mara, or endless mode?
 - Local multiplayer someday? (Probably not, but noting it)
-
-### Title Screen / Menu
-- Intro title screen before gameplay
-- Sections: enemy bestiary, game lore/background, controls
-- Maybe unlockable entries as you encounter enemies?

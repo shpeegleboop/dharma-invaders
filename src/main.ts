@@ -1,7 +1,10 @@
-// Entry point only - initializes Kaplay and loads game scene
+// Entry point - initializes Kaplay and registers all scenes
 import kaplay from 'kaplay';
 import config from './data/config.json';
+import { createMenuScene } from './scenes/menu';
 import { createGameScene } from './scenes/game';
+import { createGameOverScene } from './scenes/gameOver';
+import { createNirvanaScene } from './scenes/nirvana';
 
 // Initialize Kaplay with game config
 const k = kaplay({
@@ -12,7 +15,10 @@ const k = kaplay({
 });
 
 // Register scenes
+k.scene('menu', () => createMenuScene(k));
 k.scene('game', () => createGameScene(k));
+k.scene('gameOver', (karma: number) => createGameOverScene(k, karma));
+k.scene('nirvana', (karma: number) => createNirvanaScene(k, karma));
 
-// Start the game scene
-k.go('game');
+// Start at menu
+k.go('menu');

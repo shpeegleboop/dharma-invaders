@@ -65,9 +65,21 @@
   },
   "boss": {
     "health": 100,
-    "phase1Threshold": 70,
-    "phase2Threshold": 30,
-    "size": { "width": 64, "height": 64 }
+    "phase2Threshold": 70,
+    "phase3Threshold": 30,
+    "size": { "width": 64, "height": 64 },
+    "color": "#8B0000",
+    "entranceSpeed": 50,
+    "targetY": 120,
+    "projectile": {
+      "speed": 200,
+      "speedPhase3": 400,
+      "cooldown": 2000,
+      "size": { "width": 12, "height": 12 },
+      "color": "#FF4500"
+    },
+    "minionSpawnInterval": 5000,
+    "karmaValue": 500
   },
   "debug": {
     "showHitboxes": false,

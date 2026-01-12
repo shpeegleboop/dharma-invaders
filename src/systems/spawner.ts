@@ -6,6 +6,7 @@ import { events } from '../utils/events';
 import { createHungryGhost } from '../entities/enemies/hungryGhost';
 import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
+import { spawnMara } from '../entities/mara';
 
 type EnemyType = 'hungryGhost' | 'asura' | 'deva';
 
@@ -52,22 +53,39 @@ export function setupSpawner(k: KAPLAYCtx): void {
     }
   });
 
-  // Listen for player death to reset wave
+  // Listen for player death - pause spawning briefly, enemies persist
   events.on('player:died', () => {
     state.active = false;
     k.wait(1.5, () => {
-      destroyAllEnemies(k);
-      restartCurrentWave(k);
+      // Enemies persist - don't destroy them
+      // Resume spawning remaining enemies from queue
       state.active = true;
     });
   });
+
+  // Debug: skip to specific wave
+  events.on('debug:skipToWave', (data) => {
+    destroyAllEnemies(k);
+    state.waveIndex = data.wave - 1; // -1 because startWave uses index
+    state.enemyQueue = [];
+    state.betweenWaves = false;
+    state.active = true;
+    startWave(k);
+  });
+
+  // Debug: skip to boss
+  events.on('debug:skipToBoss', () => {
+    state.active = false;
+    state.enemyQueue = [];
+  });
 }
 
-function startWave(_k: KAPLAYCtx): void {
+function startWave(k: KAPLAYCtx): void {
   const wave = waves.waves[state.waveIndex];
   if (!wave) {
-    // All waves complete - trigger boss or victory
-    events.emit('boss:started', {});
+    // All waves complete - spawn Mara boss
+    state.active = false;
+    spawnMara(k);
     return;
   }
 
@@ -98,10 +116,6 @@ function completeWave(k: KAPLAYCtx): void {
   k.wait(waves.timeBetweenWaves / 1000, () => {
     startWave(k);
   });
-}
-
-function restartCurrentWave(k: KAPLAYCtx): void {
-  startWave(k);
 }
 
 function spawnNextEnemy(k: KAPLAYCtx): void {

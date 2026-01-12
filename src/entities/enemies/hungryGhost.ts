@@ -26,7 +26,7 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
     k.opacity(0.85),
     'enemy',
     'hungryGhost',
-    { enemyId, type: 'hungryGhost', karmaValue: cfg.karmaValue, speed: cfg.speed },
+    { enemyId, type: 'hungryGhost', karmaValue: cfg.karmaValue, speed: cfg.speed, stunned: false },
   ]);
 
   events.emit('enemy:spawned', {
@@ -36,6 +36,9 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
   });
 
   ghost.onUpdate(() => {
+    // Don't move if stunned
+    if (ghost.stunned) return;
+
     // Find player
     const player = k.get('player')[0];
     if (!player) return;

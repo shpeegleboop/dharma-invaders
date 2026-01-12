@@ -32,7 +32,7 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
     k.opacity(0.9),
     'enemy',
     'deva',
-    { enemyId, type: 'deva', karmaValue: cfg.karmaValue, speed: cfg.speed },
+    { enemyId, type: 'deva', karmaValue: cfg.karmaValue, speed: cfg.speed, stunned: false },
   ]);
 
   events.emit('enemy:spawned', {
@@ -42,6 +42,9 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
   });
 
   deva.onUpdate(() => {
+    // Don't move if stunned
+    if (deva.stunned) return;
+
     // Find player and update base angle slowly (lazy tracking)
     const player = k.get('player')[0];
     if (player) {
