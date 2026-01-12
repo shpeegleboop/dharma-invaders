@@ -1,46 +1,28 @@
-// Wave-based enemy spawner system
+// Enemy spawner - spawns enemies based on wave state
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
-import waves from '../data/waves.json';
 import { events } from '../utils/events';
 import { createHungryGhost } from '../entities/enemies/hungryGhost';
 import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
 import { spawnMara } from '../entities/mara';
 import { isPaused } from '../ui/pauseMenu';
+import {
+  WaveState, createWaveState, resetWaveState, buildEnemyQueue,
+  getCurrentWaveConfig, advanceWave, getTimeBetweenWaves, popNextEnemy
+} from './waveManager';
 
-type EnemyType = 'hungryGhost' | 'asura' | 'deva';
-
-type SpawnerState = {
-  active: boolean;
-  waveIndex: number;
-  spawnTimer: number;
-  enemyQueue: EnemyType[];
-  betweenWaves: boolean;
-};
-
-const state: SpawnerState = {
-  active: false,
-  waveIndex: 0,
-  spawnTimer: 0,
-  enemyQueue: [],
-  betweenWaves: false,
-};
+let state: WaveState = createWaveState();
 
 export function setupSpawner(k: KAPLAYCtx): void {
-  state.active = true;
-  state.waveIndex = 0;
-  state.spawnTimer = 0;
-  state.enemyQueue = [];
-  state.betweenWaves = false;
-
+  resetWaveState(state);
   startWave(k);
 
   k.onUpdate(() => {
     if (isPaused) return;
     if (!state.active || state.betweenWaves) return;
 
-    const currentWave = waves.waves[state.waveIndex];
+    const currentWave = getCurrentWaveConfig(state);
     if (!currentWave) return;
 
     state.spawnTimer += k.dt();
@@ -55,12 +37,10 @@ export function setupSpawner(k: KAPLAYCtx): void {
     }
   });
 
-  // Listen for player death - pause spawning briefly, enemies persist
+  // Listen for player death - pause spawning briefly
   events.on('player:died', () => {
     state.active = false;
     k.wait(1.5, () => {
-      // Enemies persist - don't destroy them
-      // Resume spawning remaining enemies from queue
       state.active = true;
     });
   });
@@ -68,7 +48,7 @@ export function setupSpawner(k: KAPLAYCtx): void {
   // Debug: skip to specific wave
   events.on('debug:skipToWave', (data) => {
     destroyAllEnemies(k);
-    state.waveIndex = data.wave - 1; // -1 because startWave uses index
+    state.waveIndex = data.wave - 1;
     state.enemyQueue = [];
     state.betweenWaves = false;
     state.active = true;
@@ -83,45 +63,22 @@ export function setupSpawner(k: KAPLAYCtx): void {
 }
 
 function startWave(k: KAPLAYCtx): void {
-  const wave = waves.waves[state.waveIndex];
-  if (!wave) {
-    // All waves complete - spawn Mara boss
+  const hasMoreWaves = buildEnemyQueue(state);
+  if (!hasMoreWaves) {
     state.active = false;
     spawnMara(k);
-    return;
   }
-
-  // Build enemy queue from wave definition
-  state.enemyQueue = [];
-  for (const enemyDef of wave.enemies) {
-    for (let i = 0; i < enemyDef.count; i++) {
-      state.enemyQueue.push(enemyDef.type as EnemyType);
-    }
-  }
-  // Shuffle the queue for variety
-  shuffleArray(state.enemyQueue);
-
-  state.spawnTimer = 0;
-  state.betweenWaves = false;
-
-  events.emit('wave:started', { waveNumber: wave.number });
 }
 
 function completeWave(k: KAPLAYCtx): void {
-  const wave = waves.waves[state.waveIndex];
-  events.emit('wave:complete', { waveNumber: wave.number });
-
-  state.betweenWaves = true;
-  state.waveIndex++;
-
-  // Pause between waves
-  k.wait(waves.timeBetweenWaves / 1000, () => {
+  advanceWave(state);
+  k.wait(getTimeBetweenWaves(), () => {
     startWave(k);
   });
 }
 
 function spawnNextEnemy(k: KAPLAYCtx): void {
-  const type = state.enemyQueue.shift();
+  const type = popNextEnemy(state);
   if (!type) return;
 
   const pos = getRandomEdgePosition(k);
@@ -160,13 +117,6 @@ function getRandomEdgePosition(k: KAPLAYCtx): { x: number; y: number } {
 
 function destroyAllEnemies(k: KAPLAYCtx): void {
   k.get('enemy').forEach((enemy) => enemy.destroy());
-}
-
-function shuffleArray<T>(array: T[]): void {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
 }
 
 export function getCurrentWave(): number {
