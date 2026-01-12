@@ -54,7 +54,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
   // Audio settings hint
   k.add([
-    k.text('Press A for Audio Settings', { size: 14 }),
+    k.text('(A) Audio   (B) About', { size: 14 }),
     k.pos(config.screen.width / 2, config.screen.height - 50),
     k.anchor('center'),
     k.color(120, 120, 140),
@@ -76,6 +76,12 @@ export function createMenuScene(k: KAPLAYCtx): void {
   k.onKeyPress('a', () => {
     if (isAudioSettingsVisible()) return;
     showAudioSettings(() => {});
+  });
+
+  // About/Bestiary
+  k.onKeyPress('b', () => {
+    if (isAudioSettingsVisible()) return;
+    k.go('about');
   });
 
   k.onKeyPress('escape', () => {

@@ -5,6 +5,8 @@ import { createMenuScene } from './scenes/menu';
 import { createGameScene } from './scenes/game';
 import { createGameOverScene } from './scenes/gameOver';
 import { createNirvanaScene } from './scenes/nirvana';
+import { createCreditsScene } from './scenes/credits';
+import { createAboutScene } from './scenes/about';
 import { initAudio } from './systems/audio';
 
 // Initialize audio system
@@ -23,6 +25,8 @@ k.scene('menu', () => createMenuScene(k));
 k.scene('game', () => createGameScene(k));
 k.scene('gameOver', (karma: number) => createGameOverScene(k, karma));
 k.scene('nirvana', (karma: number) => createNirvanaScene(k, karma));
+k.scene('credits', () => createCreditsScene(k));
+k.scene('about', () => createAboutScene(k));
 
 // Start at menu
 k.go('menu');
