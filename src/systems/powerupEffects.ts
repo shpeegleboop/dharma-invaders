@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import type { VirtueType } from '../entities/powerup';
+import { isPaused } from '../ui/pauseMenu';
 
 type PowerupState = {
   active: VirtueType | null;
@@ -51,6 +52,7 @@ export function setupPowerupEffects(k: KAPLAYCtx): void {
 
   // Update timer
   k.onUpdate(() => {
+    if (isPaused) return;
     if (state.active && state.active !== 'meditation') {
       state.timeRemaining -= k.dt() * 1000;
       if (state.timeRemaining <= 0) {
