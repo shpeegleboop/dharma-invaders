@@ -1,6 +1,67 @@
 # Dharma Invaders - Development Handoff
 
-Current state: **Feature Complete, Ready for Balancing**
+Current state: **Demo Ready, Polish Phase Next**
+
+## Session Summary
+
+### Today's Work
+1. **Confirmation Dialogs** - Prevent accidental exits
+   - Pause menu: "Return to the cycle of rebirth?" (Y/Q confirms, N/ESC cancels)
+   - Nirvana screen: Choice between parinirvana (credits) or returning to menu
+
+2. **Credits Scene** - Parinirvana ending
+   - Looping Buddhist quotes with fade transitions
+   - Plays nirvana.wav continuously
+   - Only ESC exits
+
+3. **About Section** - Press B from main menu
+   - Tab 1: Controls reference
+   - Tab 2: Enemy bestiary with colors and descriptions
+   - Tab 3: Game lore (Samsara, Six Realms, Mara)
+
+4. **Demo Difficulty Tuning** - Challenging but fun
+   - 3x enemy counts with 3x spawn rate (same wave duration, higher intensity)
+   - 1.5s between waves (was 3s)
+   - Enemies gain +10% speed per wave (wave 8 = 1.8x base speed)
+   - Mara: 400 HP, 1s minion spawns, figure-8 movement pattern
+
+## Current Demo Settings
+
+**These values are tuned for intense but beatable gameplay:**
+
+```json
+// waves.json
+- Enemy counts: 3x original (wave 8: 30 ghosts, 24 asuras, 15 devas)
+- Spawn intervals: 0.67s → 0.33s (3x faster spawning)
+- Between waves: 1.5s
+
+// config.json
+- Boss HP: 400
+- Minion spawn: every 1s
+- All other values: original
+
+// Enemy speed scaling (in enemy .ts files)
+- waveMultiplier = 1 + 0.1 * waveNumber
+- Wave 1: 1.1x, Wave 8: 1.8x base speed
+
+// Mara movement (in mara.ts)
+- Figure-8 pattern using sin(t) for X, sin(2t) for Y
+- Amplitude: 200px horizontal, 60px vertical
+- Speed increases 1.5x in phase 3
+```
+
+## To Revert Demo Changes
+
+If you need original difficulty:
+```bash
+git revert HEAD~1  # Reverts demo difficulty commit
+```
+
+Or manually restore in config.json/waves.json:
+- Boss HP: 100, minion interval: 5000ms
+- Wave spawn intervals: 2.0s → 1.0s
+- Enemy counts: original (wave 8: 10/8/5)
+- Remove wave speed multiplier from enemy files
 
 ## What's Implemented
 
@@ -11,44 +72,28 @@ Current state: **Feature Complete, Ready for Balancing**
 - Wave-based spawning system (8 waves)
 - Karma scoring system
 - Player health (3 HP) with invincibility frames
-- Collision detection for all entity interactions
 
 ### Power-up System (100% Complete)
-- 5 virtue power-ups with distinct effects:
-  - Compassion (pink): Spread shot
-  - Wisdom (blue): Piercing projectiles
-  - Patience (green): Slows enemies
-  - Diligence (gold): Rapid fire
-  - Meditation (purple): Shield (breaks on hit)
-- Power-up timers pause when game is paused
-- HUD display with countdown
+- Compassion (pink): Spread shot
+- Wisdom (blue): Piercing projectiles
+- Patience (green): Slows enemies
+- Diligence (gold): Rapid fire
+- Meditation (purple): Shield
 
 ### Boss Fight (100% Complete)
-- Mara boss with 3 phases
-- Phase transitions with visual feedback
-- Aimed projectiles, minion spawns in phase 2
-- Enraged mode in phase 3 (2x projectile speed)
-- Boss health bar UI
-
-### Audio System (100% Complete)
-- Music tracks: menu, gameplay, boss, nirvana, gameover (.wav)
-- 15 SFX sounds (.mp3)
-- Volume controls with localStorage persistence
-- Howler.js integration
+- Mara with 3 phases + figure-8 movement
+- Phase 2: minion spawns every 1s
+- Phase 3: faster movement, 2x projectile speed
 
 ### UI/UX (100% Complete)
-- Main menu with keyboard navigation (SPACE to start, A for audio, B for about)
-- Pause menu (ESC) with resume/audio/quit options
-- **Quit confirmation dialog**: "Return to the cycle of rebirth?" (Y/Q confirms, N/ESC cancels)
-- Audio settings panel (arrow keys to adjust)
-- Game over screen with karma display
-- Nirvana victory screen with exit confirmation
-- Credits/parinirvana scene with looping Buddhist quotes
-- About section with controls, bestiary, and lore
-- HUD: health, karma, wave counter, powerup status
+- Main menu: SPACE to start, A for audio, B for about
+- Pause menu with quit confirmation
+- Nirvana screen with exit confirmation
+- Credits/parinirvana scene
+- About section (controls, bestiary, lore)
 
 ### Debug Tools
-- F1: Toggle hitbox visibility
+- F1: Toggle hitboxes
 - F2: Skip to wave 8
 - F3: Skip to boss
 - F4: Give all powerups
@@ -60,151 +105,89 @@ Current state: **Feature Complete, Ready for Balancing**
 src/
 ├── main.ts                    # Entry point, scene registration
 ├── entities/
-│   ├── bossProjectile.ts      # Boss projectile entity
-│   ├── mara.ts                # Mara boss (state machine)
-│   ├── maraCombat.ts          # Boss combat logic
-│   ├── player.ts              # Player entity
-│   ├── powerup.ts             # Power-up drops
-│   ├── projectile.ts          # Player projectiles
+│   ├── mara.ts                # Boss with figure-8 movement
+│   ├── maraCombat.ts          # Boss projectiles and minions
 │   └── enemies/
-│       ├── hungryGhost.ts     # Erratic movement, 1 HP, 10 karma
-│       ├── asura.ts           # Direct movement, 2 HP, 25 karma
-│       └── deva.ts            # Graceful movement, 3 HP, 50 karma
+│       ├── hungryGhost.ts     # +wave speed scaling
+│       ├── asura.ts           # +wave speed scaling
+│       └── deva.ts            # +wave speed scaling
 ├── scenes/
-│   ├── game.ts                # Main gameplay scene
-│   ├── gameOver.ts            # Death screen
-│   ├── menu.ts                # Main menu (SPACE/A/B keys)
-│   ├── nirvana.ts             # Victory screen + exit confirmation
-│   ├── credits.ts             # Parinirvana ending with looping quotes
-│   └── about.ts               # Bestiary, lore, controls reference
+│   ├── game.ts                # Main gameplay
+│   ├── menu.ts                # Main menu (SPACE/A/B)
+│   ├── nirvana.ts             # Victory + exit confirmation
+│   ├── credits.ts             # Parinirvana with looping quotes
+│   └── about.ts               # Bestiary, lore, controls
 ├── systems/
-│   ├── audio.ts               # Music system (Howler.js)
-│   ├── sfx.ts                 # SFX system
-│   ├── bossHealthBar.ts       # Boss HP display
-│   ├── collision.ts           # Collision handlers
-│   ├── collisionHelpers.ts    # Bounce/flash helpers
-│   ├── gameAudio.ts           # Scene audio triggers
-│   ├── health.ts              # Player health display
-│   ├── karma.ts               # Karma scoring
-│   ├── mercyRule.ts           # Retry logic on death
-│   ├── powerupEffects.ts      # Active powerup state
-│   ├── spawner.ts             # Enemy spawning
-│   ├── waveManager.ts         # Wave state
-│   └── waveDisplay.ts         # Wave announcements
+│   ├── waveManager.ts         # Wave state + getCurrentWaveNumber()
+│   └── spawner.ts             # Calls setCurrentWaveNumber()
 ├── ui/
-│   ├── audioSettings.ts       # Audio settings logic
-│   ├── audioSettingsUI.ts     # Audio UI elements
-│   ├── pauseMenu.ts           # Pause system + global isPaused + quit confirm
-│   └── pauseMenuUI.ts         # Pause menu UI rendering
-├── utils/
-│   ├── debug.ts               # Debug key bindings
-│   └── events.ts              # Event bus
+│   ├── pauseMenu.ts           # Pause states including quitConfirm
+│   └── pauseMenuUI.ts         # UI rendering for pause/confirm
 └── data/
-    ├── config.json            # All game constants (speeds, HP, sizes, etc.)
-    ├── waves.json             # Wave definitions
-    └── quotes.json            # Buddhist quotes for credits scene
-```
-
-## Scene Flow
-
-```
-menu ─────────────────────────────────────────┐
-  │                                           │
-  ├─(SPACE)──→ game ──→ gameOver ──(SPACE)───┤
-  │              │                            │
-  │              └──→ nirvana ────────────────┤
-  │                      │                    │
-  │                      └─(N)──→ credits ────┤
-  │                                    │      │
-  ├─(B)──→ about ──(ESC)───────────────┼──────┘
-  │                                    │
-  └─(A)──→ [audio overlay] ────────────┘
+    ├── config.json            # Boss HP, minion interval, etc.
+    ├── waves.json             # Enemy counts, spawn intervals
+    └── quotes.json            # Buddhist quotes for credits
 ```
 
 ## Technical Notes
 
-### Pause System
-The global `isPaused` flag is exported from `src/ui/pauseMenu.ts`. Every `onUpdate()` callback that should freeze during pause must check:
+### Wave-Based Speed Scaling
+Enemies now scale speed based on wave number:
 ```typescript
-import { isPaused } from '../ui/pauseMenu';
+import { getCurrentWaveNumber } from '../../systems/waveManager';
 
-k.onUpdate(() => {
-  if (isPaused) return;
-  // ... game logic
-});
+const waveMultiplier = 1 + 0.1 * getCurrentWaveNumber();
+const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier;
 ```
 
-### Pause Menu States
-The pause menu uses a state machine: `playing` → `paused` → `audioSettings` or `quitConfirm`
-- ESC cycles between playing/paused, or returns from sub-states
-- Q from paused → quitConfirm (shows confirmation dialog)
-- Y/Q from quitConfirm → quit to menu
-- N/ESC from quitConfirm → back to paused
+The spawner calls `setCurrentWaveNumber()` when each wave starts.
 
-### Event Bus
-Systems communicate via events (never direct imports between entities):
+### Mara Figure-8 Movement
 ```typescript
-events.emit('enemy:killed', { id, type, position, karmaValue });
-events.on('player:powerup', (data) => { ... });
+// In updateCombat()
+movementTimer += k.dt();
+const speed = currentPhase === 'phase3' ? 1.5 : 1.0;
+mara.pos.x = baseX + Math.sin(movementTimer * speed) * 200;
+mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * 60;
 ```
 
-### File Size Limit
-Keep files under 150 lines. When a file grows, split it:
-- Logic → separate helper file (e.g., `pauseMenu.ts` → `pauseMenuUI.ts`)
-- UI creation → separate UI file
-- State management → separate state file
+### Pause Menu State Machine
+`playing` → `paused` → `audioSettings` | `quitConfirm`
 
-### Data-Driven Config
-All magic numbers live in `src/data/config.json`. To adjust difficulty, modify:
-- `player.speed`, `player.health`, `player.shootCooldown`
-- `enemies.hungryGhost/asura/deva.speed`, `.health`, `.karmaValue`
-- `boss.health`, `.phase2Threshold`, `.phase3Threshold`
-- `boss.projectile.speed`, `.speedPhase3`, `.cooldown`
-- `waves.timeBetweenWaves`, `.timeBetweenSpawns`
-- `powerups.dropChance`, `.duration`
+## Next Steps: Polish
 
-## Next Steps: Difficulty Balancing
+### Visual Juice
+- Screen shake on player hit / boss phase change
+- Particle effects (enemy death puffs, powerup sparkles)
+- Hit flash on enemies when damaged
 
-The game is feature-complete. Next session focuses on gameplay feel:
+### Audio Polish
+- Review SFX timing and volume balance
+- Add variety (multiple hurt sounds, etc.)
 
-### Enemy Behavior Tuning
-- Hungry Ghost: Currently erratic. Could adjust jitter amount, base speed
-- Asura: Direct chase. Could add prediction, charge attacks
-- Deva: Graceful float. Could add dive-bomb or area denial
+### Gameplay Feel
+- Fine-tune enemy movement patterns
+- Adjust powerup drop rates based on playtesting
+- Consider adding score multipliers
 
-### Boss Balance
-- Phase thresholds (currently 70% → phase2, 30% → phase3)
-- Projectile speed and cooldown per phase
-- Minion spawn rate in phase 2
-- Consider adding attack patterns (spread shots, spiral patterns)
-
-### Wave Pacing
-- Enemy counts per wave (defined in `waves.json`)
-- Time between spawns
-- Mix of enemy types per wave
-- Consider adding mini-boss waves
-
-### Power-up Tuning
-- Drop chance (currently 15%)
-- Duration (currently 8 seconds)
-- Individual effect strengths (spread angle, pierce count, slow %, fire rate)
+### Art Pass (When Ready)
+- Replace colored rectangles with sprites
+- Add Samsara wheel background
+- Animate boss phase transitions
 
 ## Running the Game
 
 ```bash
-npm run dev    # Dev server (hot reload)
+npm run dev    # Dev server with hot reload
 npm run build  # Production build
 ```
 
-Dev server runs on http://localhost:5173/ (or next available port).
-
-## Git History (Recent)
+## Git History
 
 ```
+2f9b230 Demo difficulty: harder gameplay for recording
+f5019bd Update handoff doc - feature complete, ready for balancing
 cf3a09f Confirmation dialogs, credits scene, and about section
 7f6f1c8 Add DAY_ONE_HANDOFF.md - development summary for day two
 6b45767 Pause powerup timers when game is paused
-27e6b39 Split large files to comply with 150-line limit
-a9a66fc Pause menu, audio settings UI, and global pause system
-447440d Audio system with Howler.js - music and SFX
 ```
