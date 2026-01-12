@@ -78,3 +78,14 @@ function shuffleArray<T>(array: T[]): void {
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
+// Global wave number for enemy speed scaling (set by spawner)
+let currentWaveNumber = 1;
+
+export function setCurrentWaveNumber(waveNum: number): void {
+  currentWaveNumber = waveNum;
+}
+
+export function getCurrentWaveNumber(): number {
+  return currentWaveNumber;
+}

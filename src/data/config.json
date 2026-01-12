@@ -64,7 +64,7 @@
     }
   },
   "boss": {
-    "health": 100,
+    "health": 400,
     "phase2Threshold": 70,
     "phase3Threshold": 30,
     "size": { "width": 64, "height": 64 },
@@ -78,7 +78,7 @@
       "size": { "width": 12, "height": 12 },
       "color": "#FF4500"
     },
-    "minionSpawnInterval": 5000,
+    "minionSpawnInterval": 1000,
     "karmaValue": 500
   },
   "audio": {

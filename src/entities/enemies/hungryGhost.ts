@@ -4,6 +4,7 @@ import config from '../../data/config.json';
 import { events } from '../../utils/events';
 import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 import { isPaused } from '../../ui/pauseMenu';
+import { getCurrentWaveNumber } from '../../systems/waveManager';
 
 let ghostIdCounter = 0;
 
@@ -60,8 +61,9 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
       const wobbleX = Math.sin(wobbleOffset) * wobbleAmount;
       const wobbleY = Math.cos(wobbleOffset * 1.3) * wobbleAmount;
 
-      // Apply movement with delta time (with patience slowdown)
-      const speed = cfg.speed * getEnemySpeedMultiplier();
+      // Apply movement with delta time (with patience slowdown and wave scaling)
+      const waveMultiplier = 1 + 0.1 * getCurrentWaveNumber();
+      const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier;
       ghost.pos.x += (dirX + wobbleX) * speed * k.dt();
       ghost.pos.y += (dirY + wobbleY) * speed * k.dt();
 

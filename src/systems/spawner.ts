@@ -9,7 +9,8 @@ import { spawnMara } from '../entities/mara';
 import { isPaused } from '../ui/pauseMenu';
 import {
   WaveState, createWaveState, resetWaveState, buildEnemyQueue,
-  getCurrentWaveConfig, advanceWave, getTimeBetweenWaves, popNextEnemy
+  getCurrentWaveConfig, advanceWave, getTimeBetweenWaves, popNextEnemy,
+  setCurrentWaveNumber
 } from './waveManager';
 
 let state: WaveState = createWaveState();
@@ -67,6 +68,8 @@ function startWave(k: KAPLAYCtx): void {
   if (!hasMoreWaves) {
     state.active = false;
     spawnMara(k);
+  } else {
+    setCurrentWaveNumber(state.waveIndex + 1);
   }
 }
 

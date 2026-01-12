@@ -12,12 +12,14 @@ let currentPhase: MaraPhase = 'entering';
 let shootTimer = 0;
 let minionTimer = 0;
 let deathAnimTimer = 0;
+let movementTimer = 0;
 
 export function spawnMara(k: KAPLAYCtx): void {
   const cfg = config.boss;
   currentPhase = 'entering';
   shootTimer = 0;
   minionTimer = 0;
+  movementTimer = 0;
 
   mara = k.add([
     k.rect(cfg.size.width, cfg.size.height),
@@ -89,6 +91,16 @@ function updateCombat(k: KAPLAYCtx): void {
     mara.phase = 'phase2';
     events.emit('boss:phaseChange', { phase: 2 });
   }
+
+  // Figure-8 movement pattern (stays in upper half of screen)
+  movementTimer += k.dt();
+  const baseX = config.screen.width / 2;
+  const baseY = cfg.targetY + 40;
+  const amplitudeX = 200;
+  const amplitudeY = 60;
+  const speed = currentPhase === 'phase3' ? 1.5 : 1.0;
+  mara.pos.x = baseX + Math.sin(movementTimer * speed) * amplitudeX;
+  mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * amplitudeY;
 
   // Shooting logic
   shootTimer += k.dt() * 1000;

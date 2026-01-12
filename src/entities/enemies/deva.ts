@@ -4,6 +4,7 @@ import config from '../../data/config.json';
 import { events } from '../../utils/events';
 import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 import { isPaused } from '../../ui/pauseMenu';
+import { getCurrentWaveNumber } from '../../systems/waveManager';
 
 let devaIdCounter = 0;
 
@@ -65,8 +66,9 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
     const perpAngle = baseAngle + Math.PI / 2;
     const floatOffset = Math.sin(floatPhase) * floatAmplitude * k.dt();
 
-    // Move forward along base angle + perpendicular float (with patience slowdown)
-    const speed = cfg.speed * getEnemySpeedMultiplier();
+    // Move forward along base angle + perpendicular float (with patience slowdown and wave scaling)
+    const waveMultiplier = 1 + 0.1 * getCurrentWaveNumber();
+    const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier;
     deva.pos.x += Math.cos(baseAngle) * speed * k.dt();
     deva.pos.y += Math.sin(baseAngle) * speed * k.dt();
     deva.pos.x += Math.cos(perpAngle) * floatOffset;

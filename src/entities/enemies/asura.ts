@@ -4,6 +4,7 @@ import config from '../../data/config.json';
 import { events } from '../../utils/events';
 import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 import { isPaused } from '../../ui/pauseMenu';
+import { getCurrentWaveNumber } from '../../systems/waveManager';
 
 let asuraIdCounter = 0;
 
@@ -49,8 +50,9 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
       const dirX = dx / dist;
       const dirY = dy / dist;
 
-      // Direct movement with delta time (with patience slowdown)
-      const speed = cfg.speed * getEnemySpeedMultiplier();
+      // Direct movement with delta time (with patience slowdown and wave scaling)
+      const waveMultiplier = 1 + 0.1 * getCurrentWaveNumber();
+      const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier;
       asura.pos.x += dirX * speed * k.dt();
       asura.pos.y += dirY * speed * k.dt();
 
