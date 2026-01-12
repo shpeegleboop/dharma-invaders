@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../../data/config.json';
 import { events } from '../../utils/events';
+import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 
 let ghostIdCounter = 0;
 
@@ -53,9 +54,10 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
       const wobbleX = Math.sin(wobbleOffset) * wobbleAmount;
       const wobbleY = Math.cos(wobbleOffset * 1.3) * wobbleAmount;
 
-      // Apply movement with delta time
-      ghost.pos.x += (dirX + wobbleX) * cfg.speed * k.dt();
-      ghost.pos.y += (dirY + wobbleY) * cfg.speed * k.dt();
+      // Apply movement with delta time (with patience slowdown)
+      const speed = cfg.speed * getEnemySpeedMultiplier();
+      ghost.pos.x += (dirX + wobbleX) * speed * k.dt();
+      ghost.pos.y += (dirY + wobbleY) * speed * k.dt();
 
       // Rotate to face movement direction
       ghost.angle = k.rad2deg(Math.atan2(dirY, dirX));

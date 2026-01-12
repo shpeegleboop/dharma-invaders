@@ -22,6 +22,11 @@ type GameEvents = {
   'game:victory': Record<string, never>;
   'game:over': Record<string, never>;
 
+  // Powerups
+  'powerup:activated': { type: string };
+  'powerup:deactivated': { type: string };
+  'powerup:shieldBroken': Record<string, never>;
+
   // Systems
   'karma:changed': { newValue: number; delta: number };
   'audio:play': { sound: string };

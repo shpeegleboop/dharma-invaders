@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../../data/config.json';
 import { events } from '../../utils/events';
+import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 
 let devaIdCounter = 0;
 
@@ -58,9 +59,10 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
     const perpAngle = baseAngle + Math.PI / 2;
     const floatOffset = Math.sin(floatPhase) * floatAmplitude * k.dt();
 
-    // Move forward along base angle + perpendicular float
-    deva.pos.x += Math.cos(baseAngle) * cfg.speed * k.dt();
-    deva.pos.y += Math.sin(baseAngle) * cfg.speed * k.dt();
+    // Move forward along base angle + perpendicular float (with patience slowdown)
+    const speed = cfg.speed * getEnemySpeedMultiplier();
+    deva.pos.x += Math.cos(baseAngle) * speed * k.dt();
+    deva.pos.y += Math.sin(baseAngle) * speed * k.dt();
     deva.pos.x += Math.cos(perpAngle) * floatOffset;
     deva.pos.y += Math.sin(perpAngle) * floatOffset;
 

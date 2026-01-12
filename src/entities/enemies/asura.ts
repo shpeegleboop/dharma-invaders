@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../../data/config.json';
 import { events } from '../../utils/events';
+import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 
 let asuraIdCounter = 0;
 
@@ -42,9 +43,10 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
       const dirX = dx / dist;
       const dirY = dy / dist;
 
-      // Direct movement with delta time
-      asura.pos.x += dirX * cfg.speed * k.dt();
-      asura.pos.y += dirY * cfg.speed * k.dt();
+      // Direct movement with delta time (with patience slowdown)
+      const speed = cfg.speed * getEnemySpeedMultiplier();
+      asura.pos.x += dirX * speed * k.dt();
+      asura.pos.y += dirY * speed * k.dt();
 
       // Rotate to face player
       asura.angle = k.rad2deg(Math.atan2(dy, dx));

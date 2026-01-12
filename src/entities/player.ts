@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { createProjectile } from './projectile';
 import { events } from '../utils/events';
+import { getShootCooldownMultiplier, isSpreadShotActive } from '../systems/powerupEffects';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
@@ -33,12 +34,26 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
     const angle = getAngleToMouse();
     const offset = config.player.size.width / 2 + 5;
-    const spawnX = player.pos.x + Math.cos(angle) * offset;
-    const spawnY = player.pos.y + Math.sin(angle) * offset;
 
-    createProjectile(k, spawnX, spawnY, angle);
+    if (isSpreadShotActive()) {
+      // Compassion: 3-way spread shot
+      const spreadAngle = 0.25; // ~15 degrees
+      for (const angleOffset of [-spreadAngle, 0, spreadAngle]) {
+        const shotAngle = angle + angleOffset;
+        const spawnX = player.pos.x + Math.cos(shotAngle) * offset;
+        const spawnY = player.pos.y + Math.sin(shotAngle) * offset;
+        createProjectile(k, spawnX, spawnY, shotAngle);
+      }
+    } else {
+      // Normal single shot
+      const spawnX = player.pos.x + Math.cos(angle) * offset;
+      const spawnY = player.pos.y + Math.sin(angle) * offset;
+      createProjectile(k, spawnX, spawnY, angle);
+    }
 
-    k.wait(config.player.shootCooldown / 1000, () => {
+    // Apply cooldown with potential multiplier (diligence = 0.5x cooldown)
+    const cooldown = config.player.shootCooldown * getShootCooldownMultiplier();
+    k.wait(cooldown / 1000, () => {
       canShoot = true;
     });
   }

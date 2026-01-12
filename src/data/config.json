@@ -54,7 +54,14 @@
     "dropChance": 0.15,
     "fallSpeed": 100,
     "duration": 8000,
-    "size": { "width": 16, "height": 16 }
+    "size": { "width": 16, "height": 16 },
+    "virtues": {
+      "compassion": { "color": "#FF69B4", "name": "Compassion" },
+      "wisdom": { "color": "#4169E1", "name": "Wisdom" },
+      "patience": { "color": "#32CD32", "name": "Patience" },
+      "diligence": { "color": "#FFD700", "name": "Diligence" },
+      "meditation": { "color": "#9370DB", "name": "Meditation" }
+    }
   },
   "boss": {
     "health": 100,

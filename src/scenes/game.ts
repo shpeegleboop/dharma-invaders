@@ -6,6 +6,7 @@ import { setupKarma } from '../systems/karma';
 import { setupHealth } from '../systems/health';
 import { setupSpawner } from '../systems/spawner';
 import { setupWaveDisplay } from '../systems/waveDisplay';
+import { setupPowerupEffects } from '../systems/powerupEffects';
 import { events } from '../utils/events';
 import config from '../data/config.json';
 
@@ -44,6 +45,7 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupKarma(k);
   setupHealth(k);
   setupWaveDisplay(k);
+  setupPowerupEffects(k);
   setupSpawner(k);
 
   // Spawn player
