@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { fireAtPlayer, spawnMinion } from './maraCombat';
+import { isPaused } from '../ui/pauseMenu';
 
 type MaraPhase = 'entering' | 'phase1' | 'phase2' | 'phase3' | 'defeated';
 
@@ -33,6 +34,7 @@ export function spawnMara(k: KAPLAYCtx): void {
   ]);
 
   mara.onUpdate(() => {
+    if (isPaused) return;
     if (!mara) return;
     updateMara(k);
   });

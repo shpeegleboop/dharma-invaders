@@ -2,6 +2,7 @@
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { playMusic } from '../systems/audio';
+import { setupAudioSettings, showAudioSettings, hideAudioSettings, isAudioSettingsVisible } from '../ui/audioSettings';
 
 export function createMenuScene(k: KAPLAYCtx): void {
   // Play menu music
@@ -46,16 +47,40 @@ export function createMenuScene(k: KAPLAYCtx): void {
   // Controls hint
   k.add([
     k.text('WASD to move | Mouse to aim | Click or SPACE to shoot', { size: 14 }),
-    k.pos(config.screen.width / 2, config.screen.height - 60),
+    k.pos(config.screen.width / 2, config.screen.height - 80),
     k.anchor('center'),
     k.color(120, 120, 140),
   ]);
 
+  // Audio settings hint
+  k.add([
+    k.text('Press A for Audio Settings', { size: 14 }),
+    k.pos(config.screen.width / 2, config.screen.height - 50),
+    k.anchor('center'),
+    k.color(120, 120, 140),
+  ]);
+
+  // Setup audio settings
+  setupAudioSettings(k);
+
   // Start game on input
   const startGame = () => {
+    if (isAudioSettingsVisible()) return;
     k.go('game');
   };
 
   k.onKeyPress('space', startGame);
   k.onMousePress('left', startGame);
+
+  // Audio settings
+  k.onKeyPress('a', () => {
+    if (isAudioSettingsVisible()) return;
+    showAudioSettings(() => {});
+  });
+
+  k.onKeyPress('escape', () => {
+    if (isAudioSettingsVisible()) {
+      hideAudioSettings();
+    }
+  });
 }

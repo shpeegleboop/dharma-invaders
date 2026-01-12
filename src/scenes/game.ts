@@ -11,6 +11,8 @@ import { setupBossHealthBar } from '../systems/bossHealthBar';
 import { setupMercyRule } from '../systems/mercyRule';
 import { setupDebug } from '../utils/debug';
 import { setupGameAudio } from '../systems/gameAudio';
+import { setupPauseMenu } from '../ui/pauseMenu';
+import { setupAudioSettings, showAudioSettings, hideAudioSettings } from '../ui/audioSettings';
 import { events } from '../utils/events';
 import { playMusic } from '../systems/audio';
 import config from '../data/config.json';
@@ -59,6 +61,13 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupSpawner(k);
   setupGameAudio();
   setupDebug(k);
+
+  // Setup pause menu and audio settings
+  setupAudioSettings(k);
+  setupPauseMenu(k,
+    () => showAudioSettings(() => {}),
+    hideAudioSettings
+  );
 
   // Handle victory - go to nirvana scene
   events.on('game:victory', () => {

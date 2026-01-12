@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
+import { isPaused } from '../ui/pauseMenu';
 
 export function createProjectile(
   k: KAPLAYCtx,
@@ -23,6 +24,8 @@ export function createProjectile(
 
   // Move in direction of angle with delta time
   projectile.onUpdate(() => {
+    if (isPaused) return;
+
     const speed = config.projectile.speed;
     projectile.pos.x += Math.cos(angle) * speed * k.dt();
     projectile.pos.y += Math.sin(angle) * speed * k.dt();

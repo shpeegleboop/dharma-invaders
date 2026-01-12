@@ -7,6 +7,7 @@ import { createHungryGhost } from '../entities/enemies/hungryGhost';
 import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
 import { spawnMara } from '../entities/mara';
+import { isPaused } from '../ui/pauseMenu';
 
 type EnemyType = 'hungryGhost' | 'asura' | 'deva';
 
@@ -36,6 +37,7 @@ export function setupSpawner(k: KAPLAYCtx): void {
   startWave(k);
 
   k.onUpdate(() => {
+    if (isPaused) return;
     if (!state.active || state.betweenWaves) return;
 
     const currentWave = waves.waves[state.waveIndex];

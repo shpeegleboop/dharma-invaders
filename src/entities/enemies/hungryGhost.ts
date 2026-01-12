@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../../data/config.json';
 import { events } from '../../utils/events';
 import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
+import { isPaused } from '../../ui/pauseMenu';
 
 let ghostIdCounter = 0;
 
@@ -36,6 +37,8 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
   });
 
   ghost.onUpdate(() => {
+    if (isPaused) return;
+
     // Don't move if stunned
     if (ghost.stunned) return;
 

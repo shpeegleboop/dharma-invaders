@@ -5,6 +5,7 @@ import { createProjectile } from './projectile';
 import { events } from '../utils/events';
 import { getShootCooldownMultiplier, isSpreadShotActive } from '../systems/powerupEffects';
 import { isGameOver } from '../systems/mercyRule';
+import { isPaused } from '../ui/pauseMenu';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
@@ -30,6 +31,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
   // Shoot function
   function shoot() {
+    if (isPaused) return;
     if (!canShoot) return;
     canShoot = false;
 
@@ -95,6 +97,8 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
   // Movement with delta time
   player.onUpdate(() => {
+    if (isPaused) return;
+
     // Rotate to face mouse
     player.angle = k.rad2deg(getAngleToMouse());
 

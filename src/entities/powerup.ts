@@ -1,6 +1,7 @@
 // Powerup entity - virtue orbs dropped by enemies
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
+import { isPaused } from '../ui/pauseMenu';
 
 export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation';
 
@@ -27,6 +28,8 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
   let pulsePhase = 0;
 
   powerup.onUpdate(() => {
+    if (isPaused) return;
+
     // Drift downward
     powerup.pos.y += config.powerups.fallSpeed * k.dt();
 
