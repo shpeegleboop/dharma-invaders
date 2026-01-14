@@ -41,18 +41,18 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
   ghost.onUpdate(() => {
     if (isPaused) return;
 
-    // Don't move if stunned
-    if (ghost.stunned) return;
+    // Find player
+    const player = k.get('player')[0];
+    if (!player) return;
+
+    // Freeze while player is invincible or enemy is stunned
+    if (ghost.stunned || player.invincible) return;
 
     // Flee when Mara is defeated
     if (shouldEnemiesFlee()) {
       applyFleeMovement(k, ghost, cfg.speed);
       return;
     }
-
-    // Find player
-    const player = k.get('player')[0];
-    if (!player) return;
 
     // Calculate direction toward player
     const dx = player.pos.x - ghost.pos.x;

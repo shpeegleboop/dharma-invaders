@@ -38,10 +38,11 @@ export function setupSpawner(k: KAPLAYCtx): void {
     }
   });
 
-  // Listen for player death - pause spawning briefly
+  // Listen for player death - pause spawning during respawn invincibility
+  // 0.5s death delay + 3s invincibility = 3.5s total
   events.on('player:died', () => {
     state.active = false;
-    k.wait(1.5, () => {
+    k.wait(3.5, () => {
       state.active = true;
     });
   });

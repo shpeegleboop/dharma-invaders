@@ -35,18 +35,18 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
   asura.onUpdate(() => {
     if (isPaused) return;
 
-    // Don't move if stunned
-    if (asura.stunned) return;
+    // Find player
+    const player = k.get('player')[0];
+    if (!player) return;
+
+    // Freeze while player is invincible or enemy is stunned
+    if (asura.stunned || player.invincible) return;
 
     // Flee when Mara is defeated
     if (shouldEnemiesFlee()) {
       applyFleeMovement(k, asura, cfg.speed);
       return;
     }
-
-    // Find player
-    const player = k.get('player')[0];
-    if (!player) return;
 
     // Calculate direct path toward player (aggressive, no wobble)
     const dx = player.pos.x - asura.pos.x;

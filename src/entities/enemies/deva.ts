@@ -47,8 +47,12 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
   deva.onUpdate(() => {
     if (isPaused) return;
 
-    // Don't move if stunned
-    if (deva.stunned) return;
+    // Find player
+    const player = k.get('player')[0];
+    if (!player) return;
+
+    // Freeze while player is invincible or enemy is stunned
+    if (deva.stunned || player.invincible) return;
 
     // Flee when Mara is defeated
     if (shouldEnemiesFlee()) {
@@ -56,17 +60,14 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
       return;
     }
 
-    // Find player and update base angle slowly (lazy tracking)
-    const player = k.get('player')[0];
-    if (player) {
-      const targetAngle = Math.atan2(
-        player.pos.y - deva.pos.y,
-        player.pos.x - deva.pos.x
-      );
-      // Smoothly interpolate toward player (graceful, not aggressive)
-      const angleDiff = targetAngle - baseAngle;
-      baseAngle += angleDiff * 0.5 * k.dt();
-    }
+    // Update base angle slowly (lazy tracking)
+    const targetAngle = Math.atan2(
+      player.pos.y - deva.pos.y,
+      player.pos.x - deva.pos.x
+    );
+    // Smoothly interpolate toward player (graceful, not aggressive)
+    const angleDiff = targetAngle - baseAngle;
+    baseAngle += angleDiff * 0.5 * k.dt();
 
     // Sinusoidal perpendicular movement for graceful floating
     floatPhase += floatFrequency * k.dt();

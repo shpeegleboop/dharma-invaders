@@ -7,6 +7,7 @@ import { getShootCooldownMultiplier, isSpreadShotActive } from '../systems/power
 import { isGameOver } from '../systems/mercyRule';
 import { isPaused } from '../ui/pauseMenu';
 import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
+import { pushAllEnemies } from '../systems/enemyHelpers';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
@@ -33,6 +34,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   // Shoot function
   function shoot() {
     if (isPaused) return;
+    if (player.invincible) return;
     if (!canShoot) return;
     canShoot = false;
 
@@ -68,17 +70,28 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
   // Handle death - respawn at center (unless game over)
   events.on('player:died', () => {
+    // Set invincibility IMMEDIATELY (synchronous, before any callbacks)
+    player.invincible = true;
+
     k.wait(0.5, () => {
       // Don't respawn if mercy rule triggered game over
-      if (isGameOver()) return;
+      if (isGameOver()) {
+        player.invincible = false;
+        return;
+      }
 
+      // Order matters: invincibility already set, now push enemies, THEN move player
+      // 1. Push all enemies first (they auto-freeze while player is invincible)
+      pushAllEnemies(k);
+
+      // 2. Now safe to move player to center
       player.pos.x = config.arena.width / 2;
       player.pos.y = config.arena.offsetY + config.arena.height / 2;
       player.setHP(config.player.health);
-      player.invincible = true;
 
-      // Brief invincibility after respawn
-      k.wait(config.player.invincibilityDuration / 1000, () => {
+      // 3 second invincibility on respawn
+      const respawnInvincibility = 3000;
+      k.wait(respawnInvincibility / 1000, () => {
         player.invincible = false;
         player.opacity = 1;
       });
@@ -88,7 +101,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
       const flashInterval = k.loop(0.1, () => {
         player.opacity = player.opacity === 1 ? 0.3 : 1;
         flashCount++;
-        if (flashCount >= config.player.invincibilityDuration / 100) {
+        if (flashCount >= respawnInvincibility / 100) {
           flashInterval.cancel();
           player.opacity = 1;
         }

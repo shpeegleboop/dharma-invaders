@@ -137,7 +137,6 @@ function updateDefeated(k: KAPLAYCtx): void {
   if (deathAnimTimer >= 2000) {
     mara.destroy();
     mara = null;
-    events.emit('boss:defeated', {});
     events.emit('game:victory', {});
   }
 }
@@ -151,6 +150,8 @@ export function damageMara(amount: number): void {
     currentPhase = 'defeated';
     mara.phase = 'defeated';
     deathAnimTimer = 0;
+    // Emit immediately so enemies flee during death animation
+    events.emit('boss:defeated', {});
   }
 }
 
