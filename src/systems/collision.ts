@@ -4,7 +4,8 @@ import { events } from '../utils/events';
 import { createPowerup, shouldDropPowerup } from '../entities/powerup';
 import { getActivePowerup } from './powerupEffects';
 import { damageMara, getMaraPhase } from '../entities/mara';
-import { bounceAndStunEnemy, flashPlayerRed, pushPlayerAwayFromBoss, grantIFrames } from './collisionHelpers';
+import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
+import { damagePlayer } from './playerDamage';
 
 export function setupCollisions(k: KAPLAYCtx): void {
   // Projectile hits enemy
@@ -57,27 +58,11 @@ export function setupCollisions(k: KAPLAYCtx): void {
       return;
     }
 
-    // Damage player
-    player.hurt(1);
-    const remainingHealth = player.hp();
+    // Damage player (handles hurt, flash, i-frames, death check)
+    damagePlayer(player, 1);
 
-    // Flash player red
-    flashPlayerRed(k, player);
-
-    events.emit('player:hit', {
-      damage: 1,
-      remainingHealth,
-    });
-
-    // Bounce enemy away and stun (enemy takes no damage)
+    // Bounce enemy away and stun
     bounceAndStunEnemy(k, player, enemy);
-
-    // Check for death or grant i-frames
-    if (remainingHealth <= 0) {
-      events.emit('player:died', {});
-    } else {
-      grantIFrames(k, player);
-    }
   });
 
   // Player projectile hits boss
@@ -122,26 +107,10 @@ export function setupCollisions(k: KAPLAYCtx): void {
     }
 
     // Damage player (2 damage from boss contact)
-    player.hurt(2);
-    const remainingHealth = player.hp();
-
-    // Flash player red
-    flashPlayerRed(k, player);
-
-    events.emit('player:hit', {
-      damage: 2,
-      remainingHealth,
-    });
+    damagePlayer(player, 2);
 
     // Push player away
     pushPlayerAwayFromBoss(player, boss);
-
-    // Check for death or grant i-frames
-    if (remainingHealth <= 0) {
-      events.emit('player:died', {});
-    } else {
-      grantIFrames(k, player);
-    }
   });
 
   // Boss projectile hits player
@@ -158,23 +127,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
       return;
     }
 
-    // Damage player
-    player.hurt(1);
-    const remainingHealth = player.hp();
-
-    // Flash player red
-    flashPlayerRed(k, player);
-
-    events.emit('player:hit', {
-      damage: 1,
-      remainingHealth,
-    });
-
-    // Check for death or grant i-frames
-    if (remainingHealth <= 0) {
-      events.emit('player:died', {});
-    } else {
-      grantIFrames(k, player);
-    }
+    // Damage player (handles hurt, flash, i-frames, death check)
+    damagePlayer(player, 1);
   });
 }

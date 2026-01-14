@@ -6,6 +6,7 @@ import { events } from '../utils/events';
 import { getShootCooldownMultiplier, isSpreadShotActive } from '../systems/powerupEffects';
 import { isGameOver } from '../systems/mercyRule';
 import { isPaused } from '../ui/pauseMenu';
+import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
@@ -18,7 +19,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     k.rotate(0),
     k.health(config.player.health),
     k.opacity(1),
-    k.color(0, 128, 255), // Blue rectangle
+    k.color(PLAYER_BASE_COLOR.r, PLAYER_BASE_COLOR.g, PLAYER_BASE_COLOR.b),
     'player',
     { invincible: false },
   ]);

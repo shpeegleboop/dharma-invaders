@@ -11,6 +11,8 @@ import { setupBossHealthBar } from '../systems/bossHealthBar';
 import { setupMercyRule } from '../systems/mercyRule';
 import { setupDebug } from '../utils/debug';
 import { setupGameAudio } from '../systems/gameAudio';
+import { setupFleeListener } from '../systems/enemyFlee';
+import { setupPlayerDamage } from '../systems/playerDamage';
 import { setupPauseMenu } from '../ui/pauseMenu';
 import { setupAudioSettings, showAudioSettings, hideAudioSettings } from '../ui/audioSettings';
 import { events } from '../utils/events';
@@ -58,6 +60,8 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupPowerupEffects(k);
   setupBossHealthBar(k);
   setupMercyRule();
+  setupFleeListener();
+  setupPlayerDamage(k);
   setupSpawner(k);
   setupGameAudio();
   setupDebug(k);

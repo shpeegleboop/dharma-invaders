@@ -1,5 +1,6 @@
 // Collision helpers - bounce and visual effects
 import type { KAPLAYCtx, GameObj } from 'kaplay';
+import config from '../data/config.json';
 
 // Bounce enemy away from player and stun for 0.5s
 export function bounceAndStunEnemy(k: KAPLAYCtx, player: GameObj, enemy: GameObj): void {
@@ -27,7 +28,7 @@ export function bounceAndStunEnemy(k: KAPLAYCtx, player: GameObj, enemy: GameObj
   });
 }
 
-// Push player away from boss
+// Push player away from boss with screen bounds clamping
 export function pushPlayerAwayFromBoss(player: GameObj, boss: GameObj): void {
   // Calculate push direction (away from boss)
   const dx = player.pos.x - boss.pos.x;
@@ -40,32 +41,15 @@ export function pushPlayerAwayFromBoss(player: GameObj, boss: GameObj): void {
   const pushDistance = 100;
   player.pos.x += dirX * pushDistance;
   player.pos.y += dirY * pushDistance;
-}
 
-// Flash player red briefly on damage
-export function flashPlayerRed(k: KAPLAYCtx, player: GameObj): void {
-  player.color = k.rgb(255, 0, 0);
+  // Clamp to arena bounds
+  const halfW = config.player.size.width / 2;
+  const halfH = config.player.size.height / 2;
+  const minX = halfW;
+  const maxX = config.arena.width - halfW;
+  const minY = config.arena.offsetY + halfH;
+  const maxY = config.arena.offsetY + config.arena.height - halfH;
 
-  k.wait(0.15, () => {
-    if (player.exists()) {
-      // Always restore to player's base blue color
-      player.color = k.rgb(0, 128, 255);
-    }
-  });
-}
-
-// Grant brief invincibility frames after taking damage
-export function grantIFrames(k: KAPLAYCtx, player: GameObj): void {
-  player.invincible = true;
-
-  // Brief flash effect during i-frames
-  const originalOpacity = player.opacity;
-  player.opacity = 0.5;
-
-  k.wait(0.5, () => {
-    if (player.exists()) {
-      player.invincible = false;
-      player.opacity = originalOpacity;
-    }
-  });
+  player.pos.x = Math.max(minX, Math.min(maxX, player.pos.x));
+  player.pos.y = Math.max(minY, Math.min(maxY, player.pos.y));
 }

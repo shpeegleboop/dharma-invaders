@@ -5,6 +5,7 @@ import { events } from '../../utils/events';
 import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
 import { isPaused } from '../../ui/pauseMenu';
 import { getCurrentWaveNumber } from '../../systems/waveManager';
+import { shouldEnemiesFlee, applyFleeMovement } from '../../systems/enemyFlee';
 
 let devaIdCounter = 0;
 
@@ -49,18 +50,9 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
     // Don't move if stunned
     if (deva.stunned) return;
 
-    // Flee when Mara is defeated (check boss object directly to avoid circular import)
-    const boss = k.get('boss')[0];
-    if (boss && boss.phase === 'defeated') {
-      const centerX = config.screen.width / 2;
-      const centerY = config.screen.height / 2;
-      const dx = deva.pos.x - centerX;
-      const dy = deva.pos.y - centerY;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const fleeSpeed = cfg.speed * 2;
-      deva.pos.x += (dx / dist) * fleeSpeed * k.dt();
-      deva.pos.y += (dy / dist) * fleeSpeed * k.dt();
-      deva.angle = k.rad2deg(Math.atan2(dy, dx));
+    // Flee when Mara is defeated
+    if (shouldEnemiesFlee()) {
+      applyFleeMovement(k, deva, cfg.speed);
       return;
     }
 
