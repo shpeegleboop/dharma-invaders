@@ -64,7 +64,7 @@
     }
   },
   "boss": {
-    "health": 200,
+    "health": 50,
     "phase2Threshold": 70,
     "phase3Threshold": 30,
     "size": { "width": 64, "height": 64 },

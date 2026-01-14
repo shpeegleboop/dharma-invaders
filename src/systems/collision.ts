@@ -4,7 +4,7 @@ import { events } from '../utils/events';
 import { createPowerup, shouldDropPowerup } from '../entities/powerup';
 import { getActivePowerup } from './powerupEffects';
 import { damageMara, getMaraPhase } from '../entities/mara';
-import { bounceAndStunEnemy, flashPlayerRed } from './collisionHelpers';
+import { bounceAndStunEnemy, flashPlayerRed, pushPlayerAwayFromBoss, grantIFrames } from './collisionHelpers';
 
 export function setupCollisions(k: KAPLAYCtx): void {
   // Projectile hits enemy
@@ -72,9 +72,11 @@ export function setupCollisions(k: KAPLAYCtx): void {
     // Bounce enemy away and stun (enemy takes no damage)
     bounceAndStunEnemy(k, player, enemy);
 
-    // Check for death
+    // Check for death or grant i-frames
     if (remainingHealth <= 0) {
       events.emit('player:died', {});
+    } else {
+      grantIFrames(k, player);
     }
   });
 
@@ -95,6 +97,51 @@ export function setupCollisions(k: KAPLAYCtx): void {
     }
 
     damageMara(1);
+  });
+
+  // Player touches boss
+  k.onCollide('player', 'boss', (player, boss) => {
+    // Boss is invincible during entrance/death - still block but no damage
+    if (getMaraPhase() === 'entering' || getMaraPhase() === 'defeated') {
+      pushPlayerAwayFromBoss(player, boss);
+      return;
+    }
+
+    // Check if player is invincible
+    if (player.invincible) {
+      pushPlayerAwayFromBoss(player, boss);
+      return;
+    }
+
+    // Check for meditation shield
+    const activePowerup = getActivePowerup();
+    if (activePowerup === 'meditation') {
+      events.emit('powerup:shieldBroken', {});
+      pushPlayerAwayFromBoss(player, boss);
+      return;
+    }
+
+    // Damage player (2 damage from boss contact)
+    player.hurt(2);
+    const remainingHealth = player.hp();
+
+    // Flash player red
+    flashPlayerRed(k, player);
+
+    events.emit('player:hit', {
+      damage: 2,
+      remainingHealth,
+    });
+
+    // Push player away
+    pushPlayerAwayFromBoss(player, boss);
+
+    // Check for death or grant i-frames
+    if (remainingHealth <= 0) {
+      events.emit('player:died', {});
+    } else {
+      grantIFrames(k, player);
+    }
   });
 
   // Boss projectile hits player
@@ -123,9 +170,11 @@ export function setupCollisions(k: KAPLAYCtx): void {
       remainingHealth,
     });
 
-    // Check for death
+    // Check for death or grant i-frames
     if (remainingHealth <= 0) {
       events.emit('player:died', {});
+    } else {
+      grantIFrames(k, player);
     }
   });
 }
