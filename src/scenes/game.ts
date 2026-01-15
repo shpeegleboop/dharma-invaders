@@ -15,17 +15,19 @@ import { setupFleeListener } from '../systems/enemyFlee';
 import { setupPlayerDamage } from '../systems/playerDamage';
 import { setupPauseMenu } from '../ui/pauseMenu';
 import { setupAudioSettings, showAudioSettings, hideAudioSettings } from '../ui/audioSettings';
+import { resetRebirthOverlay } from '../ui/rebirthOverlay';
 import { events } from '../utils/events';
 import { playMusic } from '../systems/audio';
-import { getGameState } from '../stores/gameStore';
+import { resetAll } from '../stores/gameStore';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
   // Clear all event listeners from previous scene
   events.clear();
 
-  // Reset game state for new run
-  getGameState().resetAll();
+  // Reset game state and UI for new run
+  resetAll();
+  resetRebirthOverlay();
 
   // Play gameplay music
   playMusic('gameplay');

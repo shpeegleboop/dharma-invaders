@@ -9,7 +9,13 @@
       "Bash(git config:*)",
       "Bash(git commit:*)",
       "Bash(npm run dev:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm run build:*)",
+      "Bash(git reset:*)",
+      "Bash(curl:*)",
+      "Bash(python -c:*)",
+      "Bash(grep:*)",
+      "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && head -20 {}')"
     ]
   }
 }

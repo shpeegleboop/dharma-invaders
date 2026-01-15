@@ -9,7 +9,7 @@ import { isPaused } from '../ui/pauseMenu';
 import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
 import { pushAllEnemies } from '../systems/enemyHelpers';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
-import { getGameState } from '../stores/gameStore';
+import { getGameState, resetLife } from '../stores/gameStore';
 import { updateKarmaDisplay } from '../systems/karma';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
@@ -76,7 +76,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   events.on('player:died', () => {
     // Set invincibility IMMEDIATELY (synchronous, before any callbacks)
     player.invincible = true;
-    const store = getGameState();
+    const state = getGameState();
 
     k.wait(0.5, () => {
       // Don't respawn if mercy rule triggered game over
@@ -86,9 +86,9 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
       }
 
       // Show rebirth overlay with current karma
-      showRebirthOverlay(k, store.karmaThisLife, () => {
+      showRebirthOverlay(k, state.karmaThisLife, () => {
         // Reset karma for next life
-        store.resetLife();
+        resetLife();
         updateKarmaDisplay();
 
         // Order matters: invincibility already set, now push enemies, THEN move player

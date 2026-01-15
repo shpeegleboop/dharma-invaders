@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getRebirthTier, getTierColor } from '../systems/rebirthTiers';
-import { getGameState } from '../stores/gameStore';
+import { addParami, addKlesha } from '../stores/gameStore';
 
 // Available paramis and kleshas for random selection
 const PARAMI_POOL = ['Dana', 'Viriya', 'Metta', 'Upekkha'];
@@ -26,15 +26,14 @@ export function showRebirthOverlay(
 
   const tier = getRebirthTier(karmaThisLife);
   const tierColor = getTierColor(tier.name);
-  const store = getGameState();
 
   // Select random paramis and kleshas
   const grantedParamis = pickRandom(PARAMI_POOL, tier.paramis);
   const grantedKleshas = pickRandom(KLESHA_POOL, tier.kleshas);
 
   // Add to store
-  grantedParamis.forEach((p) => store.addParami(p));
-  grantedKleshas.forEach((k) => store.addKlesha(k));
+  grantedParamis.forEach((p) => addParami(p));
+  grantedKleshas.forEach((kl) => addKlesha(kl));
 
   // Dim overlay
   const dimmer = k.add([
@@ -139,4 +138,10 @@ export function hideRebirthOverlay(): void {
 
 export function isRebirthOverlayActive(): boolean {
   return isOverlayActive;
+}
+
+// Reset state on scene change
+export function resetRebirthOverlay(): void {
+  overlayObjects = [];
+  isOverlayActive = false;
 }

@@ -1,6 +1,6 @@
 // Mercy rule system - track consecutive deaths without kills
 import { events } from '../utils/events';
-import { getGameState } from '../stores/gameStore';
+import { getGameState, recordDeath } from '../stores/gameStore';
 import config from '../data/config.json';
 
 const MERCY_THRESHOLD = config.roguelike.mercyRuleDeaths;
@@ -12,10 +12,10 @@ export function setupMercyRule(): void {
 
   // Increment counter on player death, check for game over
   events.on('player:died', () => {
-    const store = getGameState();
-    store.recordDeath();
+    recordDeath();
+    const state = getGameState();
 
-    if (store.deathsWithoutKill >= MERCY_THRESHOLD) {
+    if (state.deathsWithoutKill >= MERCY_THRESHOLD) {
       // Mercy rule triggered - actual game over
       gameOverTriggered = true;
       events.emit('game:over', {});

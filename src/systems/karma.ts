@@ -1,18 +1,18 @@
-// Karma scoring system - uses Zustand store for roguelike tracking
+// Karma scoring system - uses gameStore for roguelike tracking
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { getGameState, getKarmaTotal } from '../stores/gameStore';
+import { getGameState, getKarmaTotal, addKarma, recordKill } from '../stores/gameStore';
 
 let karmaText: GameObj | null = null;
 let karmaThisLifeText: GameObj | null = null;
 
 export function setupKarma(k: KAPLAYCtx): void {
-  const store = getGameState();
+  const state = getGameState();
 
   // Create karma display in HUD bar (right side) - shows total
   karmaText = k.add([
-    k.text(`Karma: ${store.karmaTotal}`, { size: 20 }),
+    k.text(`Karma: ${state.karmaTotal}`, { size: 20 }),
     k.pos(config.screen.width - 16, config.hud.height / 2 - 10),
     k.anchor('right'),
     k.color(255, 215, 0), // Gold color
@@ -22,7 +22,7 @@ export function setupKarma(k: KAPLAYCtx): void {
 
   // Show karma this life below
   karmaThisLifeText = k.add([
-    k.text(`This life: ${store.karmaThisLife}`, { size: 14 }),
+    k.text(`This life: ${state.karmaThisLife}`, { size: 14 }),
     k.pos(config.screen.width - 16, config.hud.height / 2 + 12),
     k.anchor('right'),
     k.color(200, 200, 150),
@@ -32,15 +32,16 @@ export function setupKarma(k: KAPLAYCtx): void {
 
   // Listen for enemy kills
   events.on('enemy:killed', (data) => {
-    store.addKarma(data.karmaValue);
-    store.recordKill();
-    events.emit('karma:changed', { newValue: store.karmaTotal, delta: data.karmaValue });
+    addKarma(data.karmaValue);
+    recordKill();
+    const state = getGameState();
+    events.emit('karma:changed', { newValue: state.karmaTotal, delta: data.karmaValue });
 
     if (karmaText) {
-      karmaText.text = `Karma: ${store.karmaTotal}`;
+      karmaText.text = `Karma: ${state.karmaTotal}`;
     }
     if (karmaThisLifeText) {
-      karmaThisLifeText.text = `This life: ${store.karmaThisLife}`;
+      karmaThisLifeText.text = `This life: ${state.karmaThisLife}`;
     }
   });
 }

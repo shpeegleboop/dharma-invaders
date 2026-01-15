@@ -1,82 +1,70 @@
-// Zustand store for roguelike game state
-import { create } from 'zustand';
-
-export interface RebirthTier {
-  name: string;
-  paramis: number;
-  kleshas: number;
-}
+// Simple module-level state for roguelike game state (no React/Zustand needed)
 
 interface GameState {
-  // Karma tracking
   karmaTotal: number;
   karmaThisLife: number;
-
-  // Death tracking
   deaths: number;
   deathsWithoutKill: number;
-
-  // Roguelike state
   paramis: string[];
   kleshas: string[];
-
-  // Actions
-  addKarma: (amount: number) => void;
-  recordDeath: () => void;
-  recordKill: () => void;
-  resetLife: () => void;
-  resetAll: () => void;
-  addParami: (parami: string) => void;
-  addKlesha: (klesha: string) => void;
 }
 
-export const useGameStore = create<GameState>((set) => ({
+const defaultState: GameState = {
   karmaTotal: 0,
   karmaThisLife: 0,
   deaths: 0,
   deathsWithoutKill: 0,
   paramis: [],
   kleshas: [],
+};
 
-  addKarma: (amount) => set((state) => ({
-    karmaTotal: state.karmaTotal + amount,
-    karmaThisLife: state.karmaThisLife + amount,
-  })),
+let state: GameState = { ...defaultState };
 
-  recordDeath: () => set((state) => ({
-    deaths: state.deaths + 1,
-    deathsWithoutKill: state.deathsWithoutKill + 1,
-  })),
+// Getters
+export function getGameState(): GameState {
+  return state;
+}
 
-  recordKill: () => set({
-    deathsWithoutKill: 0,
-  }),
+export function getKarmaTotal(): number {
+  return state.karmaTotal;
+}
 
-  resetLife: () => set({
-    karmaThisLife: 0,
-    deathsWithoutKill: 0,
-  }),
+export function getKarmaThisLife(): number {
+  return state.karmaThisLife;
+}
 
-  resetAll: () => set({
-    karmaTotal: 0,
-    karmaThisLife: 0,
-    deaths: 0,
-    deathsWithoutKill: 0,
-    paramis: [],
-    kleshas: [],
-  }),
+export function getDeaths(): number {
+  return state.deaths;
+}
 
-  addParami: (parami) => set((state) => ({
-    paramis: [...state.paramis, parami],
-  })),
+// Actions
+export function addKarma(amount: number): void {
+  state.karmaTotal += amount;
+  state.karmaThisLife += amount;
+}
 
-  addKlesha: (klesha) => set((state) => ({
-    kleshas: [...state.kleshas, klesha],
-  })),
-}));
+export function recordDeath(): void {
+  state.deaths += 1;
+  state.deathsWithoutKill += 1;
+}
 
-// Selector helpers for non-React usage
-export const getGameState = () => useGameStore.getState();
-export const getKarmaTotal = () => useGameStore.getState().karmaTotal;
-export const getKarmaThisLife = () => useGameStore.getState().karmaThisLife;
-export const getDeaths = () => useGameStore.getState().deaths;
+export function recordKill(): void {
+  state.deathsWithoutKill = 0;
+}
+
+export function resetLife(): void {
+  state.karmaThisLife = 0;
+  state.deathsWithoutKill = 0;
+}
+
+export function resetAll(): void {
+  state = { ...defaultState };
+}
+
+export function addParami(parami: string): void {
+  state.paramis = [...state.paramis, parami];
+}
+
+export function addKlesha(klesha: string): void {
+  state.kleshas = [...state.kleshas, klesha];
+}

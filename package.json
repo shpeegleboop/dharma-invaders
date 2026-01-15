@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "howler": "^2.2.4",
-    "kaplay": "^3001.0.19",
-    "zustand": "^5.0.9"
+    "kaplay": "^3001.0.19"
   }
 }
