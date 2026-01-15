@@ -43,8 +43,9 @@ Special endings (deathless run, excessive deaths, high karma) are **achievements
 **The Solution: Logarithmic Scaling with Caps**
 
 Difficulty increases approach a ceiling, never exceeding it:
-- Enemy speed caps at 1.5x base
+- Enemy speed caps at 1.875x base (combined with wave scaling = 2.25x max)
 - Enemy count caps at 1.3x base
+- Spawn rate caps at 1.4x faster
 - Boss HP caps at 2.0x base
 
 **Extended Duration Instead of Enemy Spam:**

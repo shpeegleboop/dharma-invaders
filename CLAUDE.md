@@ -1,4 +1,4 @@
-> See NOTES.md for design vision, future ideas, and session history.
+> See SESSION_HANDOFF.md for current status, VISION.md for design philosophy, FUTURE_IDEAS.md for post-V1.
 
 # Dharma Invaders
 
@@ -17,7 +17,7 @@ Arena shooter, NOT classic shmup:
 
 - **Game Engine:** Kaplay (kaboom.js successor) — NOT Phaser, NOT PixiJS
 - **Language:** TypeScript (strict mode)
-- **State Management:** Zustand
+- **State Management:** Module singleton (src/stores/gameStore.ts)
 - **Audio:** Howler.js
 - **Build:** Vite
 - **Desktop (optional):** Tauri
@@ -81,7 +81,7 @@ src/
 ├── entities/            # Game objects (player, enemy, projectile, powerup, mara)
 │   └── enemies/         # Enemy variants (hungryGhost, asura, deva)
 ├── systems/             # Game systems (collision, spawner, karma, audio)
-├── stores/              # Zustand state (gameStore.ts)
+├── stores/              # Module singleton state (gameStore.ts)
 ├── data/                # JSON configs (config, waves, quotes, powerups, enemies)
 └── utils/               # Helpers (events.ts, debug.ts)
 ```
@@ -136,15 +136,16 @@ Follow this sequence. Each step must be testable before moving on:
 8. ~~Enemy variants (Asura, Deva)~~ ✓
 9. ~~Player health + death~~ ✓
 10. ~~Power-up drops + effects~~ ✓
-11. Samsara wheel visual
-12. Quote system
-13. Audio foundation
-14. Menu scene
-15. **Mara boss fight** ← CURRENT
-16. Nirvana victory scene
-17. Save system
-18. Polish (screenshake, particles, juice)
-19. Art + audio replacement
+11. ~~Audio foundation~~ ✓
+12. ~~Menu scene~~ ✓
+13. ~~Mara boss fight~~ ✓
+14. ~~Nirvana victory scene~~ ✓
+15. ~~Roguelike rebirth system~~ ✓
+16. ~~Kalpa cycle system~~ ✓
+17. **Balance + remaining buffs/debuffs** ← CURRENT
+18. Save system
+19. Polish (screenshake, particles, juice)
+20. Art + audio replacement
 
 ## Debug Tools (Build on Day 1)
 

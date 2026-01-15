@@ -17,12 +17,12 @@ export function getDropRateMultiplier(): number {
   return Math.max(0.1, 1 + (dana * 0.25) - (lobha * 0.25));
 }
 
-// Viriya (+15% fire rate = -15% cooldown) vs Vicikiccha (-15% fire rate = +15% cooldown)
+// Viriya (+10% fire rate = -10% cooldown) vs Vicikiccha (-10% fire rate = +10% cooldown)
 export function getFireRateMultiplier(): number {
   const viriya = countParami('Viriya');
   const vicikiccha = countKlesha('Vicikiccha');
   // Lower = faster fire rate (cooldown multiplier)
-  return Math.max(0.2, 1 - (viriya * 0.15) + (vicikiccha * 0.15));
+  return Math.max(0.2, 1 - (viriya * 0.10) + (vicikiccha * 0.10));
 }
 
 // Metta (+1 max health) vs Mana (-1 max health, min 1)

@@ -1,7 +1,7 @@
 # Dharma Invaders — Session Handoff
 
 **Last Updated:** 2026-01-15
-**Status:** Phases 1-3 complete, ready for Phase 4
+**Status:** Phases 1-5 complete, kalpa system with difficulty scaling live
 **Codebase Audit:** A- (2026-01-14) — Clean architecture, minor housekeeping done
 
 ---
@@ -11,8 +11,8 @@
 ```
 READ THIS FILE FIRST. It supersedes conflicting information in other docs.
 
-Current task: Phase 5 — Cycle system (Bodhisattva mode)
-Key files: src/stores/gameStore.ts, src/scenes/nirvana.ts, src/systems/cycleScaling.ts
+Current task: Phase 6 — Balance + remaining buffs/debuffs
+Key files: src/systems/rebirthEffects.ts, src/systems/cycleScaling.ts, src/data/config.json
 
 Source of truth hierarchy:
 1. SESSION_HANDOFF.md (this file) — Implementation details
@@ -175,8 +175,8 @@ Commit after every working feature with a descriptive message. This is non-negot
 | **2** | 4 basic Pāramīs (buffs) | ✅ Complete |
 | **3** | 4 basic Kleshas (debuffs) | ✅ Complete |
 | **4** | HUD icons for buffs/debuffs | ✅ Complete |
-| **5** | Cycle system + victory updates | **NEXT** |
-| **6** | Balance + remaining buffs/debuffs | Pending |
+| **5** | Kalpa system + difficulty scaling | ✅ Complete |
+| **6** | Balance + remaining buffs/debuffs | **NEXT** |
 
 ---
 
@@ -187,24 +187,25 @@ Commit after every working feature with a descriptive message. This is non-negot
 ### Scaling Approach: Logarithmic with Caps
 
 ```typescript
-// src/systems/cycleScaling.ts
-const CAPS = {
-  enemySpeed: 1.5,      // Max 1.5x base speed
-  enemyCount: 1.3,      // Max 1.3x enemy count
-  spawnRate: 1.4,       // Max 1.4x spawn rate
-  bossHP: 2.0,          // Max 2x boss HP
-};
-
-export function getCycleMultiplier(stat: keyof typeof CAPS): number {
+// src/systems/cycleScaling.ts — tuned for 2.25x combined max at Kalpa 10
+// Kalpa 1: 1.0x, Kalpa 2: ~1.26x, Kalpa 5: ~1.61x, Kalpa 10: ~1.875x
+function getScalingMultiplier(cap: number): number {
   const cycle = getCycle();
-  const cap = CAPS[stat];
-  // Logarithmic: fast early gains, diminishing returns
-  const rawMultiplier = 1 + (Math.log(cycle) * 0.2);
+  if (cycle <= 1) return 1.0;
+  const rawMultiplier = 1 + (Math.log(cycle) * 0.38);
   return Math.min(rawMultiplier, cap);
 }
+
+// Caps from config.json:
+// enemySpeed: 1.875 (× wave 1.2x = 2.25x max)
+// enemyCount: 1.3
+// spawnRate: 1.4
+// bossHP: 2.0
 ```
 
 **NOT linear scaling** — avoids gigaswarms that overshadow new content.
+
+Wave speed scaling is gentle (2.5% per wave, max 1.2x at wave 8). Kalpa scaling provides the main difficulty curve.
 
 ### Extended Duration Instead of Enemy Spam
 
@@ -256,19 +257,19 @@ Instead of "more of same," each cycle introduces new enemy types:
 
 | Pāramī | Effect | Implementation |
 |--------|--------|----------------|
-| **Dāna** (Generosity) | +25% powerup drop rate | Multiply `dropChance` |
-| **Viriya** (Diligence) | +15% fire rate | Reduce `shootCooldown` |
-| **Mettā** (Loving-kindness) | +1 max health | Add to `config.player.health` |
-| **Upekkhā** (Equanimity) | Enemies 10% slower | Multiply enemy speed |
+| **Dāna** (Generosity) | +25% powerup drop rate per stack | Multiply `dropChance` |
+| **Viriya** (Diligence) | +10% fire rate per stack | Reduce `shootCooldown` |
+| **Mettā** (Loving-kindness) | +1 max health per stack | Add to `config.player.health` |
+| **Upekkhā** (Equanimity) | Enemies 10% slower per stack | Multiply enemy speed |
 
 ### Phase 1 Kleshas (Debuffs)
 
 | Klesha | Effect | Implementation |
 |--------|--------|----------------|
-| **Lobha** (Greed) | -25% powerup drop rate | Reduce `dropChance` |
-| **Dosa** (Hatred) | Enemies 10% faster | Multiply enemy speed |
-| **Māna** (Conceit) | -1 max health (min 1) | Subtract from health |
-| **Vicikicchā** (Doubt) | -15% fire rate | Increase `shootCooldown` |
+| **Lobha** (Greed) | -25% powerup drop rate per stack | Reduce `dropChance` |
+| **Dosa** (Hatred) | Enemies 10% faster per stack | Multiply enemy speed |
+| **Māna** (Conceit) | -1 max health per stack (min 1) | Subtract from health |
+| **Vicikicchā** (Doubt) | -10% fire rate per stack | Increase `shootCooldown` |
 
 ---
 
@@ -308,13 +309,19 @@ src/
 │   ├── enemyHelpers.ts        # Stun, push utilities
 │   ├── enemyFlee.ts           # Event-driven flee behavior
 │   ├── playerDamage.ts        # Centralized damage logic
+│   ├── cycleScaling.ts        # Kalpa difficulty scaling
+│   ├── rebirthEffects.ts      # Parami/klesha multipliers
+│   ├── rebirthTiers.ts        # Karma tier calculation
 │   └── audio.ts               # Music + SFX manager
 ├── stores/
 │   └── gameStore.ts           # Module singleton state
 ├── ui/
 │   ├── hud.ts                 # Health, karma, wave display
 │   ├── pauseMenu.ts           # Pause state machine
-│   └── pauseMenuUI.ts         # Pause UI rendering
+│   ├── pauseMenuUI.ts         # Pause UI rendering
+│   ├── rebirthOverlay.ts      # Death/rebirth tier display
+│   ├── rebirthHud.ts          # Bottom HUD parami/klesha display
+│   └── aboutOverlay.ts        # Mid-game help overlay
 ├── data/
 │   ├── config.json            # All game constants
 │   ├── waves.json             # Wave definitions
@@ -329,60 +336,35 @@ src/
 
 ## Part 5.5: Config.json Key Values
 
-Quick reference for current game constants:
+Quick reference for current game constants (see `src/data/config.json` for full file):
 
 ```json
 {
-  "screen": { "width": 800, "height": 600 },
+  "screen": { "width": 800, "height": 650 },
   "hud": { "height": 50 },
+  "bottomHud": { "height": 50, "offsetY": 600 },
+  "arena": { "width": 800, "height": 550, "offsetY": 50 },
   "player": {
     "health": 3,
     "speed": 300,
-    "shootCooldown": 150,
-    "respawnInvincibility": 3000
-  },
-  "projectile": {
-    "speed": 500,
-    "damage": 1
+    "shootCooldown": 200,
+    "invincibilityDuration": 1500
   },
   "enemies": {
     "hungryGhost": { "speed": 100, "health": 1, "karmaValue": 10 },
     "asura": { "speed": 150, "health": 2, "karmaValue": 25 },
     "deva": { "speed": 80, "health": 3, "karmaValue": 50 }
   },
-  "boss": {
-    "health": 50,
-    "minionSpawnInterval": 2000,
-    "phase1Threshold": 70,
-    "phase2Threshold": 30
-  },
-  "powerup": {
-    "dropChance": 0.15,
-    "duration": 8000,
-    "fallSpeed": 100
-  },
+  "boss": { "health": 50, "phase2Threshold": 70, "phase3Threshold": 30 },
   "roguelike": {
+    "respawnInvincibility": 3000,
     "mercyRuleDeaths": 3,
-    "karmaThresholds": {
-      "wretched": { "max": 99, "paramis": 0, "kleshas": 3 },
-      "poor": { "max": 299, "paramis": 0, "kleshas": 2 },
-      "humble": { "max": 499, "paramis": 1, "kleshas": 1 },
-      "balanced": { "max": 799, "paramis": 1, "kleshas": 0 },
-      "virtuous": { "max": 1199, "paramis": 2, "kleshas": 0 },
-      "enlightened": { "max": 999999, "paramis": 3, "kleshas": 0 }
-    },
+    "karmaThresholds": { /* wretched → enlightened tiers */ },
     "scaling": {
-      "method": "logarithmic",
-      "caps": {
-        "enemySpeed": 1.5,
-        "enemyCount": 1.3,
-        "spawnRate": 1.4,
-        "bossHP": 2.0
-      }
-    },
-    "waveDuration": {
-      "base": 60,
-      "perCycleBonus": 15
+      "enemySpeed": 1.875,
+      "enemyCount": 1.3,
+      "spawnRate": 1.4,
+      "bossHP": 2.0
     }
   }
 }
@@ -432,50 +414,34 @@ Quick reference for current game constants:
 
 ## Part 8: Claude Code Prompts
 
-### Phase 1-3: COMPLETE ✅
+### Phases 1-5: COMPLETE ✅
 
-Phases 1-3 are fully implemented:
-- `src/stores/gameStore.ts` — Module singleton with karmaTotal/karmaThisLife/paramis/kleshas
+All roguelike phases implemented:
+- `src/stores/gameStore.ts` — Module singleton with karmaTotal/karmaThisLife/cycle/paramis/kleshas
 - `src/ui/rebirthOverlay.ts` — Tier display + buff/debuff grants on death
-- `src/systems/rebirthEffects.ts` — All 4 multiplier functions
-- `src/systems/rebirthTiers.ts` — Tier calculation
-- `src/ui/rebirthHud.ts` — Bottom HUD showing active effects (basic version)
+- `src/systems/rebirthEffects.ts` — All 4 multiplier functions (10% fire rate, 25% drops, etc.)
+- `src/systems/rebirthTiers.ts` — Karma tier calculation
+- `src/ui/rebirthHud.ts` — Bottom HUD showing active effects with stack counts
+- `src/systems/cycleScaling.ts` — Kalpa difficulty scaling (logarithmic with caps)
+- `src/scenes/nirvana.ts` — P/C/M choices, Four Noble Truths rotation, kalpa display
 
-Stacking is correctly implemented:
-- `powerupEffects.ts` imports rebirth multipliers and combines them with powerup multipliers
+Stacking correctly implemented:
 - Fire rate = base × Diligence powerup × Viriya/Vicikiccha rebirth
-- Enemy speed = base × Patience powerup × Upekkha/Dosa rebirth
+- Enemy speed = base × Patience powerup × Upekkha/Dosa rebirth × wave scaling × kalpa scaling
 
-### Phase 4: HUD Icons + Victory Updates (NEXT)
+### Phase 6: Balance + Remaining Buffs/Debuffs (NEXT)
 
 ```
 Read SESSION_HANDOFF.md for architecture rules.
 
-Implement Phase 4 — HUD polish and victory updates:
+Phase 6 focuses on:
+1. Balance testing across multiple kalpas
+2. Add remaining pāramīs from FUTURE_IDEAS.md (Sīla, Khanti, Paññā, etc.)
+3. Add remaining kleshas from FUTURE_IDEAS.md (Moha, Thīna, etc.)
+4. Tune scaling curves based on playtesting
+5. Dynamic fire rate cap (currently hardcoded 0.2x floor)
 
-1. Enhance src/ui/rebirthHud.ts:
-   - Display Pāramī icons (green/gold colored indicators)
-   - Display Klesha icons (red/dark colored indicators)
-   - Show count for each type (e.g., "Dana ×2")
-   - Position at bottom of screen, non-intrusive
-
-2. Update src/scenes/nirvana.ts:
-   - Show accumulated buff/debuff counts
-   - Display cycle-specific victory text (Four Noble Truths rotation)
-   - Show death counter for this run
-   - Add "Parinirvana" vs "Continue" choice (Phase 5 prep)
-
-3. Add victory quotes to src/data/quotes.json:
-   "victoryQuotes": [
-     "Life is suffering. You have witnessed this truth.",
-     "Suffering arises from attachment. You have released your grip.",
-     "Suffering can end. You have glimpsed the cessation.",
-     "The path exists. You have walked it."
-   ]
-
-4. Update HUD to show death counter during gameplay
-
-Follow architecture rules: max 150 lines per file, config-driven values.
+See FUTURE_IDEAS.md "Remaining Pāramīs & Kleshas" section for full list.
 ```
 
 ---
@@ -534,12 +500,14 @@ Before moving to next feature, verify:
 ## Part 12: Git Commit History (Recent)
 
 ```
+2403356 Tune kalpa speed scaling curve for 2.25x combined max at Kalpa 10
+5bfe6e8 Reduce wave speed scaling from 10% to 2.5% per wave
+be40973 Add kalpa difficulty scaling system
+2c6618b Phase 5: Cycle system with Bodhisattva mode
+d5d4127 Update roadmap: Phase 5 next, add cosmetic polish section
 1abf90a Add debug keys for paramis/kleshas testing
-341603f Consolidate docs into SESSION_HANDOFF, VISION, FUTURE_IDEAS
-f7b5850 Add (B) About/Help overlay to pause menu
 69aa625 Polish title screen with geometric background and quote
 8a2ff08 Phase 2-3: Implement parami/klesha effects + bottom HUD
-4f4b99b Phase 1: Karma split + rebirth overlay
 ```
 
 ---
@@ -553,6 +521,26 @@ Changes that improve UX but aren't core roguelike mechanics:
 | Title screen | Geometric purple lotus background with Visuddhimagga quote |
 | Pause menu (B) About | Tabbed help overlay (Controls, Bestiary, Rebirth) accessible mid-game |
 | Rebirth HUD | Bottom bar shows paramis (green, left) and kleshas (red, right) with stack counts |
+| Kalpa indicator | "Kalpa N" shown in top HUD after first completion |
+
+---
+
+## Part 14: Phase 5 Summary (This Session)
+
+Kalpa (cycle) system fully implemented:
+
+| Feature | Implementation |
+|---------|----------------|
+| Cycle counter | `gameStore.ts` tracks current kalpa, increments on Continue |
+| Nirvana choices | P(arinirvana) / C(ontinue) / M(enu) with state preservation |
+| Four Noble Truths | Victory text rotates based on kalpa % 4 |
+| Difficulty scaling | Logarithmic curve, 2.25x combined max at Kalpa 10 |
+| Enemy count scaling | +30% max per kalpa |
+| Spawn rate scaling | 40% faster max |
+| Enemy speed scaling | 1.875x kalpa cap × 1.2x wave cap = 2.25x max |
+| Boss HP scaling | 2x max |
+| Wave speed tuning | Reduced from 10% to 2.5% per wave |
+| Viriya tuning | Reduced from 15% to 10% fire rate per stack |
 
 ---
 
