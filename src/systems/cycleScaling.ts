@@ -5,16 +5,16 @@ import { getCycle } from '../stores/gameStore';
 const caps = config.roguelike.scaling;
 
 // Logarithmic scaling: fast early gains, diminishing returns
-// Cycle 1: 1.0x, Cycle 2: ~1.14x, Cycle 3: ~1.22x, Cycle 5: ~1.32x, Cycle 10: ~1.46x
+// Kalpa 1: 1.0x, Kalpa 2: ~1.26x, Kalpa 5: ~1.61x, Kalpa 10: ~1.875x
 function getScalingMultiplier(cap: number): number {
   const cycle = getCycle();
   if (cycle <= 1) return 1.0;
 
-  const rawMultiplier = 1 + (Math.log(cycle) * 0.2);
+  const rawMultiplier = 1 + (Math.log(cycle) * 0.38);
   return Math.min(rawMultiplier, cap);
 }
 
-// Enemy speed multiplier (max 1.5x)
+// Enemy speed multiplier (max 1.875x, combined with wave scaling = 2.25x max)
 export function getEnemySpeedScaling(): number {
   return getScalingMultiplier(caps.enemySpeed);
 }

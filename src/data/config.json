@@ -115,7 +115,7 @@
       "enlightened": { "max": 999999, "paramis": 3, "kleshas": 0 }
     },
     "scaling": {
-      "enemySpeed": 1.5,
+      "enemySpeed": 1.875,
       "enemyCount": 1.3,
       "spawnRate": 1.4,
       "bossHP": 2.0
