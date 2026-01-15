@@ -8,6 +8,9 @@ import { isGameOver } from '../systems/mercyRule';
 import { isPaused } from '../ui/pauseMenu';
 import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
 import { pushAllEnemies } from '../systems/enemyHelpers';
+import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
+import { getGameState } from '../stores/gameStore';
+import { updateKarmaDisplay } from '../systems/karma';
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
@@ -35,6 +38,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   function shoot() {
     if (isPaused) return;
     if (player.invincible) return;
+    if (isRebirthOverlayActive()) return;
     if (!canShoot) return;
     canShoot = false;
 
@@ -68,10 +72,11 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   k.onKeyDown('space', shoot);
   k.onMouseDown('left', shoot);
 
-  // Handle death - respawn at center (unless game over)
+  // Handle death - show rebirth overlay, then respawn (unless game over)
   events.on('player:died', () => {
     // Set invincibility IMMEDIATELY (synchronous, before any callbacks)
     player.invincible = true;
+    const store = getGameState();
 
     k.wait(0.5, () => {
       // Don't respawn if mercy rule triggered game over
@@ -80,31 +85,37 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
         return;
       }
 
-      // Order matters: invincibility already set, now push enemies, THEN move player
-      // 1. Push all enemies first (they auto-freeze while player is invincible)
-      pushAllEnemies(k);
+      // Show rebirth overlay with current karma
+      showRebirthOverlay(k, store.karmaThisLife, () => {
+        // Reset karma for next life
+        store.resetLife();
+        updateKarmaDisplay();
 
-      // 2. Now safe to move player to center
-      player.pos.x = config.arena.width / 2;
-      player.pos.y = config.arena.offsetY + config.arena.height / 2;
-      player.setHP(config.player.health);
+        // Order matters: invincibility already set, now push enemies, THEN move player
+        pushAllEnemies(k);
 
-      // 3 second invincibility on respawn
-      const respawnInvincibility = 3000;
-      k.wait(respawnInvincibility / 1000, () => {
-        player.invincible = false;
-        player.opacity = 1;
-      });
+        // Move player to center
+        player.pos.x = config.arena.width / 2;
+        player.pos.y = config.arena.offsetY + config.arena.height / 2;
+        player.setHP(config.player.health);
 
-      // Flash during respawn invincibility
-      let flashCount = 0;
-      const flashInterval = k.loop(0.1, () => {
-        player.opacity = player.opacity === 1 ? 0.3 : 1;
-        flashCount++;
-        if (flashCount >= respawnInvincibility / 100) {
-          flashInterval.cancel();
+        // Respawn invincibility from config
+        const respawnInvincibility = config.roguelike.respawnInvincibility;
+        k.wait(respawnInvincibility / 1000, () => {
+          player.invincible = false;
           player.opacity = 1;
-        }
+        });
+
+        // Flash during respawn invincibility
+        let flashCount = 0;
+        const flashInterval = k.loop(0.1, () => {
+          player.opacity = player.opacity === 1 ? 0.3 : 1;
+          flashCount++;
+          if (flashCount >= respawnInvincibility / 100) {
+            flashInterval.cancel();
+            player.opacity = 1;
+          }
+        });
       });
     });
   });

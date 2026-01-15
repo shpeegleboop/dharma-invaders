@@ -97,5 +97,18 @@
       "join": { "x": 373, "y": 385, "width": 79, "height": 29 },
       "close": { "x": 497, "y": 282, "width": 19, "height": 16 }
     }
+  },
+  "roguelike": {
+    "enabled": true,
+    "respawnInvincibility": 3000,
+    "mercyRuleDeaths": 3,
+    "karmaThresholds": {
+      "wretched": { "max": 99, "paramis": 0, "kleshas": 3 },
+      "poor": { "max": 299, "paramis": 0, "kleshas": 2 },
+      "humble": { "max": 499, "paramis": 1, "kleshas": 1 },
+      "balanced": { "max": 799, "paramis": 1, "kleshas": 0 },
+      "virtuous": { "max": 1199, "paramis": 2, "kleshas": 0 },
+      "enlightened": { "max": 999999, "paramis": 3, "kleshas": 0 }
+    }
   }
 }
