@@ -7,6 +7,7 @@ import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
 import { spawnMara } from '../entities/mara';
 import { isPaused } from '../ui/pauseMenu';
+import { isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import {
   WaveState, createWaveState, resetWaveState, buildEnemyQueue,
   getCurrentWaveConfig, advanceWave, getTimeBetweenWaves, popNextEnemy,
@@ -21,6 +22,7 @@ export function setupSpawner(k: KAPLAYCtx): void {
 
   k.onUpdate(() => {
     if (isPaused) return;
+    if (isRebirthOverlayActive()) return;
     if (!state.active || state.betweenWaves) return;
 
     const currentWave = getCurrentWaveConfig(state);
