@@ -11,8 +11,8 @@
 ```
 READ THIS FILE FIRST. It supersedes conflicting information in other docs.
 
-Current task: Phase 4 — HUD icons + victory updates
-Key files: src/ui/rebirthHud.ts, src/scenes/nirvana.ts
+Current task: Phase 5 — Cycle system (Bodhisattva mode)
+Key files: src/stores/gameStore.ts, src/scenes/nirvana.ts, src/systems/cycleScaling.ts
 
 Source of truth hierarchy:
 1. SESSION_HANDOFF.md (this file) — Implementation details
@@ -162,8 +162,10 @@ Commit after every working feature with a descriptive message. This is non-negot
 | Pause menu | ✅ Complete | With confirmations |
 | Title screen | ✅ Complete | Suffer image with clickable buttons |
 | Mercy rule | ✅ Complete | 3 deaths without kill = game over |
-| Debug tools | ✅ Complete | F1-F6 |
+| Debug tools | ✅ Complete | F1-F6, T/Y/U/I paramis, G/H/J/K kleshas, M clear |
 | Bug fixes | ✅ Complete | Enemy flee, swarm instakill |
+| Rebirth HUD | ✅ Complete | Bottom bar shows paramis (green) / kleshas (red) |
+| Pause About | ✅ Complete | (B) opens help overlay mid-game |
 
 ### What's Next 🔄
 
@@ -172,8 +174,8 @@ Commit after every working feature with a descriptive message. This is non-negot
 | **1** | Karma split + rebirth overlay | ✅ Complete |
 | **2** | 4 basic Pāramīs (buffs) | ✅ Complete |
 | **3** | 4 basic Kleshas (debuffs) | ✅ Complete |
-| **4** | HUD icons + victory updates | **NEXT** |
-| **5** | Cycle system (Bodhisattva mode) | Pending |
+| **4** | HUD icons for buffs/debuffs | ✅ Complete |
+| **5** | Cycle system + victory updates | **NEXT** |
 | **6** | Balance + remaining buffs/debuffs | Pending |
 
 ---
@@ -532,14 +534,25 @@ Before moving to next feature, verify:
 ## Part 12: Git Commit History (Recent)
 
 ```
+1abf90a Add debug keys for paramis/kleshas testing
+341603f Consolidate docs into SESSION_HANDOFF, VISION, FUTURE_IDEAS
+f7b5850 Add (B) About/Help overlay to pause menu
 69aa625 Polish title screen with geometric background and quote
-83dcfbe Add DAY_THREE.md - roguelike rebirth system complete
 8a2ff08 Phase 2-3: Implement parami/klesha effects + bottom HUD
-971ee28 Rework mercy rule + pause spawner during invincibility
-250d213 Fix: Pause spawner during rebirth overlay
-4405343 Fix: Replace Zustand with simple module state
 4f4b99b Phase 1: Karma split + rebirth overlay
 ```
+
+---
+
+## Part 13: Cosmetic / Polish (Done)
+
+Changes that improve UX but aren't core roguelike mechanics:
+
+| Feature | Description |
+|---------|-------------|
+| Title screen | Geometric purple lotus background with Visuddhimagga quote |
+| Pause menu (B) About | Tabbed help overlay (Controls, Bestiary, Rebirth) accessible mid-game |
+| Rebirth HUD | Bottom bar shows paramis (green, left) and kleshas (red, right) with stack counts |
 
 ---
 
