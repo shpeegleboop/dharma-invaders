@@ -4,6 +4,10 @@ import config from '../data/config.json';
 import { events } from '../utils/events';
 import type { VirtueType } from '../entities/powerup';
 import { isPaused } from '../ui/pauseMenu';
+import {
+  getFireRateMultiplier as getRebirthFireRate,
+  getEnemySpeedMultiplier as getRebirthEnemySpeed,
+} from './rebirthEffects';
 
 type PowerupState = {
   active: VirtueType | null;
@@ -118,13 +122,19 @@ export function getActivePowerup(): VirtueType | null {
 }
 
 // For diligence (rapid fire) - returns cooldown multiplier
+// Stacks with Viriya/Vicikiccha rebirth effects
 export function getShootCooldownMultiplier(): number {
-  return state.active === 'diligence' ? 0.5 : 1;
+  const powerupMultiplier = state.active === 'diligence' ? 0.5 : 1;
+  const rebirthMultiplier = getRebirthFireRate();
+  return powerupMultiplier * rebirthMultiplier;
 }
 
 // For patience (slow enemies) - returns speed multiplier
+// Stacks with Upekkha/Dosa rebirth effects
 export function getEnemySpeedMultiplier(): number {
-  return state.active === 'patience' ? 0.5 : 1;
+  const powerupMultiplier = state.active === 'patience' ? 0.5 : 1;
+  const rebirthMultiplier = getRebirthEnemySpeed();
+  return powerupMultiplier * rebirthMultiplier;
 }
 
 // For compassion (spread shot) - returns true if active

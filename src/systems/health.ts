@@ -2,12 +2,17 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
+import { getMaxHealthModifier } from './rebirthEffects';
 
 let healthText: GameObj | null = null;
 let currentHealth = config.player.health;
 
+function getEffectiveMaxHealth(): number {
+  return Math.max(1, config.player.health + getMaxHealthModifier());
+}
+
 export function setupHealth(k: KAPLAYCtx): void {
-  currentHealth = config.player.health;
+  currentHealth = getEffectiveMaxHealth();
 
   // Create health display in HUD bar (left side)
   healthText = k.add([
@@ -28,7 +33,7 @@ export function setupHealth(k: KAPLAYCtx): void {
   // Listen for player death (reset health display)
   events.on('player:died', () => {
     k.wait(0.5, () => {
-      currentHealth = config.player.health;
+      currentHealth = getEffectiveMaxHealth();
       updateDisplay();
     });
   });

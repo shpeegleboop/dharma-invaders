@@ -16,6 +16,7 @@ import { setupPlayerDamage } from '../systems/playerDamage';
 import { setupPauseMenu } from '../ui/pauseMenu';
 import { setupAudioSettings, showAudioSettings, hideAudioSettings } from '../ui/audioSettings';
 import { resetRebirthOverlay } from '../ui/rebirthOverlay';
+import { setupRebirthHud } from '../ui/rebirthHud';
 import { events } from '../utils/events';
 import { playMusic } from '../systems/audio';
 import { resetAll } from '../stores/gameStore';
@@ -41,10 +42,27 @@ export function createGameScene(k: KAPLAYCtx): void {
     'hudBar',
   ]);
 
-  // HUD separator line
+  // HUD separator line (top)
   k.add([
     k.rect(config.screen.width, 2),
     k.pos(0, config.hud.height - 2),
+    k.color(60, 60, 80),
+    k.fixed(),
+  ]);
+
+  // Bottom HUD bar
+  k.add([
+    k.rect(config.screen.width, config.bottomHud.height),
+    k.pos(0, config.bottomHud.offsetY),
+    k.color(20, 20, 35),
+    k.fixed(),
+    'bottomHudBar',
+  ]);
+
+  // Bottom HUD separator line
+  k.add([
+    k.rect(config.screen.width, 2),
+    k.pos(0, config.bottomHud.offsetY),
     k.color(60, 60, 80),
     k.fixed(),
   ]);
@@ -71,6 +89,7 @@ export function createGameScene(k: KAPLAYCtx): void {
   setupSpawner(k);
   setupGameAudio();
   setupDebug(k);
+  setupRebirthHud(k);
 
   // Setup pause menu and audio settings
   setupAudioSettings(k);

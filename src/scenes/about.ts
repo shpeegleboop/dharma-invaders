@@ -20,7 +20,7 @@ export function createAboutScene(k: KAPLAYCtx): void {
 
   // Tab navigation
   k.add([
-    k.text('(1) Controls   (2) Bestiary   (3) Lore   (ESC) Back', { size: 14 }),
+    k.text('(1) Controls  (2) Bestiary  (3) Lore  (4) Rebirth  (ESC) Back', { size: 14 }),
     k.pos(config.screen.width / 2, 80),
     k.anchor('center'),
     k.color(150, 150, 170),
@@ -116,11 +116,81 @@ export function createAboutScene(k: KAPLAYCtx): void {
     });
   }
 
+  function showRebirth(): void {
+    clearPage();
+    // Header
+    pageContent.push(k.add([
+      k.text('When you die, your karma determines your rebirth.', { size: 18 }),
+      k.pos(config.screen.width / 2, 120),
+      k.anchor('center'),
+      k.color(180, 180, 200),
+    ]));
+
+    // Paramis section
+    pageContent.push(k.add([
+      k.text('Paramis (Perfections) - Buffs', { size: 20 }),
+      k.pos(60, 160),
+      k.color(144, 238, 144),
+    ]));
+
+    const paramis = [
+      { name: 'Dana', trans: 'Generosity', desc: 'Selfless giving', effect: '+25% powerup drops' },
+      { name: 'Viriya', trans: 'Diligence', desc: 'Persistent effort', effect: '+15% fire rate' },
+      { name: 'Metta', trans: 'Loving-kindness', desc: 'Universal goodwill', effect: '+1 max health' },
+      { name: 'Upekkha', trans: 'Equanimity', desc: 'Mental calmness', effect: 'Enemies 10% slower' },
+    ];
+
+    let y = 190;
+    paramis.forEach(p => {
+      pageContent.push(k.add([
+        k.text(`${p.name} (${p.trans})`, { size: 16 }),
+        k.pos(70, y),
+        k.color(180, 255, 180),
+      ]));
+      pageContent.push(k.add([
+        k.text(`${p.desc} | ${p.effect}`, { size: 14 }),
+        k.pos(70, y + 18),
+        k.color(130, 130, 150),
+      ]));
+      y += 44;
+    });
+
+    // Kleshas section
+    pageContent.push(k.add([
+      k.text('Kleshas (Afflictions) - Debuffs', { size: 20 }),
+      k.pos(60, y + 15),
+      k.color(255, 100, 100),
+    ]));
+
+    const kleshas = [
+      { name: 'Lobha', trans: 'Greed', desc: 'Clinging attachment', effect: '-25% powerup drops' },
+      { name: 'Dosa', trans: 'Hatred', desc: 'Aversion and anger', effect: 'Enemies 10% faster' },
+      { name: 'Mana', trans: 'Conceit', desc: 'Pride and arrogance', effect: '-1 max health' },
+      { name: 'Vicikiccha', trans: 'Doubt', desc: 'Spiritual uncertainty', effect: '-15% fire rate' },
+    ];
+
+    y += 45;
+    kleshas.forEach(kl => {
+      pageContent.push(k.add([
+        k.text(`${kl.name} (${kl.trans})`, { size: 16 }),
+        k.pos(70, y),
+        k.color(255, 150, 150),
+      ]));
+      pageContent.push(k.add([
+        k.text(`${kl.desc} | ${kl.effect}`, { size: 14 }),
+        k.pos(70, y + 18),
+        k.color(130, 130, 150),
+      ]));
+      y += 44;
+    });
+  }
+
   showControls();
 
   k.onKeyPress('1', showControls);
   k.onKeyPress('2', showBestiary);
   k.onKeyPress('3', showLore);
+  k.onKeyPress('4', showRebirth);
   k.onKeyPress('escape', () => k.go('menu'));
   k.onKeyPress('b', () => k.go('menu'));
 }

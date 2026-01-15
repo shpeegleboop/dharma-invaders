@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { isPaused } from '../ui/pauseMenu';
+import { getDropRateMultiplier } from '../systems/rebirthEffects';
 
 export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation';
 
@@ -47,5 +48,7 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
 }
 
 export function shouldDropPowerup(k: KAPLAYCtx): boolean {
-  return k.rand(0, 1) < config.powerups.dropChance;
+  const baseChance = config.powerups.dropChance;
+  const modifiedChance = baseChance * getDropRateMultiplier();
+  return k.rand(0, 1) < modifiedChance;
 }

@@ -11,9 +11,16 @@ import { pushAllEnemies } from '../systems/enemyHelpers';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import { getGameState, resetLife } from '../stores/gameStore';
 import { updateKarmaDisplay } from '../systems/karma';
+import { getMaxHealthModifier } from '../systems/rebirthEffects';
+
+// Calculate effective max health with rebirth modifiers
+function getEffectiveMaxHealth(): number {
+  return Math.max(1, config.player.health + getMaxHealthModifier());
+}
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
+  const maxHealth = getEffectiveMaxHealth();
 
   const player = k.add([
     k.rect(config.player.size.width, config.player.size.height),
@@ -21,7 +28,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     k.anchor('center'),
     k.area(),
     k.rotate(0),
-    k.health(config.player.health),
+    k.health(maxHealth),
     k.opacity(1),
     k.color(PLAYER_BASE_COLOR.r, PLAYER_BASE_COLOR.g, PLAYER_BASE_COLOR.b),
     'player',
@@ -97,7 +104,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
         // Move player to center
         player.pos.x = config.arena.width / 2;
         player.pos.y = config.arena.offsetY + config.arena.height / 2;
-        player.setHP(config.player.health);
+        player.setHP(getEffectiveMaxHealth());
 
         // Respawn invincibility from config
         const respawnInvincibility = config.roguelike.respawnInvincibility;
