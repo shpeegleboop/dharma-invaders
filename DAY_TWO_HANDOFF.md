@@ -1,7 +1,7 @@
 # Dharma Invaders — Day Two Handoff
 
 **Status:** Core game complete, bug-free, ready for roguelike expansion
-**Next Session:** Title screen with clickable image (image not yet uploaded)
+**Next Session:** Title screen with clickable image
 
 ---
 
@@ -16,7 +16,7 @@ Dharma Invaders is a Buddhist-themed arena shooter where the player (a meditatin
 - **Full UI:** Main menu, pause menu with confirmations, about section, credits
 - **Audio system:** Music tracks for menu, gameplay, boss, victory, game over
 - **Mercy rule:** 3 deaths without a kill = game over
-- **Debug tools:** F1-F5 for testing
+- **Debug tools:** F1-F6 for testing
 
 ### What We Fixed Today (Bug Session)
 1. **Enemy flee bug** — Enemies now flee immediately when Mara HP hits 0
@@ -173,6 +173,165 @@ src/
 
 ---
 
+## Phase 0: Title Screen (IMPLEMENT NOW)
+
+**Goal:** Add an intermediate "suffer" screen between main menu and game start.
+
+**Image file:** `public/sprites/suffer_sharp.jpg` (already in place)
+
+### Scene Flow
+
+```
+menu.ts ──(SPACE/click)──► titleScreen.ts ──(Join click)──► game.ts
+                               │
+                               ├──(X click)──► menu.ts
+                               └──(ESC key)──► menu.ts
+```
+
+### Button Coordinates (from image)
+
+**IMPORTANT:** Image may be larger than 800x600 game canvas. Verify dimensions and scale coordinates if needed.
+
+Raw pixel coordinates from source image:
+
+| Button | Top-Left (x, y) | Bottom-Right (x, y) | Width | Height |
+|--------|-----------------|---------------------|-------|--------|
+| **Join** | 397, 740 | 548, 795 | 151 | 55 |
+| **X** | 635, 543 | 671, 574 | 36 | 31 |
+
+### Implementation
+
+#### Step 1: Check Image Dimensions
+First, verify the image size. If larger than 800x600, either:
+- Scale the image to fit (and adjust button coords proportionally)
+- Or load at native size with `k.scale()` component
+
+#### Step 2: Load Image in boot.ts
+```typescript
+// src/scenes/boot.ts - add to asset loading
+k.loadSprite("sufferScreen", "/sprites/suffer_sharp.jpg");
+```
+
+#### Step 3: Create titleScreen.ts
+```typescript
+// src/scenes/titleScreen.ts (NEW)
+import { KAPLAYCtx } from 'kaplay';
+import config from '../data/config.json';
+
+export function createTitleScreen(k: KAPLAYCtx) {
+  // Add the suffer image
+  k.add([
+    k.sprite("sufferScreen"),
+    k.pos(0, 0),
+    // k.scale(0.75),  // Uncomment and adjust if image needs scaling
+  ]);
+
+  const buttons = config.titleScreen.buttons;
+
+  // "Join" button - starts the game
+  const joinButton = k.add([
+    k.rect(buttons.join.width, buttons.join.height),
+    k.pos(buttons.join.x, buttons.join.y),
+    k.area(),
+    k.opacity(0),  // Invisible
+    "joinButton"
+  ]);
+
+  joinButton.onClick(() => {
+    k.go("game");
+  });
+
+  // "X" button - returns to menu
+  const closeButton = k.add([
+    k.rect(buttons.close.width, buttons.close.height),
+    k.pos(buttons.close.x, buttons.close.y),
+    k.area(),
+    k.opacity(0),  // Invisible
+    "closeButton"
+  ]);
+
+  closeButton.onClick(() => {
+    k.go("menu");
+  });
+
+  // ESC also returns to menu
+  k.onKeyPress("escape", () => {
+    k.go("menu");
+  });
+}
+```
+
+#### Step 4: Config Addition
+```json
+"titleScreen": {
+  "imagePath": "/sprites/suffer_sharp.jpg",
+  "buttons": {
+    "join": { "x": 397, "y": 740, "width": 151, "height": 55 },
+    "close": { "x": 635, "y": 543, "width": 36, "height": 31 }
+  }
+}
+```
+
+**Note:** These are raw image coordinates. If the image is scaled to fit 800x600, multiply all values by the scale factor.
+
+#### Step 5: Register Scene in main.ts
+```typescript
+import { createTitleScreen } from './scenes/titleScreen';
+
+// In scene registration section:
+k.scene("titleScreen", () => createTitleScreen(k));
+```
+
+#### Step 6: Modify menu.ts
+Change the SPACE/click handler to go to titleScreen instead of game:
+```typescript
+// Before:
+k.onKeyPress("space", () => k.go("game"));
+
+// After:
+k.onKeyPress("space", () => k.go("titleScreen"));
+
+// Same for click handler
+```
+
+### Audio Handling
+- Menu music should CONTINUE playing on titleScreen (same track)
+- Don't call `playMusic('menu')` again in titleScreen — let it persist
+- Game music starts when `k.go("game")` is called (handled in game.ts)
+
+### Checklist: Phase 0
+- [ ] Verify image dimensions (check if scaling needed)
+- [ ] Add sprite loading in boot.ts
+- [ ] Create `src/scenes/titleScreen.ts`
+- [ ] Add button positions to config.json
+- [ ] Register scene in main.ts
+- [ ] Modify menu.ts to go to titleScreen
+- [ ] Test: SPACE on menu → suffer screen appears
+- [ ] Test: Click "Join" → game starts
+- [ ] Test: Click "X" → returns to menu
+- [ ] Test: ESC → returns to menu
+- [ ] Test: Menu music continues throughout
+- [ ] Adjust button coordinates if needed
+- [ ] Commit: "Add suffer title screen with clickable buttons"
+
+### Troubleshooting
+
+**Buttons not clickable in right place:**
+- Image might be scaled — adjust coordinates proportionally
+- Check browser console for errors
+- Temporarily set button opacity to 0.5 to see where they are
+
+**Music stops on scene change:**
+- Verify game.ts/menu.ts aren't calling `stopMusic()` on scene exit
+- Audio manager should only change tracks when explicitly told
+
+**Image doesn't appear:**
+- Check file path spelling (case-sensitive on some systems)
+- Verify sprite loaded in boot.ts
+- Check browser console for 404 errors
+
+---
+
 ## Roguelike Expansion — Master Roadmap
 
 ### Vision
@@ -194,137 +353,34 @@ Transform death from failure into progression. Each death triggers a "rebirth" w
 
 ---
 
-## Phase 0: Title Screen (NEXT SESSION)
-
-**Goal:** Replace text menu with image-based title screen with clickable regions.
-
-**Prerequisite:** User will upload title screen image before session.
-
-### Implementation Plan
-
-#### Step 1: Load Title Image
-```typescript
-// src/scenes/boot.ts - add to asset loading
-k.loadSprite("titleScreen", "/sprites/title.png");
-```
-
-#### Step 2: Create Title Screen Scene
-```typescript
-// src/scenes/titleScreen.ts (NEW)
-export function createTitleScreen(k: KAPLAYCtx) {
-  const title = k.add([
-    k.sprite("titleScreen"),
-    k.pos(0, 0),
-  ]);
-
-  // Invisible clickable regions (coords from config)
-  const cfg = config.titleScreen.buttons;
-
-  const startButton = k.add([
-    k.rect(cfg.start.width, cfg.start.height),
-    k.pos(cfg.start.x, cfg.start.y),
-    k.area(),
-    k.opacity(0),
-    "startButton"
-  ]);
-
-  startButton.onClick(() => k.go("game"));
-  // ... similar for about, audio buttons
-
-  k.onKeyPress("escape", () => k.go("menu"));
-}
-```
-
-#### Step 3: Config Addition
-```json
-"titleScreen": {
-  "imagePath": "/sprites/title.png",
-  "buttons": {
-    "start": { "x": 300, "y": 350, "width": 200, "height": 60 },
-    "about": { "x": 300, "y": 420, "width": 200, "height": 60 },
-    "audio": { "x": 300, "y": 490, "width": 200, "height": 60 }
-  }
-}
-```
-
-#### Step 4: Wire Up Navigation
-- menu.ts: SPACE/click → titleScreen (not game)
-- titleScreen: Start button → game
-- titleScreen: ESC → menu (fallback)
-
-### Checklist: Phase 0
-- [ ] User uploads title screen image
-- [ ] Add image to `public/sprites/title.png`
-- [ ] Add sprite loading in boot.ts
-- [ ] Create `src/scenes/titleScreen.ts`
-- [ ] Add button positions to config.json
-- [ ] Modify menu.ts to go to titleScreen
-- [ ] Register scene in main.ts
-- [ ] Test: SPACE on menu → title screen
-- [ ] Test: Click Start → game begins
-- [ ] Test: Click About → about section
-- [ ] Test: Click Audio → audio settings
-- [ ] Test: ESC → returns to text menu
-- [ ] Commit: "Add image-based title screen"
-
----
-
 ## Phase 1: Core Rebirth Loop
 
-**Goal:** Split karma tracking, show rebirth overlay on death.
+**Goal:** Split karma tracking and show rebirth overlay on death.
 
-### Step 1.1: Karma Split
+### Karma Split
+Track karma separately:
+- `karmaTotal` — lifetime score (display, bragging rights)
+- `karmaThisLife` — resets on death, determines rebirth quality
 
 ```typescript
 // src/stores/gameStore.ts
 interface GameState {
-  karmaTotal: number;      // Lifetime (never resets)
-  karmaThisLife: number;   // Resets on death
-  deaths: number;          // Total deaths this run
-  deathsWithoutKill: number;  // For mercy rule
+  karmaTotal: number;
+  karmaThisLife: number;
+  deaths: number;
+  deathsWithoutKill: number;
 }
 ```
 
-**Events to modify:**
-- `enemy:killed` → add to both karmaTotal and karmaThisLife
-- `player:died` → reset karmaThisLife to 0
+### Rebirth Overlay
+On death (after respawn protection kicks in):
+1. Dim screen overlay
+2. Display: "The wheel turns..."
+3. Show karma tier earned
+4. Animate buff/debuff selection
+5. "Press SPACE to continue"
 
-### Step 1.2: Rebirth Overlay
-
-```typescript
-// src/ui/rebirthOverlay.ts (NEW)
-export function showRebirthOverlay(k: KAPLAYCtx, karmaThisLife: number) {
-  // Dim overlay
-  const overlay = k.add([
-    k.rect(config.screen.width, config.screen.height),
-    k.pos(0, 0),
-    k.color(0, 0, 0),
-    k.opacity(0.7),
-    k.z(100),
-  ]);
-
-  // "The wheel turns..."
-  k.add([
-    k.text("The wheel turns...", { size: 32 }),
-    k.pos(config.screen.width / 2, 200),
-    k.anchor("center"),
-    k.z(101),
-  ]);
-
-  // Show karma tier
-  const tier = getRebirthTier(karmaThisLife);
-  // ... display tier name, buffs/debuffs earned
-
-  // "Press SPACE to continue"
-  k.onKeyPress("space", () => {
-    applyRebirthEffects(tier);
-    overlay.destroy();
-    // Resume gameplay
-  });
-}
-```
-
-### Step 1.3: Config Addition
+### Config Addition
 
 ```json
 "roguelike": {
@@ -342,34 +398,18 @@ export function showRebirthOverlay(k: KAPLAYCtx, karmaThisLife: number) {
 }
 ```
 
-### Checklist: Phase 1
-- [ ] Add karma split to gameStore.ts
-- [ ] Modify karma.ts to track both values
-- [ ] Create `src/ui/rebirthOverlay.ts`
-- [ ] Add `getRebirthTier()` function
-- [ ] Add config.roguelike section
-- [ ] Hook overlay to player:died event
-- [ ] Test: Die with low karma → see "Wretched" tier
-- [ ] Test: Die with high karma → see "Enlightened" tier
-- [ ] Test: SPACE continues game
-- [ ] Commit: "Add rebirth overlay and karma split"
-
 ---
 
 ## Phase 2: Pāramīs (Buffs)
 
-**Goal:** Implement 4 basic buffs that persist across deaths.
-
-### Buff Definitions
+Implement 4 simple buffs first, expand later.
 
 | Pāramī | Effect | Implementation |
 |--------|--------|----------------|
-| **Dāna** (Generosity) | +25% powerup drop rate | Multiply `dropChance` |
-| **Viriya** (Diligence) | +15% fire rate | Reduce `shootCooldown` |
-| **Mettā** (Loving-kindness) | +1 max health | Increase `config.player.health` |
+| **Dāna** (Generosity) | +25% powerup drop rate | Modify `dropChance` in powerup.ts |
+| **Viriya** (Diligence) | +15% fire rate | Modify `shootCooldown` in player.ts |
+| **Mettā** (Loving-kindness) | +1 max health | Modify `config.player.health` |
 | **Upekkhā** (Equanimity) | Enemies 10% slower | Modify `getEnemySpeedMultiplier()` |
-
-### Implementation
 
 ```typescript
 // src/systems/paramis.ts (NEW)
@@ -380,51 +420,28 @@ interface ParamiState {
   upekkha: number;
 }
 
-let state: ParamiState = { dana: 0, viriya: 0, metta: 0, upekkha: 0 };
-
-export function addParami(type: keyof ParamiState): void {
-  state[type]++;
-  events.emit('parami:gained', { type });
-}
-
 export function getDropRateMultiplier(): number {
-  return 1 + (state.dana * 0.25);
+  return 1 + (paramiState.dana * 0.25);
 }
 
 export function getFireRateMultiplier(): number {
-  return 1 - (state.viriya * 0.15);  // Lower cooldown = faster
+  return 1 + (paramiState.viriya * 0.15);
 }
 
 export function getMaxHealthBonus(): number {
-  return state.metta;
+  return paramiState.metta;
 }
 
 export function getEnemySlowdown(): number {
-  return 1 - (state.upekkha * 0.10);
+  return 1 - (paramiState.upekkha * 0.10);
 }
 ```
-
-### Checklist: Phase 2
-- [ ] Create `src/systems/paramis.ts`
-- [ ] Add parami definitions to config.json
-- [ ] Modify powerup.ts to use `getDropRateMultiplier()`
-- [ ] Modify player.ts to use `getFireRateMultiplier()`
-- [ ] Modify player.ts to use `getMaxHealthBonus()`
-- [ ] Modify enemy files to use `getEnemySlowdown()`
-- [ ] Add selection UI to rebirth overlay
-- [ ] Test: Gain Dāna → more powerup drops
-- [ ] Test: Gain Viriya → faster shooting
-- [ ] Test: Gain Mettā → 4 HP instead of 3
-- [ ] Test: Gain Upekkhā → enemies noticeably slower
-- [ ] Commit: "Add Pāramī buff system"
 
 ---
 
 ## Phase 3: Kleshas (Debuffs)
 
-**Goal:** Implement 4 basic debuffs for low-karma rebirths.
-
-### Debuff Definitions
+Implement 4 simple debuffs first.
 
 | Klesha | Effect | Implementation |
 |--------|--------|----------------|
@@ -432,8 +449,6 @@ export function getEnemySlowdown(): number {
 | **Dosa** (Hatred) | Enemies 10% faster | Increase enemy speed |
 | **Māna** (Conceit) | -1 max health (min 1) | Reduce `config.player.health` |
 | **Vicikicchā** (Doubt) | -15% fire rate | Increase `shootCooldown` |
-
-### Implementation
 
 ```typescript
 // src/systems/kleshas.ts (NEW)
@@ -443,51 +458,11 @@ interface KleshaState {
   mana: number;
   vicikiccha: number;
 }
-
-let state: KleshaState = { lobha: 0, dosa: 0, mana: 0, vicikiccha: 0 };
-
-export function addKlesha(type: keyof KleshaState): void {
-  state[type]++;
-  events.emit('klesha:gained', { type });
-}
-
-export function getDropRatePenalty(): number {
-  return Math.max(0.1, 1 - (state.lobha * 0.25));  // Min 10% drop rate
-}
-
-export function getEnemySpeedup(): number {
-  return 1 + (state.dosa * 0.10);
-}
-
-export function getMaxHealthPenalty(): number {
-  return state.mana;
-}
-
-export function getFireRatePenalty(): number {
-  return 1 + (state.vicikiccha * 0.15);  // Higher cooldown = slower
-}
 ```
-
-### Checklist: Phase 3
-- [ ] Create `src/systems/kleshas.ts`
-- [ ] Add klesha definitions to config.json
-- [ ] Modify drop rate calculation to include penalty
-- [ ] Modify enemy speed calculation to include speedup
-- [ ] Modify player health to include penalty
-- [ ] Modify fire rate to include penalty
-- [ ] Add random selection for debuffs on low-karma rebirth
-- [ ] Test: Gain Lobha → fewer powerup drops
-- [ ] Test: Gain Dosa → enemies faster
-- [ ] Test: Gain Māna → 2 HP instead of 3
-- [ ] Test: Gain Vicikicchā → slower shooting
-- [ ] Test: Can't go below 1 HP
-- [ ] Commit: "Add Klesha debuff system"
 
 ---
 
 ## Phase 4: HUD & Victory Updates
-
-**Goal:** Visual feedback for accumulated buffs/debuffs.
 
 ### HUD Additions
 - Pāramī icons (bottom left, green/gold glow)
@@ -501,27 +476,15 @@ export function getFireRatePenalty(): number {
   - 0 deaths: "Perfect liberation"
   - 5+ Kleshas: "You have escaped... but at what cost?"
 
-### Checklist: Phase 4
-- [ ] Add Pāramī icons to HUD
-- [ ] Add Klesha icons to HUD
-- [ ] Update nirvana.ts victory screen
-- [ ] Add death counter display
-- [ ] Add conditional ending text
-- [ ] Test: Icons appear when buffs/debuffs gained
-- [ ] Test: Victory shows correct counts
-- [ ] Commit: "Add roguelike HUD elements and victory updates"
-
 ---
 
 ## Phase 5: Balance & Polish
 
-**Goal:** Tune numbers, add remaining buffs/debuffs, polish animations.
-
 ### Balance Tasks
-- [ ] Playtest karma thresholds
-- [ ] Tune buff/debuff strength percentages
-- [ ] Test stacking limits (cap at 5 each?)
-- [ ] Verify game is still winnable with max debuffs
+- Playtest karma thresholds
+- Tune buff/debuff strength percentages
+- Test stacking limits (cap at 5 each?)
+- Verify game is still winnable with max debuffs
 
 ### Remaining Pāramīs (6 more)
 | Pāramī | Effect |
@@ -542,45 +505,6 @@ export function getFireRatePenalty(): number {
 | Ahirika (Shamelessness) | No respawn invincibility |
 | Anottappa (Recklessness) | -1 projectile damage |
 | Micchādiṭṭhi (Wrong View) | -0.25x karma multiplier |
-
-### Polish Tasks
-- [ ] Rebirth overlay animation (wheel spinning?)
-- [ ] Sound effects for buff/debuff acquisition
-- [ ] Visual feedback when buff/debuff activates
-- [ ] Screen flash colors based on rebirth quality
-
----
-
-## Session Planning
-
-### Session 3: Title Screen
-**Time estimate:** 30-60 min
-**Prerequisites:** Title screen image uploaded
-**Deliverable:** Clickable image-based title screen
-
-### Session 4: Rebirth Loop
-**Time estimate:** 60-90 min
-**Prerequisites:** Phase 0 complete
-**Deliverable:** Karma split, rebirth overlay, tier display
-
-### Session 5: Buffs
-**Time estimate:** 60-90 min
-**Prerequisites:** Phase 1 complete
-**Deliverable:** 4 working Pāramīs with selection UI
-
-### Session 6: Debuffs
-**Time estimate:** 60-90 min
-**Prerequisites:** Phase 2 complete
-**Deliverable:** 4 working Kleshas with random assignment
-
-### Session 7: HUD & Victory
-**Time estimate:** 30-60 min
-**Prerequisites:** Phases 2-3 complete
-**Deliverable:** Visual feedback, updated victory screen
-
-### Session 8+: Balance & Expand
-**Time estimate:** Ongoing
-**Deliverable:** Remaining buffs/debuffs, polish
 
 ---
 
@@ -605,20 +529,6 @@ export function getFireRatePenalty(): number {
 }
 ```
 
-```json
-// waves.json structure
-{
-  "waves": [
-    {
-      "enemies": { "hungryGhost": 6, "asura": 0, "deva": 0 },
-      "spawnInterval": 0.67
-    },
-    // ... 8 waves total
-  ],
-  "timeBetweenWaves": 1.5
-}
-```
-
 ---
 
 ## Git History (Recent)
@@ -636,22 +546,33 @@ fec05c2 Mara collision, i-frames, enemy flee on boss defeat
 
 ## Notes for Next Session
 
-1. **User will upload title screen image** — wait for this before starting Phase 0
-2. **Button positions are data-driven** — adjust config.json to match image layout
+1. **Image dimensions** — Check if suffer_sharp.jpg is larger than 800x600. If so, scale or adjust coordinates.
+2. **Button positions are data-driven** — Adjust config.json to match actual clickable areas
 3. **Keep text menu as fallback** — ESC from title screen returns to it
-4. **Test on different screen sizes** — clickable regions need to align properly
+4. **Move hardcoded value to config** — `3000ms` respawn invincibility in player.ts should go to `config.roguelike.respawnInvincibility`
 
 ---
 
-## Questions to Resolve Later
+## Claude Code Prompt (Copy This)
 
-- Cap on total buffs/debuffs? (Suggest 5 each)
-- Does Mara scale with deaths? (Interesting but complex)
-- New Game+ with carried buffs? (Scope creep — defer)
-- Should buffs/debuffs be visible during gameplay? (Yes, HUD icons)
-- Random selection or player choice for buffs? (Player choice feels better)
+```
+Read DAY_TWO_HANDOFF.md and implement Phase 0 (title screen):
+
+1. Image file: `public/sprites/suffer_sharp.jpg` (verify dimensions first)
+2. Scene flow: menu.ts (SPACE/click) → titleScreen.ts → game.ts
+3. Two clickable regions (coordinates may need adjustment based on image scaling):
+   - "Join" button at x:397, y:740, width:151, height:55 → starts game
+   - "X" button at x:635, y:543, width:36, height:31 → returns to menu  
+4. ESC key also returns to menu
+5. Menu music should continue playing (don't restart or stop)
+6. Register new scene in main.ts
+
+Create `src/scenes/titleScreen.ts`. Modify menu.ts to go to titleScreen instead of game. Add sprite loading in boot.ts. Add button positions to config.json.
+
+Check image dimensions first — if larger than 800x600, either scale the sprite or adjust button coordinates proportionally.
+```
 
 ---
 
-*Document created: End of Day Two bug fix session*
-*Next milestone: Image-based title screen (Phase 0)*
+*Document updated: Ready for Phase 0 implementation*
+*Next milestone: Suffer title screen with Join/X buttons*

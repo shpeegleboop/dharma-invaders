@@ -152,7 +152,7 @@ Follow this sequence. Each step must be testable before moving on:
 - F2: Skip to wave 8
 - F3: Skip to boss
 - F4: Give all powerups
-- F5: Toggle invincibility
+- F6: Toggle invincibility
 
 ## Common Mistakes to Avoid
 

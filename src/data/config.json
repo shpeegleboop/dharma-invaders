@@ -89,5 +89,13 @@
     "showHitboxes": false,
     "invincible": false,
     "skipToWave": 0
+  },
+  "titleScreen": {
+    "scale": 0.52,
+    "offsetX": 167,
+    "buttons": {
+      "join": { "x": 373, "y": 385, "width": 79, "height": 29 },
+      "close": { "x": 497, "y": 282, "width": 19, "height": 16 }
+    }
   }
 }
