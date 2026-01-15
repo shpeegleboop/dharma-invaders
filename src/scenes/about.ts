@@ -2,7 +2,12 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 
-export function createAboutScene(k: KAPLAYCtx): void {
+interface AboutSceneData {
+  returnTo?: string;
+}
+
+export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
+  const returnTo = data?.returnTo || 'menu';
   let pageContent: GameObj[] = [];
 
   k.add([
@@ -191,6 +196,6 @@ export function createAboutScene(k: KAPLAYCtx): void {
   k.onKeyPress('2', showBestiary);
   k.onKeyPress('3', showLore);
   k.onKeyPress('4', showRebirth);
-  k.onKeyPress('escape', () => k.go('menu'));
-  k.onKeyPress('b', () => k.go('menu'));
+  k.onKeyPress('escape', () => k.go(returnTo));
+  k.onKeyPress('b', () => k.go(returnTo));
 }

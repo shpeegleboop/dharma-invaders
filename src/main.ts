@@ -30,7 +30,7 @@ k.scene('game', () => createGameScene(k));
 k.scene('gameOver', (karma: number) => createGameOverScene(k, karma));
 k.scene('nirvana', (karma: number) => createNirvanaScene(k, karma));
 k.scene('credits', () => createCreditsScene(k));
-k.scene('about', () => createAboutScene(k));
+k.scene('about', (data) => createAboutScene(k, data));
 k.scene('titleScreen', () => createTitleScreen(k));
 
 // Start at menu

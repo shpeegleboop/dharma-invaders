@@ -46,8 +46,18 @@ export function createPauseUI(k: KAPLAYCtx): { overlay: GameObj; items: GameObj[
   ]));
 
   items.push(k.add([
-    k.text('(Q) Quit to Menu', { size: 24 }),
+    k.text('(B) About / Help', { size: 24 }),
     k.pos(config.screen.width / 2, config.screen.height / 2 + 80),
+    k.anchor('center'),
+    k.color(200, 200, 200),
+    k.fixed(),
+    k.z(101),
+    'pauseUI',
+  ]));
+
+  items.push(k.add([
+    k.text('(Q) Quit to Menu', { size: 24 }),
+    k.pos(config.screen.width / 2, config.screen.height / 2 + 120),
     k.anchor('center'),
     k.color(200, 200, 200),
     k.fixed(),

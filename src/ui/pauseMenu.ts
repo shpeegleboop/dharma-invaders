@@ -1,8 +1,9 @@
 // Pause menu UI - ESC to pause/resume during gameplay
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import { createPauseUI, createQuitConfirmUI } from './pauseMenuUI';
+import { setupAboutOverlay, showAboutOverlay, hideAboutOverlay } from './aboutOverlay';
 
-type PauseState = 'playing' | 'paused' | 'audioSettings' | 'quitConfirm';
+type PauseState = 'playing' | 'paused' | 'audioSettings' | 'aboutOverlay' | 'quitConfirm';
 
 // Global pause flag - import this in entity/system files
 export let isPaused = false;
@@ -27,6 +28,7 @@ export function setupPauseMenu(
   kRef = k;
   showAudioSettings = audioSettingsShow;
   hideAudioSettings = audioSettingsHide;
+  setupAboutOverlay(k);
 
   k.onKeyPress('escape', () => {
     if (state === 'playing') {
@@ -35,6 +37,10 @@ export function setupPauseMenu(
       resume();
     } else if (state === 'audioSettings') {
       if (hideAudioSettings) hideAudioSettings();
+      state = 'paused';
+      showPauseUI();
+    } else if (state === 'aboutOverlay') {
+      hideAboutOverlay();
       state = 'paused';
       showPauseUI();
     } else if (state === 'quitConfirm') {
@@ -49,6 +55,21 @@ export function setupPauseMenu(
       hidePauseUI();
       state = 'audioSettings';
       if (showAudioSettings) showAudioSettings();
+    }
+  });
+
+  k.onKeyPress('b', () => {
+    if (state === 'paused') {
+      hidePauseUI();
+      state = 'aboutOverlay';
+      showAboutOverlay(() => {
+        // Callback when overlay closes itself (not used currently)
+      });
+    } else if (state === 'aboutOverlay') {
+      // B also closes the about overlay
+      hideAboutOverlay();
+      state = 'paused';
+      showPauseUI();
     }
   });
 

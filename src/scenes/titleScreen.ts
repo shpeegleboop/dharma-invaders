@@ -18,6 +18,7 @@ function drawLotus(k: KAPLAYCtx, x: number, y: number, size: number, style: numb
   const petals = style === 0 ? 8 : style === 1 ? 6 : 12;
   const color = style === 0 ? COLORS.magenta :
                 style === 1 ? COLORS.gold : COLORS.pink;
+  const [cr, cg, cb] = color;
 
   // Petals
   for (let i = 0; i < petals; i++) {
@@ -29,17 +30,18 @@ function drawLotus(k: KAPLAYCtx, x: number, y: number, size: number, style: numb
       k.circle(size * 0.35),
       k.pos(px, py),
       k.anchor('center'),
-      k.color(...color),
+      k.color(cr, cg, cb),
       k.opacity(0.7),
     ]);
   }
 
   // Center
+  const [gr, gg, gb] = COLORS.gold;
   k.add([
     k.circle(size * 0.25),
     k.pos(x, y),
     k.anchor('center'),
-    k.color(...COLORS.gold),
+    k.color(gr, gg, gb),
     k.opacity(0.9),
   ]);
 }
@@ -47,12 +49,13 @@ function drawLotus(k: KAPLAYCtx, x: number, y: number, size: number, style: numb
 function drawGeometricBackground(k: KAPLAYCtx): void {
   const w = config.screen.width;
   const h = config.screen.height;
+  const [dr, dg, db] = COLORS.deepPurple;
 
   // Base purple background
   k.add([
     k.rect(w, h),
     k.pos(0, 0),
-    k.color(...COLORS.deepPurple),
+    k.color(dr, dg, db),
   ]);
 
   // Hexagonal tessellation
@@ -97,6 +100,7 @@ function drawGeometricBackground(k: KAPLAYCtx): void {
       }
 
       // Draw hexagon as 6 circles (pixelated hex)
+      const [r, g, b] = color;
       for (let i = 0; i < 6; i++) {
         const angle = (i / 6) * Math.PI * 2;
         const hx = x + Math.cos(angle) * radius;
@@ -106,7 +110,7 @@ function drawGeometricBackground(k: KAPLAYCtx): void {
           k.circle(4),
           k.pos(hx, hy),
           k.anchor('center'),
-          k.color(...color),
+          k.color(r, g, b),
           k.opacity(opacity),
         ]);
       }
@@ -169,6 +173,7 @@ function drawQuoteFrame(k: KAPLAYCtx): void {
   const h = config.screen.height;
   const frameHeight = 52;
   const frameY = h - frameHeight;
+  const [gr, gg, gb] = COLORS.gold;
 
   // Dark frame background
   k.add([
@@ -182,7 +187,7 @@ function drawQuoteFrame(k: KAPLAYCtx): void {
   k.add([
     k.rect(w, 2),
     k.pos(0, frameY),
-    k.color(...COLORS.gold),
+    k.color(gr, gg, gb),
     k.opacity(0.8),
   ]);
 
