@@ -1,6 +1,7 @@
 // Wave management - wave state and progression
 import waves from '../data/waves.json';
 import { events } from '../utils/events';
+import { getEnemyCountScaling } from './cycleScaling';
 
 export type EnemyType = 'hungryGhost' | 'asura' | 'deva';
 
@@ -37,8 +38,10 @@ export function buildEnemyQueue(state: WaveState): boolean {
   }
 
   state.enemyQueue = [];
+  const countMultiplier = getEnemyCountScaling();
   for (const enemyDef of wave.enemies) {
-    for (let i = 0; i < enemyDef.count; i++) {
+    const scaledCount = Math.round(enemyDef.count * countMultiplier);
+    for (let i = 0; i < scaledCount; i++) {
       state.enemyQueue.push(enemyDef.type as EnemyType);
     }
   }

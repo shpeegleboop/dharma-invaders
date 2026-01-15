@@ -4,6 +4,7 @@ import config from '../data/config.json';
 import { events } from '../utils/events';
 import { fireAtPlayer, spawnMinion } from './maraCombat';
 import { isPaused } from '../ui/pauseMenu';
+import { getBossHPScaling } from '../systems/cycleScaling';
 
 type MaraPhase = 'entering' | 'phase1' | 'phase2' | 'phase3' | 'defeated';
 
@@ -13,6 +14,7 @@ let shootTimer = 0;
 let minionTimer = 0;
 let deathAnimTimer = 0;
 let movementTimer = 0;
+let scaledMaxHealth = 0;
 
 export function spawnMara(k: KAPLAYCtx): void {
   const cfg = config.boss;
@@ -20,6 +22,7 @@ export function spawnMara(k: KAPLAYCtx): void {
   shootTimer = 0;
   minionTimer = 0;
   movementTimer = 0;
+  scaledMaxHealth = Math.round(cfg.health * getBossHPScaling());
 
   mara = k.add([
     k.rect(cfg.size.width, cfg.size.height),
@@ -28,7 +31,7 @@ export function spawnMara(k: KAPLAYCtx): void {
     k.area(),
     k.rotate(0),
     k.color(k.Color.fromHex(cfg.color)),
-    k.health(cfg.health),
+    k.health(scaledMaxHealth),
     k.opacity(1),
     'boss',
     'mara',
@@ -79,8 +82,8 @@ function updateCombat(k: KAPLAYCtx): void {
   if (!mara) return;
   const cfg = config.boss;
 
-  // Check phase transitions based on health
-  const healthPercent = (mara.hp() / cfg.health) * 100;
+  // Check phase transitions based on health (use scaled max health)
+  const healthPercent = (mara.hp() / scaledMaxHealth) * 100;
 
   if (healthPercent <= cfg.phase3Threshold && currentPhase !== 'phase3') {
     currentPhase = 'phase3';
@@ -163,4 +166,8 @@ export function getMara(): GameObj | null {
 
 export function getMaraPhase(): MaraPhase {
   return currentPhase;
+}
+
+export function getMaraMaxHealth(): number {
+  return scaledMaxHealth;
 }

@@ -13,6 +13,7 @@ import {
   getCurrentWaveConfig, advanceWave, getTimeBetweenWaves, popNextEnemy,
   setCurrentWaveNumber
 } from './waveManager';
+import { getSpawnRateScaling } from './cycleScaling';
 
 let state: WaveState = createWaveState();
 
@@ -34,7 +35,8 @@ export function setupSpawner(k: KAPLAYCtx): void {
     if (!currentWave) return;
 
     state.spawnTimer += k.dt();
-    if (state.spawnTimer >= currentWave.spawnInterval && state.enemyQueue.length > 0) {
+    const scaledInterval = currentWave.spawnInterval * getSpawnRateScaling();
+    if (state.spawnTimer >= scaledInterval && state.enemyQueue.length > 0) {
       state.spawnTimer = 0;
       spawnNextEnemy(k);
     }

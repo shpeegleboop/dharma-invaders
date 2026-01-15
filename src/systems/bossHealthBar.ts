@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { getMara, getMaraPhase } from '../entities/mara';
+import { getMara, getMaraPhase, getMaraMaxHealth } from '../entities/mara';
 
 let barBackground: GameObj | null = null;
 let barFill: GameObj | null = null;
@@ -80,8 +80,8 @@ function updateBar(k: KAPLAYCtx): void {
   const mara = getMara();
   if (!mara || !barFill) return;
 
-  // Calculate health percentage
-  const healthPercent = mara.hp() / config.boss.health;
+  // Calculate health percentage (use scaled max health)
+  const healthPercent = mara.hp() / getMaraMaxHealth();
   const newWidth = Math.max(0, BAR_WIDTH * healthPercent);
 
   // Update bar width
