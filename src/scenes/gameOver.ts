@@ -2,6 +2,7 @@
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { playMusic } from '../systems/audio';
+import { resetAll } from '../stores/gameStore';
 
 export function createGameOverScene(k: KAPLAYCtx, karma: number): void {
   // Play game over music
@@ -68,6 +69,7 @@ export function createGameOverScene(k: KAPLAYCtx, karma: number): void {
 
   // Input handlers
   k.onKeyPress('space', () => {
+    resetAll(); // Clear karma, paramis, kleshas, cycle for fresh start
     k.go('game');
   });
 
