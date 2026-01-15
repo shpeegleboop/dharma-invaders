@@ -382,8 +382,8 @@ Quick reference for current game constants (see `src/data/config.json` for full 
 'player:hit' | 'player:died' | 'player:powerup' | 'player:reborn'
 
 // Game Flow
-'wave:started' | 'wave:complete' | 'boss:started' | 'boss:phaseChange' | 
-'boss:defeated' | 'game:victory' | 'game:over'
+'wave:started' | 'wave:complete' | 'boss:started' | 'boss:phaseChange' |
+'boss:spawnMinion' | 'boss:defeated' | 'game:victory' | 'game:over'
 
 // Powerups
 'powerup:activated' | 'powerup:deactivated' | 'powerup:shieldBroken'
@@ -500,14 +500,13 @@ Before moving to next feature, verify:
 ## Part 12: Git Commit History (Recent)
 
 ```
+3b5e353 Fix game over not resetting state before new game
+88dd621 Refactor maraCombat to use event bus for minion spawning
+f724951 Sync docs with reality + reduce Viriya to 10% per stack
 2403356 Tune kalpa speed scaling curve for 2.25x combined max at Kalpa 10
 5bfe6e8 Reduce wave speed scaling from 10% to 2.5% per wave
 be40973 Add kalpa difficulty scaling system
 2c6618b Phase 5: Cycle system with Bodhisattva mode
-d5d4127 Update roadmap: Phase 5 next, add cosmetic polish section
-1abf90a Add debug keys for paramis/kleshas testing
-69aa625 Polish title screen with geometric background and quote
-8a2ff08 Phase 2-3: Implement parami/klesha effects + bottom HUD
 ```
 
 ---
@@ -541,6 +540,24 @@ Kalpa (cycle) system fully implemented:
 | Boss HP scaling | 2x max |
 | Wave speed tuning | Reduced from 10% to 2.5% per wave |
 | Viriya tuning | Reduced from 15% to 10% fire rate per stack |
+
+---
+
+## Part 15: Architecture & Bug Fixes (This Session)
+
+| Fix | Description |
+|-----|-------------|
+| Event bus refactor | `maraCombat.ts` no longer imports `hungryGhost.ts` directly. Emits `boss:spawnMinion` event, handled by `spawner.ts` |
+| Game over reset | Pressing SPACE after mercy rule death now calls `resetAll()` before starting new game |
+
+Architecture audit passed:
+- ✅ No circular dependencies
+- ✅ Event bus used for cross-entity communication
+- ✅ Delta time used consistently
+- ✅ Config-driven core values
+- ✅ Event listener cleanup on scene start
+
+Module-level state (isPaused, mara timers, etc.) confirmed appropriate — scene-local ephemeral state that resets on scene reload.
 
 ---
 
