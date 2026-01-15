@@ -76,7 +76,7 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
     const floatOffset = Math.sin(floatPhase) * floatAmplitude * k.dt();
 
     // Move forward along base angle + perpendicular float (with patience slowdown, wave scaling, and cycle scaling)
-    const waveMultiplier = 1 + 0.1 * getCurrentWaveNumber();
+    const waveMultiplier = 1 + 0.025 * getCurrentWaveNumber();
     const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier * getEnemySpeedScaling();
     deva.pos.x += Math.cos(baseAngle) * speed * k.dt();
     deva.pos.y += Math.sin(baseAngle) * speed * k.dt();

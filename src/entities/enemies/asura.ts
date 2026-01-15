@@ -59,7 +59,7 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
       const dirY = dy / dist;
 
       // Direct movement with delta time (with patience slowdown, wave scaling, and cycle scaling)
-      const waveMultiplier = 1 + 0.1 * getCurrentWaveNumber();
+      const waveMultiplier = 1 + 0.025 * getCurrentWaveNumber();
       const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier * getEnemySpeedScaling();
       asura.pos.x += dirX * speed * k.dt();
       asura.pos.y += dirY * speed * k.dt();
