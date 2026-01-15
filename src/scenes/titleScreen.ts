@@ -1,6 +1,7 @@
 // Title screen - "suffer" image with clickable Join/X buttons
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
+import { resetAll } from '../stores/gameStore';
 
 // Brighter purple palette for geometric background
 const COLORS = {
@@ -236,6 +237,7 @@ export function createTitleScreen(k: KAPLAYCtx): void {
   ]);
 
   joinButton.onClick(() => {
+    resetAll(); // Fresh start - clear karma, paramis, kleshas, cycle
     k.go('game');
   });
 

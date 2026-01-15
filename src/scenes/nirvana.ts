@@ -1,24 +1,34 @@
-// Nirvana scene - victory screen with exit confirmation
-import type { KAPLAYCtx, GameObj } from 'kaplay';
+// Nirvana scene - victory screen with cycle choice
+import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { playMusic } from '../systems/audio';
+import { getCycle, getDeaths, getGameState, incrementCycle } from '../stores/gameStore';
 
-type NirvanaState = 'viewing' | 'confirming';
+const FOUR_NOBLE_TRUTHS = [
+  'Life is suffering. You have witnessed this truth.',
+  'Suffering arises from attachment. You have released your grip.',
+  'Suffering can end. You have glimpsed the cessation.',
+  'The path exists. You have walked it.',
+];
 
 export function createNirvanaScene(k: KAPLAYCtx, karma: number): void {
   playMusic('nirvana');
-  let state: NirvanaState = 'viewing';
-  let confirmUI: GameObj[] = [];
+  const cycle = getCycle();
+  const deaths = getDeaths();
+  const state = getGameState();
+  const truth = FOUR_NOBLE_TRUTHS[(cycle - 1) % 4];
 
+  // Background
   k.add([
     k.rect(config.screen.width, config.screen.height),
     k.pos(0, 0),
     k.color(25, 20, 45),
   ]);
 
+  // Glowing circle
   const circle = k.add([
     k.circle(80),
-    k.pos(config.screen.width / 2, config.screen.height / 3 - 20),
+    k.pos(config.screen.width / 2, 100),
     k.anchor('center'),
     k.color(255, 215, 0),
     k.opacity(0.3),
@@ -30,126 +40,98 @@ export function createNirvanaScene(k: KAPLAYCtx, karma: number): void {
     circle.opacity = 0.2 + Math.sin(k.time() * 2) * 0.1;
   });
 
+  // Title
   k.add([
-    k.text('Nirvana Achieved', { size: 48 }),
-    k.pos(config.screen.width / 2, config.screen.height / 3),
+    k.text('Nirvana Achieved', { size: 42 }),
+    k.pos(config.screen.width / 2, 100),
     k.anchor('center'),
     k.color(255, 223, 150),
   ]);
 
+  // Four Noble Truths quote
   k.add([
-    k.text('You have escaped the Wheel of Samsara', { size: 18 }),
-    k.pos(config.screen.width / 2, config.screen.height / 3 + 50),
+    k.text(`"${truth}"`, { size: 16 }),
+    k.pos(config.screen.width / 2, 155),
     k.anchor('center'),
     k.color(200, 180, 220),
   ]);
 
+  // Stats section
+  const statsY = 210;
   k.add([
-    k.text('Mara, the demon of illusion, is vanquished', { size: 16 }),
-    k.pos(config.screen.width / 2, config.screen.height / 3 + 80),
-    k.anchor('center'),
-    k.color(150, 140, 170),
-  ]);
-
-  k.add([
-    k.text(`Final Karma: ${karma}`, { size: 28 }),
-    k.pos(config.screen.width / 2, config.screen.height / 2 + 20),
+    k.text(`Kalpa ${cycle} Complete`, { size: 24 }),
+    k.pos(config.screen.width / 2, statsY),
     k.anchor('center'),
     k.color(255, 215, 0),
   ]);
 
-  const prompt = k.add([
-    k.text('Press SPACE to continue', { size: 18 }),
-    k.pos(config.screen.width / 2, config.screen.height * 0.75),
+  k.add([
+    k.text(`Karma: ${karma}  |  Deaths: ${deaths}`, { size: 18 }),
+    k.pos(config.screen.width / 2, statsY + 35),
     k.anchor('center'),
-    k.color(255, 255, 255),
-    k.opacity(1),
+    k.color(180, 180, 200),
   ]);
 
-  prompt.onUpdate(() => {
-    if (state === 'viewing') {
-      prompt.opacity = 0.5 + Math.sin(k.time() * 2) * 0.5;
+  // Paramis/Kleshas display
+  if (state.paramis.length > 0 || state.kleshas.length > 0) {
+    let effectsText = '';
+    if (state.paramis.length > 0) {
+      effectsText += `Paramis: ${state.paramis.length}  `;
     }
-  });
-
-  function showConfirmation(): void {
-    state = 'confirming';
-    prompt.hidden = true;
-
-    const overlay = k.add([
-      k.rect(config.screen.width, config.screen.height),
-      k.pos(0, 0),
-      k.color(0, 0, 0),
-      k.opacity(0.8),
-      k.z(50),
+    if (state.kleshas.length > 0) {
+      effectsText += `Kleshas: ${state.kleshas.length}`;
+    }
+    k.add([
+      k.text(effectsText, { size: 16 }),
+      k.pos(config.screen.width / 2, statsY + 65),
+      k.anchor('center'),
+      k.color(150, 150, 170),
     ]);
-    confirmUI.push(overlay);
-
-    confirmUI.push(k.add([
-      k.text('Are you sure you want to forget', { size: 20 }),
-      k.pos(config.screen.width / 2, config.screen.height / 3),
-      k.anchor('center'),
-      k.color(255, 200, 100),
-      k.z(51),
-    ]));
-
-    confirmUI.push(k.add([
-      k.text('the unconditioned state beyond', { size: 20 }),
-      k.pos(config.screen.width / 2, config.screen.height / 3 + 28),
-      k.anchor('center'),
-      k.color(255, 200, 100),
-      k.z(51),
-    ]));
-
-    confirmUI.push(k.add([
-      k.text('existence and nonexistence?', { size: 20 }),
-      k.pos(config.screen.width / 2, config.screen.height / 3 + 56),
-      k.anchor('center'),
-      k.color(255, 200, 100),
-      k.z(51),
-    ]));
-
-    confirmUI.push(k.add([
-      k.text('(N) No, time for parinirvana', { size: 18 }),
-      k.pos(config.screen.width / 2, config.screen.height / 2 + 20),
-      k.anchor('center'),
-      k.color(150, 220, 150),
-      k.z(51),
-    ]));
-
-    confirmUI.push(k.add([
-      k.text('(Y) Yes, I like suffering', { size: 18 }),
-      k.pos(config.screen.width / 2, config.screen.height / 2 + 55),
-      k.anchor('center'),
-      k.color(220, 150, 150),
-      k.z(51),
-    ]));
   }
 
-  function hideConfirmation(): void {
-    confirmUI.forEach(obj => obj.destroy());
-    confirmUI = [];
-    state = 'viewing';
-    prompt.hidden = false;
-  }
+  // Choice section
+  const choiceY = 360;
 
-  k.onKeyPress('space', () => {
-    if (state === 'viewing') showConfirmation();
+  k.add([
+    k.text('(P) Parinirvana — True liberation, end your journey', { size: 18 }),
+    k.pos(config.screen.width / 2, choiceY),
+    k.anchor('center'),
+    k.color(150, 220, 150),
+  ]);
+
+  k.add([
+    k.text(`(C) Continue — Return as Bodhisattva (Kalpa ${cycle + 1})`, { size: 18 }),
+    k.pos(config.screen.width / 2, choiceY + 35),
+    k.anchor('center'),
+    k.color(220, 200, 100),
+  ]);
+
+  k.add([
+    k.text('(M) Menu — Abandon this path', { size: 18 }),
+    k.pos(config.screen.width / 2, choiceY + 70),
+    k.anchor('center'),
+    k.color(180, 150, 150),
+  ]);
+
+  // Flavor text
+  k.add([
+    k.text('The Bodhisattva delays liberation to help all beings.', { size: 14 }),
+    k.pos(config.screen.width / 2, config.screen.height - 40),
+    k.anchor('center'),
+    k.color(120, 120, 140),
+  ]);
+
+  // Key handlers
+  k.onKeyPress('p', () => {
+    k.go('credits');
   });
 
-  k.onMousePress('left', () => {
-    if (state === 'viewing') showConfirmation();
+  k.onKeyPress('c', () => {
+    incrementCycle();
+    k.go('game');
   });
 
-  k.onKeyPress('n', () => {
-    if (state === 'confirming') k.go('credits');
-  });
-
-  k.onKeyPress('y', () => {
-    if (state === 'confirming') k.go('menu');
-  });
-
-  k.onKeyPress('escape', () => {
-    if (state === 'confirming') hideConfirmation();
+  k.onKeyPress('m', () => {
+    k.go('menu');
   });
 }

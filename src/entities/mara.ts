@@ -85,6 +85,8 @@ function updateCombat(k: KAPLAYCtx): void {
   if (healthPercent <= cfg.phase3Threshold && currentPhase !== 'phase3') {
     currentPhase = 'phase3';
     mara.phase = 'phase3';
+    // Adjust timer so position stays continuous when speed changes (1.0 → 1.5)
+    movementTimer = movementTimer * (1.0 / 1.5);
     events.emit('boss:phaseChange', { phase: 3 });
   } else if (healthPercent <= cfg.phase2Threshold && currentPhase === 'phase1') {
     currentPhase = 'phase2';

@@ -19,15 +19,14 @@ import { resetRebirthOverlay } from '../ui/rebirthOverlay';
 import { setupRebirthHud } from '../ui/rebirthHud';
 import { events } from '../utils/events';
 import { playMusic } from '../systems/audio';
-import { resetAll } from '../stores/gameStore';
+import { getCycle } from '../stores/gameStore';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
   // Clear all event listeners from previous scene
   events.clear();
 
-  // Reset game state and UI for new run
-  resetAll();
+  // Reset rebirth overlay UI (not game state - that's handled by menu/titleScreen)
   resetRebirthOverlay();
 
   // Play gameplay music
@@ -75,6 +74,18 @@ export function createGameScene(k: KAPLAYCtx): void {
     k.color(255, 255, 255),
     k.fixed(),
   ]);
+
+  // Kalpa indicator (only shown after first kalpa)
+  const cycle = getCycle();
+  if (cycle > 1) {
+    k.add([
+      k.text(`Kalpa ${cycle}`, { size: 20 }),
+      k.pos(config.screen.width - 150, config.hud.height / 2),
+      k.anchor('right'),
+      k.color(220, 200, 100),
+      k.fixed(),
+    ]);
+  }
 
   // Setup systems
   setupCollisions(k);

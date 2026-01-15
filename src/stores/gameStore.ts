@@ -5,6 +5,7 @@ interface GameState {
   karmaThisLife: number;
   deaths: number;
   deathsWithZeroKarma: number; // Consecutive deaths with 0 karma this life
+  cycle: number; // Current cycle (starts at 1, increments on Continue)
   paramis: string[];
   kleshas: string[];
 }
@@ -14,6 +15,7 @@ const defaultState: GameState = {
   karmaThisLife: 0,
   deaths: 0,
   deathsWithZeroKarma: 0,
+  cycle: 1,
   paramis: [],
   kleshas: [],
 };
@@ -35,6 +37,10 @@ export function getKarmaThisLife(): number {
 
 export function getDeaths(): number {
   return state.deaths;
+}
+
+export function getCycle(): number {
+  return state.cycle;
 }
 
 // Actions
@@ -73,4 +79,11 @@ export function addParami(parami: string): void {
 
 export function addKlesha(klesha: string): void {
   state.kleshas = [...state.kleshas, klesha];
+}
+
+// Called when player chooses "Continue" after defeating Mara
+export function incrementCycle(): void {
+  state.cycle += 1;
+  state.karmaThisLife = 0; // Reset karma for new cycle
+  state.deathsWithZeroKarma = 0; // Reset mercy rule
 }
