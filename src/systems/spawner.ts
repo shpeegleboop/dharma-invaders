@@ -23,6 +23,11 @@ export function setupSpawner(k: KAPLAYCtx): void {
   k.onUpdate(() => {
     if (isPaused) return;
     if (isRebirthOverlayActive()) return;
+
+    // Don't spawn while player is invincible (respawn protection)
+    const player = k.get('player')[0];
+    if (player?.invincible) return;
+
     if (!state.active || state.betweenWaves) return;
 
     const currentWave = getCurrentWaveConfig(state);

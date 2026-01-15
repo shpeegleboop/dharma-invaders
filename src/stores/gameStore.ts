@@ -4,7 +4,7 @@ interface GameState {
   karmaTotal: number;
   karmaThisLife: number;
   deaths: number;
-  deathsWithoutKill: number;
+  deathsWithZeroKarma: number; // Consecutive deaths with 0 karma this life
   paramis: string[];
   kleshas: string[];
 }
@@ -13,7 +13,7 @@ const defaultState: GameState = {
   karmaTotal: 0,
   karmaThisLife: 0,
   deaths: 0,
-  deathsWithoutKill: 0,
+  deathsWithZeroKarma: 0,
   paramis: [],
   kleshas: [],
 };
@@ -43,18 +43,24 @@ export function addKarma(amount: number): void {
   state.karmaThisLife += amount;
 }
 
-export function recordDeath(): void {
+// Called on player death - returns true if mercy rule triggered
+export function recordDeath(): boolean {
   state.deaths += 1;
-  state.deathsWithoutKill += 1;
-}
 
-export function recordKill(): void {
-  state.deathsWithoutKill = 0;
+  if (state.karmaThisLife === 0) {
+    // Died with no karma earned this life - wasted life
+    state.deathsWithZeroKarma += 1;
+  } else {
+    // Died with karma earned - reset counter
+    state.deathsWithZeroKarma = 0;
+  }
+
+  return state.deathsWithZeroKarma >= 3;
 }
 
 export function resetLife(): void {
   state.karmaThisLife = 0;
-  state.deathsWithoutKill = 0;
+  // Don't reset deathsWithZeroKarma - that persists across lives
 }
 
 export function resetAll(): void {

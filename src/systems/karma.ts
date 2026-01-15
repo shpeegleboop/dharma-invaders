@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { getGameState, getKarmaTotal, addKarma, recordKill } from '../stores/gameStore';
+import { getGameState, getKarmaTotal, addKarma } from '../stores/gameStore';
 
 let karmaText: GameObj | null = null;
 let karmaThisLifeText: GameObj | null = null;
@@ -33,7 +33,6 @@ export function setupKarma(k: KAPLAYCtx): void {
   // Listen for enemy kills
   events.on('enemy:killed', (data) => {
     addKarma(data.karmaValue);
-    recordKill();
     const state = getGameState();
     events.emit('karma:changed', { newValue: state.karmaTotal, delta: data.karmaValue });
 
