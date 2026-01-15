@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { createBossProjectile } from './bossProjectile';
-import { createHungryGhost } from './enemies/hungryGhost';
+import { events } from '../utils/events';
 
 export function fireAtPlayer(
   k: KAPLAYCtx,
@@ -27,7 +27,7 @@ export function fireAtPlayer(
 }
 
 export function spawnMinion(k: KAPLAYCtx): void {
-  // Spawn hungry ghost from random edge
+  // Emit event for spawner to handle - no direct entity import
   const edge = k.rand(0, 4) | 0;
   let x: number, y: number;
 
@@ -49,5 +49,5 @@ export function spawnMinion(k: KAPLAYCtx): void {
       y = k.rand(config.arena.offsetY + 50, config.screen.height - 50);
   }
 
-  createHungryGhost(k, x, y);
+  events.emit('boss:spawnMinion', { x, y });
 }

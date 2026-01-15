@@ -71,6 +71,11 @@ export function setupSpawner(k: KAPLAYCtx): void {
     state.active = false;
     state.enemyQueue = [];
   });
+
+  // Boss minion spawns (decoupled from maraCombat via event)
+  events.on('boss:spawnMinion', (data) => {
+    createHungryGhost(k, data.x, data.y);
+  });
 }
 
 function startWave(k: KAPLAYCtx): void {
