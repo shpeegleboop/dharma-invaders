@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from './events';
 import { spawnMara } from '../entities/mara';
+import { addParami, addKlesha, getGameState } from '../stores/gameStore';
 
 const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
 
@@ -75,6 +76,25 @@ export function setupDebug(k: KAPLAYCtx): void {
       player.invincible = state.invincible;
     }
     updateIndicator();
+  });
+
+  // Parami debug keys: T=Dana, Y=Viriya, U=Metta, I=Upekkha
+  k.onKeyPress('t', () => addParami('Dana'));
+  k.onKeyPress('y', () => addParami('Viriya'));
+  k.onKeyPress('u', () => addParami('Metta'));
+  k.onKeyPress('i', () => addParami('Upekkha'));
+
+  // Klesha debug keys: G=Lobha, H=Dosa, J=Mana, K=Vicikiccha
+  k.onKeyPress('g', () => addKlesha('Lobha'));
+  k.onKeyPress('h', () => addKlesha('Dosa'));
+  k.onKeyPress('j', () => addKlesha('Mana'));
+  k.onKeyPress('k', () => addKlesha('Vicikiccha'));
+
+  // M: Clear all paramis and kleshas
+  k.onKeyPress('m', () => {
+    const state = getGameState();
+    state.paramis.length = 0;
+    state.kleshas.length = 0;
   });
 
   // Keep player invincible if debug invincibility is on
