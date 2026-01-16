@@ -5,8 +5,14 @@ import { getRebirthTier, getTierColor } from '../systems/rebirthTiers';
 import { addParami, addKlesha } from '../stores/gameStore';
 
 // Available paramis and kleshas for random selection
-const PARAMI_POOL = ['Dana', 'Viriya', 'Metta', 'Upekkha'];
-const KLESHA_POOL = ['Lobha', 'Dosa', 'Mana', 'Vicikiccha'];
+const PARAMI_POOL = [
+  'Dana', 'Viriya', 'Metta', 'Upekkha',
+  'Sila', 'Khanti', 'Panna', 'Adhitthana', 'Nekkhamma',
+];
+const KLESHA_POOL = [
+  'Lobha', 'Dosa', 'Mana', 'Vicikiccha',
+  'Moha', 'Thina', 'Anottappa', 'Micchaditthi',
+];
 
 let overlayObjects: GameObj[] = [];
 let isOverlayActive = false;

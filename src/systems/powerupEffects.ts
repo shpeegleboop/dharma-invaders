@@ -7,6 +7,7 @@ import { isPaused } from '../ui/pauseMenu';
 import {
   getFireRateMultiplier as getRebirthFireRate,
   getEnemySpeedMultiplier as getRebirthEnemySpeed,
+  getPowerupDurationMultiplier,
 } from './rebirthEffects';
 
 type PowerupState = {
@@ -75,11 +76,11 @@ function activatePowerup(_k: KAPLAYCtx, type: VirtueType): void {
 
   state.active = type;
 
-  // Meditation lasts until hit, others have duration
+  // Meditation lasts until hit, others have duration (with Khanti/Moha modifier)
   if (type === 'meditation') {
     state.timeRemaining = -1; // Infinite until broken
   } else {
-    state.timeRemaining = config.powerups.duration;
+    state.timeRemaining = config.powerups.duration * getPowerupDurationMultiplier();
   }
 
   events.emit('powerup:activated', { type });

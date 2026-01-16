@@ -40,9 +40,58 @@ export function getEnemySpeedMultiplier(): number {
   return Math.max(0.3, 1 - (upekkha * 0.10) + (dosa * 0.10));
 }
 
+// Khanti (+20% powerup duration) vs Moha (-20% powerup duration)
+export function getPowerupDurationMultiplier(): number {
+  const khanti = countParami('Khanti');
+  const moha = countKlesha('Moha');
+  return Math.max(0.2, 1 + (khanti * 0.20) - (moha * 0.20));
+}
+
+// Panna (+1 damage) vs Anottappa (-1 damage, min 1 total)
+export function getProjectileDamageModifier(): number {
+  const panna = countParami('Panna');
+  const anottappa = countKlesha('Anottappa');
+  return panna - anottappa;
+}
+
+// Thina (-10% player speed per stack)
+export function getPlayerSpeedMultiplier(): number {
+  const thina = countKlesha('Thina');
+  return Math.max(0.3, 1 - (thina * 0.10));
+}
+
+// Nekkhamma (+0.5x karma) vs Micchaditthi (-0.25x karma)
+export function getKarmaMultiplier(): number {
+  const nekkhamma = countParami('Nekkhamma');
+  const micchaditthi = countKlesha('Micchaditthi');
+  return Math.max(0.25, 1 + (nekkhamma * 0.50) - (micchaditthi * 0.25));
+}
+
+// Adhitthana (+1s respawn invincibility per stack)
+export function getInvincibilityBonus(): number {
+  const adhitthana = countParami('Adhitthana');
+  return adhitthana * 1000; // Returns milliseconds
+}
+
+// Sila (start each life with Meditation shield)
+export function hasSila(): boolean {
+  return countParami('Sila') > 0;
+}
+
 // Debug: get current effect summary
 export function getEffectSummary(): string {
   const hp = getMaxHealthModifier();
   const hpStr = hp >= 0 ? `+${hp}` : `${hp}`;
-  return `Drop: ${getDropRateMultiplier().toFixed(2)}x | Fire: ${getFireRateMultiplier().toFixed(2)}x | HP: ${hpStr} | Enemy Speed: ${getEnemySpeedMultiplier().toFixed(2)}x`;
+  const dmg = getProjectileDamageModifier();
+  const dmgStr = dmg >= 0 ? `+${dmg}` : `${dmg}`;
+  return [
+    `Drop:${getDropRateMultiplier().toFixed(2)}x`,
+    `Fire:${getFireRateMultiplier().toFixed(2)}x`,
+    `HP:${hpStr}`,
+    `Dmg:${dmgStr}`,
+    `ESpd:${getEnemySpeedMultiplier().toFixed(2)}x`,
+    `PSpd:${getPlayerSpeedMultiplier().toFixed(2)}x`,
+    `Karma:${getKarmaMultiplier().toFixed(2)}x`,
+    `Dur:${getPowerupDurationMultiplier().toFixed(2)}x`,
+  ].join(' | ');
 }

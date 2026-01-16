@@ -1,11 +1,18 @@
 // Collision detection system
 import type { KAPLAYCtx } from 'kaplay';
+import config from '../data/config.json';
 import { events } from '../utils/events';
 import { createPowerup, shouldDropPowerup } from '../entities/powerup';
 import { getActivePowerup } from './powerupEffects';
 import { damageMara, getMaraPhase } from '../entities/mara';
 import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
+import { getProjectileDamageModifier } from './rebirthEffects';
+
+// Calculate effective projectile damage with Panna/Anottappa modifiers
+function getProjectileDamage(): number {
+  return Math.max(1, config.projectile.damage + getProjectileDamageModifier());
+}
 
 export function setupCollisions(k: KAPLAYCtx): void {
   // Projectile hits enemy
@@ -18,7 +25,8 @@ export function setupCollisions(k: KAPLAYCtx): void {
       projectile.destroy();
     }
 
-    enemy.hurt(1);
+    // Apply Panna/Anottappa damage modifier
+    enemy.hurt(getProjectileDamage());
 
     if (enemy.hp() <= 0) {
       const pos = { x: enemy.pos.x, y: enemy.pos.y };
@@ -81,7 +89,8 @@ export function setupCollisions(k: KAPLAYCtx): void {
       projectile.destroy();
     }
 
-    damageMara(1);
+    // Apply Panna/Anottappa damage modifier to boss
+    damageMara(getProjectileDamage());
   });
 
   // Player touches boss

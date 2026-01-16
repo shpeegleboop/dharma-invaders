@@ -11,7 +11,12 @@ import { pushAllEnemies } from '../systems/enemyHelpers';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import { getGameState, resetLife } from '../stores/gameStore';
 import { updateKarmaDisplay } from '../systems/karma';
-import { getMaxHealthModifier } from '../systems/rebirthEffects';
+import {
+  getMaxHealthModifier,
+  getPlayerSpeedMultiplier,
+  getInvincibilityBonus,
+  hasSila,
+} from '../systems/rebirthEffects';
 
 // Calculate effective max health with rebirth modifiers
 function getEffectiveMaxHealth(): number {
@@ -106,8 +111,14 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
         player.pos.y = config.arena.offsetY + config.arena.height / 2;
         player.setHP(getEffectiveMaxHealth());
 
-        // Respawn invincibility from config
-        const respawnInvincibility = config.roguelike.respawnInvincibility;
+        // Respawn invincibility from config + Adhitthana bonus
+        const respawnInvincibility = config.roguelike.respawnInvincibility + getInvincibilityBonus();
+
+        // Sila: grant Meditation shield on respawn
+        if (hasSila()) {
+          events.emit('player:powerup', { type: 'meditation' });
+        }
+
         k.wait(respawnInvincibility / 1000, () => {
           player.invincible = false;
           player.opacity = 1;
@@ -134,7 +145,8 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     // Rotate to face mouse
     player.angle = k.rad2deg(getAngleToMouse());
 
-    const speed = config.player.speed;
+    // Apply Thina debuff to player speed
+    const speed = config.player.speed * getPlayerSpeedMultiplier();
     let dx = 0;
     let dy = 0;
 

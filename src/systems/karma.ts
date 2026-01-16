@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { getGameState, getKarmaTotal, addKarma } from '../stores/gameStore';
+import { getKarmaMultiplier } from './rebirthEffects';
 
 let karmaText: GameObj | null = null;
 let karmaThisLifeText: GameObj | null = null;
@@ -32,9 +33,11 @@ export function setupKarma(k: KAPLAYCtx): void {
 
   // Listen for enemy kills
   events.on('enemy:killed', (data) => {
-    addKarma(data.karmaValue);
+    // Apply Nekkhamma/Micchaditthi karma multiplier
+    const karmaEarned = Math.round(data.karmaValue * getKarmaMultiplier());
+    addKarma(karmaEarned);
     const state = getGameState();
-    events.emit('karma:changed', { newValue: state.karmaTotal, delta: data.karmaValue });
+    events.emit('karma:changed', { newValue: state.karmaTotal, delta: karmaEarned });
 
     if (karmaText) {
       karmaText.text = `Karma: ${state.karmaTotal}`;
