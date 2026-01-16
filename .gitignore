@@ -24,3 +24,12 @@ Thumbs.db
 
 # Tauri (if added later)
 src-tauri/target/
+
+# Dev docs (keep private)
+CLAUDE.md
+VISION.md
+SESSION_HANDOFF.md
+ROADMAP.md
+LORE.md
+AUDIO.md
+FUTURE_IDEAS.md
