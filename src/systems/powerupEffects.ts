@@ -220,3 +220,16 @@ export function isSpreadShotActive(): boolean {
 export function isPiercingActive(): boolean {
   return state.active.has('wisdom');
 }
+
+// Shield charge getters/setters for persistence across kalpas
+export function getShieldCharges(): number {
+  return state.shieldActive ? state.shieldCharges : 0;
+}
+
+export function restoreShieldCharges(charges: number): void {
+  if (charges > 0) {
+    state.shieldActive = true;
+    state.shieldCharges = charges;
+    updateHUD();
+  }
+}

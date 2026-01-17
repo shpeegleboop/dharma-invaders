@@ -9,6 +9,7 @@ interface GameState {
   paramis: string[];
   kleshas: string[];
   savedHealth: number | null; // Health to restore on next kalpa (null = use max)
+  savedShieldCharges: number | null; // Shield charges to restore on next kalpa
 }
 
 const defaultState: GameState = {
@@ -20,6 +21,7 @@ const defaultState: GameState = {
   paramis: [],
   kleshas: [],
   savedHealth: null,
+  savedShieldCharges: null,
 };
 
 let state: GameState = { ...defaultState };
@@ -100,4 +102,16 @@ export function consumeSavedHealth(): number | null {
   const health = state.savedHealth;
   state.savedHealth = null;
   return health;
+}
+
+// Save shield charges when beating boss (for next kalpa)
+export function saveShieldCharges(charges: number): void {
+  state.savedShieldCharges = charges > 0 ? charges : null;
+}
+
+// Get and consume saved shield charges (returns null if none saved)
+export function consumeSavedShieldCharges(): number | null {
+  const charges = state.savedShieldCharges;
+  state.savedShieldCharges = null;
+  return charges;
 }

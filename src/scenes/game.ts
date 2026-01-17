@@ -6,7 +6,7 @@ import { setupKarma, getKarma } from '../systems/karma';
 import { setupHealth, setHealthDisplay } from '../systems/health';
 import { setupSpawner } from '../systems/spawner';
 import { setupWaveDisplay } from '../systems/waveDisplay';
-import { setupPowerupEffects } from '../systems/powerupEffects';
+import { setupPowerupEffects, getShieldCharges, restoreShieldCharges } from '../systems/powerupEffects';
 import { setupBossHealthBar } from '../systems/bossHealthBar';
 import { setupMercyRule } from '../systems/mercyRule';
 import { setupDebug } from '../utils/debug';
@@ -19,7 +19,13 @@ import { resetRebirthOverlay } from '../ui/rebirthOverlay';
 import { setupRebirthHud } from '../ui/rebirthHud';
 import { events } from '../utils/events';
 import { playMusic } from '../systems/audio';
-import { getCycle, saveHealth, consumeSavedHealth } from '../stores/gameStore';
+import {
+  getCycle,
+  saveHealth,
+  consumeSavedHealth,
+  saveShieldCharges,
+  consumeSavedShieldCharges,
+} from '../stores/gameStore';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
@@ -122,15 +128,20 @@ export function createGameScene(k: KAPLAYCtx): void {
   // Spawn player
   const player = createPlayer(k);
 
-  // Restore saved health from previous kalpa (if any)
+  // Restore saved health and shield from previous kalpa (if any)
   const savedHP = consumeSavedHealth();
   if (savedHP !== null) {
     player.setHP(savedHP);
     setHealthDisplay(savedHP);
   }
+  const savedShield = consumeSavedShieldCharges();
+  if (savedShield !== null) {
+    restoreShieldCharges(savedShield);
+  }
 
-  // Save player health when boss is defeated (for next kalpa)
+  // Save player health and shield when boss is defeated (for next kalpa)
   events.on('boss:defeated', () => {
     saveHealth(player.hp());
+    saveShieldCharges(getShieldCharges());
   });
 }
