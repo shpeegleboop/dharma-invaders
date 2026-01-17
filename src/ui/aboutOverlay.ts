@@ -139,7 +139,7 @@ function renderRebirth(): void {
 
   // Powerups row
   tabContent.push(k.add([
-    k.text('Powerups', { size: 14 }), k.pos(w / 2, 118), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101),
+    k.text('Powerups', { size: 18 }), k.pos(w / 2, 118), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101),
   ]));
   const powerups = [
     { name: 'Compassion', color: '#FF69B4', effect: 'Spread' },
@@ -151,18 +151,18 @@ function renderRebirth(): void {
   ];
   let px = 70;
   powerups.forEach(p => {
-    tabContent.push(k.add([k.circle(5), k.pos(px, 138), k.color(k.Color.fromHex(p.color)), k.anchor('center'), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(p.name, { size: 9 }), k.pos(px, 148), k.anchor('center'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(p.effect, { size: 8 }), k.pos(px, 158), k.anchor('center'), k.color(120, 120, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.circle(8), k.pos(px, 145), k.color(k.Color.fromHex(p.color)), k.anchor('center'), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.name, { size: 12 }), k.pos(px, 160), k.anchor('center'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.effect, { size: 11 }), k.pos(px, 175), k.anchor('center'), k.color(120, 120, 140), k.fixed(), k.z(101)]));
     px += 115;
   });
 
   // Paramis section
   tabContent.push(k.add([
-    k.text('Paramis (Buffs)', { size: 12 }), k.pos(55, 175), k.color(144, 238, 144), k.fixed(), k.z(101),
+    k.text('Paramis (Buffs)', { size: 16 }), k.pos(55, 200), k.color(144, 238, 144), k.fixed(), k.z(101),
   ]));
   tabContent.push(k.add([
-    k.text('Max', { size: 9 }), k.pos(340, 176), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Max', { size: 12 }), k.pos(340, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const paramis = [
     { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
@@ -176,20 +176,20 @@ function renderRebirth(): void {
     { name: 'Nekkhamma (Renounce)', effect: '+50% karma', max: 2 },
     { name: 'Sacca (Truth)', effect: '+5% lotus', max: 1 },
   ];
-  let y = 190;
+  let y = 222;
   paramis.forEach(p => {
-    tabContent.push(k.add([k.text(p.name, { size: 10 }), k.pos(60, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(p.effect, { size: 10 }), k.pos(215, y), k.color(140, 200, 140), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`${p.max}`, { size: 10 }), k.pos(345, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
-    y += 15;
+    tabContent.push(k.add([k.text(p.name, { size: 14 }), k.pos(60, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.effect, { size: 14 }), k.pos(230, y), k.color(140, 200, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${p.max}`, { size: 14 }), k.pos(350, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
+    y += 22;
   });
 
   // Kleshas section
   tabContent.push(k.add([
-    k.text('Kleshas (Debuffs)', { size: 12 }), k.pos(400, 175), k.color(255, 100, 100), k.fixed(), k.z(101),
+    k.text('Kleshas (Debuffs)', { size: 16 }), k.pos(400, 200), k.color(255, 100, 100), k.fixed(), k.z(101),
   ]));
   tabContent.push(k.add([
-    k.text('Max', { size: 9 }), k.pos(700, 176), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Max', { size: 12 }), k.pos(710, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const kleshas = [
     { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
@@ -201,12 +201,12 @@ function renderRebirth(): void {
     { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
     { name: 'Micchaditthi (Wrong)', effect: '-25% karma', max: 2 },
   ];
-  y = 190;
+  y = 222;
   kleshas.forEach(kl => {
-    tabContent.push(k.add([k.text(kl.name, { size: 10 }), k.pos(405, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(kl.effect, { size: 10 }), k.pos(555, y), k.color(200, 140, 140), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`${kl.max}`, { size: 10 }), k.pos(705, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
-    y += 15;
+    tabContent.push(k.add([k.text(kl.name, { size: 14 }), k.pos(405, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(kl.effect, { size: 14 }), k.pos(575, y), k.color(200, 140, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${kl.max}`, { size: 14 }), k.pos(720, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
+    y += 22;
   });
 }
 

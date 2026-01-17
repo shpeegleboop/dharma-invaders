@@ -127,7 +127,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
 
     // Powerups section
     pageContent.push(k.add([
-      k.text('Virtue Powerups', { size: 16 }), k.pos(w / 2, 115), k.anchor('center'), k.color(255, 215, 0),
+      k.text('Virtue Powerups', { size: 20 }), k.pos(w / 2, 115), k.anchor('center'), k.color(255, 215, 0),
     ]));
     const powerups = [
       { name: 'Compassion', color: '#FF69B4', effect: 'Spread shot' },
@@ -137,20 +137,20 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
       { name: 'Paduma', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
     ];
-    let px = 65;
+    let px = 70;
     powerups.forEach(p => {
-      pageContent.push(k.add([k.circle(6), k.pos(px, 140), k.color(k.Color.fromHex(p.color)), k.anchor('center')]));
-      pageContent.push(k.add([k.text(p.name, { size: 11 }), k.pos(px, 152), k.anchor('center'), k.color(200, 200, 220)]));
-      pageContent.push(k.add([k.text(p.effect, { size: 9 }), k.pos(px, 164), k.anchor('center'), k.color(140, 140, 160)]));
-      px += 125;
+      pageContent.push(k.add([k.circle(10), k.pos(px, 145), k.color(k.Color.fromHex(p.color)), k.anchor('center')]));
+      pageContent.push(k.add([k.text(p.name, { size: 14 }), k.pos(px, 162), k.anchor('center'), k.color(200, 200, 220)]));
+      pageContent.push(k.add([k.text(p.effect, { size: 12 }), k.pos(px, 180), k.anchor('center'), k.color(140, 140, 160)]));
+      px += 122;
     });
 
     // Paramis section
     pageContent.push(k.add([
-      k.text('Paramis (Perfections)', { size: 14 }), k.pos(55, 190), k.color(144, 238, 144),
+      k.text('Paramis (Perfections)', { size: 18 }), k.pos(55, 210), k.color(144, 238, 144),
     ]));
     pageContent.push(k.add([
-      k.text('Max', { size: 10 }), k.pos(355, 192), k.color(100, 100, 120),
+      k.text('Max', { size: 14 }), k.pos(355, 212), k.color(100, 100, 120),
     ]));
     const paramis = [
       { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
@@ -164,20 +164,20 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Nekkhamma (Renunciation)', effect: '+50% karma', max: 2 },
       { name: 'Sacca (Truthfulness)', effect: '+5% lotus', max: 1 },
     ];
-    let y = 208;
+    let y = 235;
     paramis.forEach(p => {
-      pageContent.push(k.add([k.text(p.name, { size: 11 }), k.pos(60, y), k.color(180, 255, 180)]));
-      pageContent.push(k.add([k.text(p.effect, { size: 11 }), k.pos(230, y), k.color(140, 200, 140)]));
-      pageContent.push(k.add([k.text(`${p.max}`, { size: 11 }), k.pos(360, y), k.color(100, 150, 100)]));
-      y += 17;
+      pageContent.push(k.add([k.text(p.name, { size: 15 }), k.pos(60, y), k.color(180, 255, 180)]));
+      pageContent.push(k.add([k.text(p.effect, { size: 15 }), k.pos(245, y), k.color(140, 200, 140)]));
+      pageContent.push(k.add([k.text(`${p.max}`, { size: 15 }), k.pos(365, y), k.color(100, 150, 100)]));
+      y += 24;
     });
 
     // Kleshas section
     pageContent.push(k.add([
-      k.text('Kleshas (Afflictions)', { size: 14 }), k.pos(420, 190), k.color(255, 100, 100),
+      k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(420, 210), k.color(255, 100, 100),
     ]));
     pageContent.push(k.add([
-      k.text('Max', { size: 10 }), k.pos(720, 192), k.color(100, 100, 120),
+      k.text('Max', { size: 14 }), k.pos(725, 212), k.color(100, 100, 120),
     ]));
     const kleshas = [
       { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
@@ -189,18 +189,18 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
       { name: 'Micchaditthi (Wrong View)', effect: '-25% karma', max: 2 },
     ];
-    y = 208;
+    y = 235;
     kleshas.forEach(kl => {
-      pageContent.push(k.add([k.text(kl.name, { size: 11 }), k.pos(425, y), k.color(255, 150, 150)]));
-      pageContent.push(k.add([k.text(kl.effect, { size: 11 }), k.pos(590, y), k.color(200, 140, 140)]));
-      pageContent.push(k.add([k.text(`${kl.max}`, { size: 11 }), k.pos(725, y), k.color(150, 100, 100)]));
-      y += 17;
+      pageContent.push(k.add([k.text(kl.name, { size: 15 }), k.pos(425, y), k.color(255, 150, 150)]));
+      pageContent.push(k.add([k.text(kl.effect, { size: 15 }), k.pos(600, y), k.color(200, 140, 140)]));
+      pageContent.push(k.add([k.text(`${kl.max}`, { size: 15 }), k.pos(735, y), k.color(150, 100, 100)]));
+      y += 24;
     });
 
     // Footer
     pageContent.push(k.add([
-      k.text('Karma at death determines buffs/debuffs. Effects stack per rebirth.', { size: 11 }),
-      k.pos(w / 2, 395), k.anchor('center'), k.color(100, 100, 120),
+      k.text('Karma at death determines buffs/debuffs. Effects stack per rebirth.', { size: 14 }),
+      k.pos(w / 2, 480), k.anchor('center'), k.color(100, 100, 120),
     ]));
   }
 
