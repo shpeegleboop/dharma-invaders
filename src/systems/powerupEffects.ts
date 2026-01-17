@@ -78,6 +78,9 @@ export function setupPowerupEffects(k: KAPLAYCtx): void {
 }
 
 function activatePowerup(_k: KAPLAYCtx, type: VirtueType): void {
+  // Paduma is handled separately (instant heal, not a timed powerup)
+  if (type === 'paduma') return;
+
   // Deactivate previous powerup
   if (state.active) {
     deactivatePowerup();

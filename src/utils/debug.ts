@@ -5,7 +5,8 @@ import { events } from './events';
 import { spawnMara } from '../entities/mara';
 import { addParami, addKlesha, getGameState } from '../stores/gameStore';
 
-const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation', 'paduma'];
+// Paduma not included - it's an instant heal, not a timed powerup
+const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
 
 type DebugState = {
   hitboxes: boolean;
