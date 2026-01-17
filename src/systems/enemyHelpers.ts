@@ -31,7 +31,7 @@ export function pushEnemyFromCenter(enemy: GameObj, minDistance: number): void {
   }
 
   // Clamp to arena bounds
-  const margin = 30;
+  const margin = config.enemies.spawnMargin;
   enemy.pos.x = Math.max(margin, Math.min(config.screen.width - margin, enemy.pos.x));
   enemy.pos.y = Math.max(
     config.arena.offsetY + margin,
@@ -44,6 +44,6 @@ export function pushEnemyFromCenter(enemy: GameObj, minDistance: number): void {
 export function pushAllEnemies(k: KAPLAYCtx): void {
   const enemies = k.get('enemy');
   enemies.forEach((enemy) => {
-    pushEnemyFromCenter(enemy, 250);
+    pushEnemyFromCenter(enemy, config.enemies.respawnPushDistance);
   });
 }

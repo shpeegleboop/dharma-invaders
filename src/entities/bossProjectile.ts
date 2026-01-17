@@ -1,7 +1,7 @@
 // Boss projectile - aimed at player, damages on contact
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 
 export function createBossProjectile(
   k: KAPLAYCtx,
@@ -26,14 +26,14 @@ export function createBossProjectile(
   ]);
 
   projectile.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
 
     // Move in set direction
     projectile.pos.x += Math.cos(projectile.moveAngle) * projectile.speed * k.dt();
     projectile.pos.y += Math.sin(projectile.moveAngle) * projectile.speed * k.dt();
 
     // Destroy if off screen
-    const margin = 50;
+    const margin = config.projectile.offscreenMargin;
     if (
       projectile.pos.x < -margin ||
       projectile.pos.x > config.screen.width + margin ||

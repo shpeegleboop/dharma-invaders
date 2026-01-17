@@ -9,8 +9,8 @@ let barFill: GameObj | null = null;
 let barLabel: GameObj | null = null;
 let isVisible = false;
 
-const BAR_WIDTH = 300;
-const BAR_HEIGHT = 16;
+const BAR_WIDTH = config.boss.healthBar.width;
+const BAR_HEIGHT = config.boss.healthBar.height;
 const BAR_X = config.screen.width / 2;
 const BAR_Y = config.hud.height - 28;
 

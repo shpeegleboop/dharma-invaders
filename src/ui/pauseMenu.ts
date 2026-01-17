@@ -5,8 +5,13 @@ import { setupAboutOverlay, showAboutOverlay, hideAboutOverlay } from './aboutOv
 
 type PauseState = 'playing' | 'paused' | 'audioSettings' | 'aboutOverlay' | 'quitConfirm';
 
-// Global pause flag - import this in entity/system files
-export let isPaused = false;
+// Private pause flag
+let paused = false;
+
+// Getter function for pause state
+export function getIsPaused(): boolean {
+  return paused;
+}
 
 let state: PauseState = 'playing';
 let overlay: GameObj | null = null;
@@ -21,7 +26,7 @@ export function setupPauseMenu(
   audioSettingsShow: () => void,
   audioSettingsHide: () => void
 ): void {
-  isPaused = false;
+  paused = false;
   state = 'playing';
   overlay = null;
   menuItems = [];
@@ -103,14 +108,14 @@ export function setupPauseMenu(
 function pause(): void {
   if (!kRef) return;
   state = 'paused';
-  isPaused = true;
+  paused = true;
   showPauseUI();
 }
 
 function resume(): void {
   if (!kRef) return;
   state = 'playing';
-  isPaused = false;
+  paused = false;
   hidePauseUI();
 }
 

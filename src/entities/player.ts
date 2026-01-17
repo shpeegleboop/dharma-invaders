@@ -5,7 +5,7 @@ import { createProjectile } from './projectile';
 import { events } from '../utils/events';
 import { getShootCooldownMultiplier, isSpreadShotActive } from '../systems/powerupEffects';
 import { isGameOver } from '../systems/mercyRule';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
 import { pushAllEnemies } from '../systems/enemyHelpers';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
@@ -47,7 +47,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
   // Shoot function
   function shoot() {
-    if (isPaused) return;
+    if (getIsPaused()) return;
     if (player.invincible) return;
     if (isRebirthOverlayActive()) return;
     if (!canShoot) return;
@@ -58,7 +58,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
     if (isSpreadShotActive()) {
       // Compassion: 3-way spread shot
-      const spreadAngle = 0.25; // ~15 degrees
+      const spreadAngle = config.player.spreadAngle;
       for (const angleOffset of [-spreadAngle, 0, spreadAngle]) {
         const shotAngle = angle + angleOffset;
         const spawnX = player.pos.x + Math.cos(shotAngle) * offset;
@@ -89,7 +89,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     player.invincible = true;
     const state = getGameState();
 
-    k.wait(0.5, () => {
+    k.wait(config.player.deathDelay, () => {
       // Don't respawn if mercy rule triggered game over
       if (isGameOver()) {
         player.invincible = false;
@@ -125,11 +125,12 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
         // Flash during respawn invincibility
         let flashCount = 0;
-        const flashInterval = k.loop(0.1, () => {
+        const flashIntervalMs = config.player.respawnFlashInterval * 1000;
+        const flashLoop = k.loop(config.player.respawnFlashInterval, () => {
           player.opacity = player.opacity === 1 ? 0.3 : 1;
           flashCount++;
-          if (flashCount >= respawnInvincibility / 100) {
-            flashInterval.cancel();
+          if (flashCount >= respawnInvincibility / flashIntervalMs) {
+            flashLoop.cancel();
             player.opacity = 1;
           }
         });
@@ -139,7 +140,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
 
   // Movement with delta time
   player.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
 
     // Rotate to face mouse
     player.angle = k.rad2deg(getAngleToMouse());

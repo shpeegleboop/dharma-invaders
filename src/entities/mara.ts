@@ -3,7 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { fireAtPlayer, spawnMinion } from './maraCombat';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 import { getBossHPScaling } from '../systems/cycleScaling';
 
 type MaraPhase = 'entering' | 'phase1' | 'phase2' | 'phase3' | 'defeated';
@@ -39,7 +39,7 @@ export function spawnMara(k: KAPLAYCtx): void {
   ]);
 
   mara.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
     if (!mara) return;
     updateMara(k);
   });
@@ -88,8 +88,8 @@ function updateCombat(k: KAPLAYCtx): void {
   if (healthPercent <= cfg.phase3Threshold && currentPhase !== 'phase3') {
     currentPhase = 'phase3';
     mara.phase = 'phase3';
-    // Adjust timer so position stays continuous when speed changes (1.0 → 1.5)
-    movementTimer = movementTimer * (1.0 / 1.5);
+    // Adjust timer so position stays continuous when speed changes
+    movementTimer = movementTimer * (1.0 / cfg.movement.phase3SpeedMultiplier);
     events.emit('boss:phaseChange', { phase: 3 });
   } else if (healthPercent <= cfg.phase2Threshold && currentPhase === 'phase1') {
     currentPhase = 'phase2';
@@ -100,12 +100,10 @@ function updateCombat(k: KAPLAYCtx): void {
   // Figure-8 movement pattern (stays in upper half of screen)
   movementTimer += k.dt();
   const baseX = config.screen.width / 2;
-  const baseY = cfg.targetY + 40;
-  const amplitudeX = 200;
-  const amplitudeY = 60;
-  const speed = currentPhase === 'phase3' ? 1.5 : 1.0;
-  mara.pos.x = baseX + Math.sin(movementTimer * speed) * amplitudeX;
-  mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * amplitudeY;
+  const baseY = cfg.targetY + cfg.movement.offsetY;
+  const speed = currentPhase === 'phase3' ? cfg.movement.phase3SpeedMultiplier : 1.0;
+  mara.pos.x = baseX + Math.sin(movementTimer * speed) * cfg.movement.amplitudeX;
+  mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * cfg.movement.amplitudeY;
 
   // Shooting logic
   shootTimer += k.dt() * 1000;
@@ -126,20 +124,21 @@ function updateCombat(k: KAPLAYCtx): void {
   // Phase 3 flash effect
   if (currentPhase === 'phase3') {
     const flash = Math.sin(k.time() * 10) > 0;
-    mara.opacity = flash ? 1 : 0.6;
+    mara.opacity = flash ? 1 : cfg.phase3Opacity;
   }
 }
 
 function updateDefeated(k: KAPLAYCtx): void {
   if (!mara) return;
+  const cfg = config.boss;
 
   deathAnimTimer += k.dt() * 1000;
 
   // Flash rapidly
   mara.opacity = Math.sin(deathAnimTimer * 0.05) > 0 ? 1 : 0.2;
 
-  // After 2 seconds, destroy and emit victory
-  if (deathAnimTimer >= 2000) {
+  // After death animation duration, destroy and emit victory
+  if (deathAnimTimer >= cfg.deathAnimDuration) {
     mara.destroy();
     mara = null;
     events.emit('game:victory', {});

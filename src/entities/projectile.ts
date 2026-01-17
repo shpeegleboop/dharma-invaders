@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 
 export function createProjectile(
   k: KAPLAYCtx,
@@ -24,14 +24,14 @@ export function createProjectile(
 
   // Move in direction of angle with delta time
   projectile.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
 
     const speed = config.projectile.speed;
     projectile.pos.x += Math.cos(angle) * speed * k.dt();
     projectile.pos.y += Math.sin(angle) * speed * k.dt();
 
     // Destroy when off screen (any edge)
-    const margin = 50;
+    const margin = config.projectile.offscreenMargin;
     if (
       projectile.pos.x < -margin ||
       projectile.pos.x > config.screen.width + margin ||

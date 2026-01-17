@@ -12,15 +12,14 @@ export function bounceAndStunEnemy(k: KAPLAYCtx, player: GameObj, enemy: GameObj
   const dirY = dy / dist;
 
   // Push enemy back
-  const bounceDistance = 80;
-  enemy.pos.x += dirX * bounceDistance;
-  enemy.pos.y += dirY * bounceDistance;
+  enemy.pos.x += dirX * config.collision.bounceDistance;
+  enemy.pos.y += dirY * config.collision.bounceDistance;
 
   // Stun enemy
   enemy.stunned = true;
   enemy.opacity = 0.5;
 
-  k.wait(0.5, () => {
+  k.wait(config.collision.stunDuration, () => {
     if (enemy.exists()) {
       enemy.stunned = false;
       enemy.opacity = 1;
@@ -38,9 +37,8 @@ export function pushPlayerAwayFromBoss(player: GameObj, boss: GameObj): void {
   const dirY = dy / dist;
 
   // Push player back
-  const pushDistance = 100;
-  player.pos.x += dirX * pushDistance;
-  player.pos.y += dirY * pushDistance;
+  player.pos.x += dirX * config.collision.pushDistance;
+  player.pos.y += dirY * config.collision.pushDistance;
 
   // Clamp to arena bounds
   const halfW = config.player.size.width / 2;

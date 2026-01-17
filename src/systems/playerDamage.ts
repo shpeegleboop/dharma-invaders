@@ -1,13 +1,10 @@
 // Centralized player damage handling
 import type { KAPLAYCtx, GameObj } from 'kaplay';
+import config from '../data/config.json';
 import { events } from '../utils/events';
 
 // Player base color constant (RGB)
 export const PLAYER_BASE_COLOR = { r: 0, g: 128, b: 255 };
-
-// I-frame duration in seconds
-const I_FRAME_DURATION = 0.5;
-const FLASH_DURATION = 0.15;
 
 let kContext: KAPLAYCtx | null = null;
 
@@ -27,7 +24,7 @@ export function damagePlayer(player: GameObj, amount: number): boolean {
 
   // Flash red
   player.color = k.rgb(255, 0, 0);
-  k.wait(FLASH_DURATION, () => {
+  k.wait(config.player.flashDuration, () => {
     if (player.exists()) {
       player.color = k.rgb(PLAYER_BASE_COLOR.r, PLAYER_BASE_COLOR.g, PLAYER_BASE_COLOR.b);
     }
@@ -55,7 +52,7 @@ function grantIFrames(k: KAPLAYCtx, player: GameObj): void {
   player.invincible = true;
   player.opacity = 0.5;
 
-  k.wait(I_FRAME_DURATION, () => {
+  k.wait(config.player.iFrameDuration, () => {
     if (player.exists()) {
       player.invincible = false;
       player.opacity = 1;

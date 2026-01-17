@@ -1,7 +1,7 @@
 // Powerup entity - virtue orbs dropped by enemies
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 import { getDropRateMultiplier, getPadumaDropRateBonus } from '../systems/rebirthEffects';
 import { getCycle } from '../stores/gameStore';
 
@@ -30,7 +30,7 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
   let pulsePhase = 0;
 
   powerup.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
 
     // Drift downward
     powerup.pos.y += config.powerups.fallSpeed * k.dt();
@@ -40,7 +40,7 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
     powerup.opacity = 0.7 + Math.sin(pulsePhase) * 0.3;
 
     // Destroy if off screen
-    if (powerup.pos.y > config.screen.height + 50) {
+    if (powerup.pos.y > config.screen.height + config.powerups.offscreenMargin) {
       powerup.destroy();
     }
   });
@@ -81,14 +81,14 @@ export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
   let phase = 0;
 
   powerup.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
     phase += 2 * k.dt();
     // Float upward with sinusoidal sway
     powerup.pos.y -= config.powerups.fallSpeed * 0.5 * k.dt();
-    powerup.pos.x = startX + Math.sin(phase) * 30;
+    powerup.pos.x = startX + Math.sin(phase) * config.powerups.paduma.swayAmplitude;
     powerup.opacity = 0.7 + Math.sin(phase * 2) * 0.3;
     // Destroy when off top of screen
-    if (powerup.pos.y < -50) {
+    if (powerup.pos.y < -config.powerups.offscreenMargin) {
       powerup.destroy();
     }
   });

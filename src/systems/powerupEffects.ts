@@ -3,13 +3,19 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import type { VirtueType } from '../entities/powerup';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 import {
   getFireRateMultiplier as getRebirthFireRate,
   getEnemySpeedMultiplier as getRebirthEnemySpeed,
   getPowerupDurationMultiplier,
-  getShieldChargesBonus,
 } from './rebirthEffects';
+import {
+  setupShieldSystem,
+  activateShield,
+  isShieldActive,
+  getShieldCharges,
+  restoreShieldCharges as restoreShield,
+} from './shieldSystem';
 
 // Timed powerups that use stacking system
 type StackablePowerup = 'diligence' | 'patience' | 'compassion' | 'wisdom';
@@ -19,18 +25,7 @@ type PowerupStack = {
   timeRemaining: number;
 };
 
-type PowerupState = {
-  active: Map<StackablePowerup, PowerupStack>;
-  shieldCharges: number; // Meditation handled separately
-  shieldActive: boolean;
-};
-
-const state: PowerupState = {
-  active: new Map(),
-  shieldCharges: 0,
-  shieldActive: false,
-};
-
+const activeMap = new Map<StackablePowerup, PowerupStack>();
 let hudText: GameObj | null = null;
 let kRef: KAPLAYCtx | null = null;
 
@@ -38,9 +33,8 @@ const stackingConfig = config.powerups.stacking;
 
 export function setupPowerupEffects(k: KAPLAYCtx): void {
   kRef = k;
-  state.active.clear();
-  state.shieldCharges = 0;
-  state.shieldActive = false;
+  activeMap.clear();
+  setupShieldSystem();
 
   // Create powerup display in HUD
   hudText = k.add([
@@ -57,36 +51,23 @@ export function setupPowerupEffects(k: KAPLAYCtx): void {
     activatePowerup(data.type as VirtueType);
   });
 
-  // Listen for shield hit
-  events.on('powerup:shieldBroken', () => {
-    if (state.shieldActive) {
-      state.shieldCharges--;
-      if (state.shieldCharges <= 0) {
-        state.shieldActive = false;
-        state.shieldCharges = 0;
-        events.emit('powerup:deactivated', { type: 'meditation' });
-      }
-      updateHUD();
-    }
-  });
+  // Listen for shield changes to update HUD
+  events.on('powerup:shieldBroken', updateHUD);
 
   // Listen for player death - clear all timed powerups
   events.on('player:died', () => {
-    state.active.clear();
-    // Shield handled by Sila on respawn
-    state.shieldActive = false;
-    state.shieldCharges = 0;
+    activeMap.clear();
     updateHUD();
   });
 
   // Update timers
   k.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
 
     const dt = k.dt() * 1000;
     const toRemove: StackablePowerup[] = [];
 
-    state.active.forEach((stack, type) => {
+    activeMap.forEach((stack, type) => {
       stack.timeRemaining -= dt;
       if (stack.timeRemaining <= 0) {
         toRemove.push(type);
@@ -94,11 +75,11 @@ export function setupPowerupEffects(k: KAPLAYCtx): void {
     });
 
     toRemove.forEach((type) => {
-      state.active.delete(type);
+      activeMap.delete(type);
       events.emit('powerup:deactivated', { type });
     });
 
-    if (state.active.size > 0 || toRemove.length > 0) {
+    if (activeMap.size > 0 || toRemove.length > 0) {
       updateHUD();
     }
   });
@@ -112,14 +93,10 @@ function activatePowerup(type: VirtueType): void {
   // Paduma is instant heal, handled elsewhere
   if (type === 'paduma') return;
 
-  // Meditation uses shield system - stacks uncapped
+  // Meditation uses shield system
   if (type === 'meditation') {
-    const wasActive = state.shieldActive;
-    state.shieldActive = true;
-    // Add 1 charge + Adhitthana bonus (only apply bonus on first pickup)
-    const bonus = wasActive ? 0 : getShieldChargesBonus();
-    state.shieldCharges += 1 + bonus;
-    if (!wasActive) {
+    const isNew = activateShield();
+    if (isNew) {
       events.emit('powerup:activated', { type });
     }
     updateHUD();
@@ -133,20 +110,15 @@ function activatePowerup(type: VirtueType): void {
   const baseDuration = stackingConfig.baseDuration * getPowerupDurationMultiplier();
   const maxTime = stackingConfig.maxTimeCap * getPowerupDurationMultiplier();
 
-  const existing = state.active.get(type);
+  const existing = activeMap.get(type);
 
   if (existing) {
-    // Add stack (if under max) and time
     if (existing.stacks < typeConfig.maxStacks) {
       existing.stacks++;
     }
     existing.timeRemaining = Math.min(existing.timeRemaining + baseDuration, maxTime);
   } else {
-    // New powerup entry
-    state.active.set(type, {
-      stacks: 1,
-      timeRemaining: baseDuration,
-    });
+    activeMap.set(type, { stacks: 1, timeRemaining: baseDuration });
     events.emit('powerup:activated', { type });
   }
 
@@ -158,17 +130,16 @@ function updateHUD(): void {
 
   const parts: string[] = [];
 
-  // Timed powerups
-  state.active.forEach((stack, type) => {
+  activeMap.forEach((stack, type) => {
     const virtueConfig = config.powerups.virtues[type];
     const seconds = Math.ceil(stack.timeRemaining / 1000);
     const stackText = stack.stacks > 1 ? ` x${stack.stacks}` : '';
     parts.push(`${virtueConfig.name}${stackText} ${seconds}s`);
   });
 
-  // Shield
-  if (state.shieldActive) {
-    const chargeText = state.shieldCharges > 1 ? ` x${state.shieldCharges}` : '';
+  if (isShieldActive()) {
+    const charges = getShieldCharges();
+    const chargeText = charges > 1 ? ` x${charges}` : '';
     parts.push(`Shield${chargeText}`);
   }
 
@@ -179,32 +150,21 @@ function updateHUD(): void {
 // === Public API ===
 
 export function getStacks(type: StackablePowerup): number {
-  return state.active.get(type)?.stacks ?? 0;
+  return activeMap.get(type)?.stacks ?? 0;
 }
 
 export function hasPowerup(type: VirtueType): boolean {
-  if (type === 'meditation') return state.shieldActive;
+  if (type === 'meditation') return isShieldActive();
   if (type === 'paduma') return false;
-  if (isStackable(type)) return state.active.has(type);
+  if (isStackable(type)) return activeMap.has(type);
   return false;
-}
-
-// Legacy getter for collision.ts compatibility
-export function getActivePowerup(): VirtueType | null {
-  if (state.shieldActive) return 'meditation';
-  if (state.active.has('wisdom')) return 'wisdom';
-  if (state.active.has('compassion')) return 'compassion';
-  if (state.active.has('diligence')) return 'diligence';
-  if (state.active.has('patience')) return 'patience';
-  return null;
 }
 
 // Diligence: (0.5)^stacks cooldown multiplier, combined with rebirth
 export function getShootCooldownMultiplier(): number {
   const stacks = getStacks('diligence');
   const powerupMultiplier = stacks > 0 ? Math.pow(0.5, stacks) : 1;
-  const rebirthMultiplier = getRebirthFireRate();
-  return powerupMultiplier * rebirthMultiplier;
+  return powerupMultiplier * getRebirthFireRate();
 }
 
 // Patience: 10% slow per stack (max 50% at 5 stacks), combined with rebirth
@@ -212,29 +172,32 @@ export function getEnemySpeedMultiplier(): number {
   const stacks = getStacks('patience');
   const slowPerStack = stackingConfig.patience.slowPerStack ?? 0.10;
   const powerupMultiplier = stacks > 0 ? 1 - (stacks * slowPerStack) : 1;
-  const rebirthMultiplier = getRebirthEnemySpeed();
-  return powerupMultiplier * rebirthMultiplier;
+  return powerupMultiplier * getRebirthEnemySpeed();
 }
 
-// Compassion: spread shot active
 export function isSpreadShotActive(): boolean {
-  return state.active.has('compassion');
+  return activeMap.has('compassion');
 }
 
-// Wisdom: piercing active (checked via hasPowerup in collision.ts)
 export function isPiercingActive(): boolean {
-  return state.active.has('wisdom');
+  return activeMap.has('wisdom');
 }
 
-// Shield charge getters/setters for persistence across kalpas
-export function getShieldCharges(): number {
-  return state.shieldActive ? state.shieldCharges : 0;
+// Legacy getter for collision.ts compatibility
+export function getActivePowerup(): VirtueType | null {
+  if (isShieldActive()) return 'meditation';
+  if (activeMap.has('wisdom')) return 'wisdom';
+  if (activeMap.has('compassion')) return 'compassion';
+  if (activeMap.has('diligence')) return 'diligence';
+  if (activeMap.has('patience')) return 'patience';
+  return null;
 }
 
+// Re-export shield functions for external use
+export { getShieldCharges, isShieldActive };
+
+// Wrapper to restore shield AND update HUD
 export function restoreShieldCharges(charges: number): void {
-  if (charges > 0) {
-    state.shieldActive = true;
-    state.shieldCharges = charges;
-    updateHUD();
-  }
+  restoreShield(charges);
+  updateHUD();
 }

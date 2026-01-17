@@ -20,12 +20,18 @@
     "health": 3,
     "invincibilityDuration": 1500,
     "shootCooldown": 200,
-    "size": { "width": 32, "height": 32 }
+    "size": { "width": 32, "height": 32 },
+    "spreadAngle": 0.25,
+    "deathDelay": 0.5,
+    "respawnFlashInterval": 0.1,
+    "iFrameDuration": 0.5,
+    "flashDuration": 0.15
   },
   "projectile": {
     "speed": 500,
     "damage": 1,
-    "size": { "width": 8, "height": 16 }
+    "size": { "width": 8, "height": 16 },
+    "offscreenMargin": 50
   },
   "enemies": {
     "hungryGhost": {
@@ -47,8 +53,13 @@
       "health": 3,
       "karmaValue": 50,
       "size": { "width": 32, "height": 32 },
-      "color": "#9370DB"
-    }
+      "color": "#9370DB",
+      "angleSmoothing": 0.5,
+      "rotationAmplitude": 15
+    },
+    "spawnMargin": 30,
+    "offscreenMargin": 150,
+    "respawnPushDistance": 250
   },
   "waves": {
     "timeBetweenWaves": 3000,
@@ -70,8 +81,10 @@
     "paduma": {
       "dropChance": 0.05,
       "minKalpa": 2,
-      "healAmount": 1
+      "healAmount": 1,
+      "swayAmplitude": 30
     },
+    "offscreenMargin": 50,
     "stacking": {
       "baseDuration": 8000,
       "maxTimeCap": 40000,
@@ -89,6 +102,14 @@
     "color": "#8B0000",
     "entranceSpeed": 50,
     "targetY": 120,
+    "movement": {
+      "offsetY": 40,
+      "amplitudeX": 200,
+      "amplitudeY": 60,
+      "phase3SpeedMultiplier": 1.5
+    },
+    "phase3Opacity": 0.6,
+    "deathAnimDuration": 2000,
     "projectile": {
       "speed": 200,
       "speedPhase3": 400,
@@ -97,7 +118,19 @@
       "color": "#FF4500"
     },
     "minionSpawnInterval": 2000,
-    "karmaValue": 500
+    "karmaValue": 500,
+    "healthBar": {
+      "width": 300,
+      "height": 16
+    }
+  },
+  "collision": {
+    "bounceDistance": 80,
+    "pushDistance": 100,
+    "stunDuration": 0.5
+  },
+  "spawner": {
+    "deathPauseDuration": 3.5
   },
   "audio": {
     "musicVolume": 0.5,

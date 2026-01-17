@@ -3,7 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../../data/config.json';
 import { events } from '../../utils/events';
 import { getEnemySpeedMultiplier } from '../../systems/powerupEffects';
-import { isPaused } from '../../ui/pauseMenu';
+import { getIsPaused } from '../../ui/pauseMenu';
 import { getCurrentWaveNumber } from '../../systems/waveManager';
 import { shouldEnemiesFlee, applyFleeMovement } from '../../systems/enemyFlee';
 import { getEnemySpeedScaling } from '../../systems/cycleScaling';
@@ -34,7 +34,7 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
   });
 
   asura.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
 
     // Find player
     const player = k.get('player')[0];
@@ -69,7 +69,7 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
     }
 
     // Destroy if too far off screen
-    const margin = 150;
+    const margin = config.enemies.offscreenMargin;
     if (
       asura.pos.x < -margin ||
       asura.pos.x > config.screen.width + margin ||

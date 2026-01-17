@@ -6,7 +6,7 @@ import { createHungryGhost } from '../entities/enemies/hungryGhost';
 import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
 import { spawnMara } from '../entities/mara';
-import { isPaused } from '../ui/pauseMenu';
+import { getIsPaused } from '../ui/pauseMenu';
 import { isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import {
   WaveState, createWaveState, resetWaveState, buildEnemyQueue,
@@ -22,7 +22,7 @@ export function setupSpawner(k: KAPLAYCtx): void {
   startWave(k);
 
   k.onUpdate(() => {
-    if (isPaused) return;
+    if (getIsPaused()) return;
     if (isRebirthOverlayActive()) return;
 
     // Don't spawn while player is invincible (respawn protection)
@@ -48,10 +48,9 @@ export function setupSpawner(k: KAPLAYCtx): void {
   });
 
   // Listen for player death - pause spawning during respawn invincibility
-  // 0.5s death delay + 3s invincibility = 3.5s total
   events.on('player:died', () => {
     state.active = false;
-    k.wait(3.5, () => {
+    k.wait(config.spawner.deathPauseDuration, () => {
       state.active = true;
     });
   });
@@ -116,7 +115,7 @@ function spawnNextEnemy(k: KAPLAYCtx): void {
 
 function getRandomEdgePosition(k: KAPLAYCtx): { x: number; y: number } {
   const edge = Math.floor(k.rand(0, 4));
-  const margin = 30;
+  const margin = config.enemies.spawnMargin;
   const arenaTop = config.arena.offsetY;
   const arenaBottom = config.screen.height;
   const screenWidth = config.screen.width;
