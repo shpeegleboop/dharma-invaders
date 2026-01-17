@@ -71,6 +71,14 @@
       "dropChance": 0.05,
       "minKalpa": 2,
       "healAmount": 1
+    },
+    "stacking": {
+      "baseDuration": 8000,
+      "maxTimeCap": 40000,
+      "diligence": { "maxStacks": 5, "effectType": "multiplicative" },
+      "patience": { "maxStacks": 5, "effectType": "multiplicative" },
+      "compassion": { "maxStacks": 1, "effectType": "binary" },
+      "wisdom": { "maxStacks": 1, "effectType": "binary" }
     }
   },
   "boss": {
