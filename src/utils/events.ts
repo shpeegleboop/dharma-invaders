@@ -13,6 +13,12 @@ type GameEvents = {
   'player:died': Record<string, never>;
   'player:powerup': { type: string };
   'player:healed': { amount: number; newHealth: number };
+  'player:applyKlesha': { klesha: string };
+  'player:removeParami': { parami: string | null };
+
+  // Manussa (Human) special events
+  'human:killed': Record<string, never>;
+  'human:escaped': Record<string, never>;
 
   // Game flow
   'wave:started': { waveNumber: number };

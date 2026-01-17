@@ -201,3 +201,14 @@ export function restoreShieldCharges(charges: number): void {
   restoreShield(charges);
   updateHUD();
 }
+
+// Reduce all active timed powerups to a specific remaining time (for Manussa kill)
+// Does NOT affect shield charges
+export function reduceAllTimers(remainingMs: number): void {
+  activeMap.forEach((stack) => {
+    if (stack.timeRemaining > remainingMs) {
+      stack.timeRemaining = remainingMs;
+    }
+  });
+  updateHUD();
+}

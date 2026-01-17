@@ -3,15 +3,108 @@ import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma } from '../entities/powerup';
-import { getActivePowerup, isPiercingActive } from './powerupEffects';
+import { getActivePowerup, isPiercingActive, isShieldActive } from './powerupEffects';
 import { damageMara, getMaraPhase } from '../entities/mara';
 import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
 import { getProjectileDamageModifier } from './rebirthEffects';
+import { absorbDamage } from './shieldSystem';
+import {
+  addKlesha, getRandomKlesha, removeRandomParami,
+  setKarmaThisLife
+} from '../stores/gameStore';
+import { reduceAllTimers } from './powerupEffects';
 
 // Calculate effective projectile damage with Panna/Anottappa modifiers
 function getProjectileDamage(): number {
   return Math.max(1, config.projectile.damage + getProjectileDamageModifier());
+}
+
+// Handle Nerayika collision: 2 damage + random Klesha (Klesha bypasses shield)
+function handleNerayikaCollision(k: KAPLAYCtx, player: any, enemy: any): void {
+  const damage = enemy.damage || config.newEnemies.nerayika.damage;
+
+  // Shield absorbs damage but Klesha still applies
+  const remainingDamage = absorbDamage(damage);
+
+  // If shield absorbed any damage, emit events for HUD update
+  if (remainingDamage < damage) {
+    events.emit('powerup:shieldBroken', {});
+  }
+
+  // Apply remaining damage to player HP
+  if (remainingDamage > 0) {
+    damagePlayer(player, remainingDamage);
+  }
+
+  // Klesha ALWAYS applies, even if shield blocked all damage
+  const klesha = getRandomKlesha();
+  addKlesha(klesha);
+  events.emit('player:applyKlesha', { klesha });
+
+  // Bounce enemy away
+  bounceAndStunEnemy(k, player, enemy);
+}
+
+// Handle Tiracchana collision: 1 damage + removes 1 Parami stack
+function handleTiracchanaCollision(k: KAPLAYCtx, player: any, enemy: any): void {
+  // Shield blocks damage normally
+  if (isShieldActive()) {
+    events.emit('powerup:shieldBroken', {});
+    bounceAndStunEnemy(k, player, enemy);
+    // Parami removal only happens if damage gets through
+    return;
+  }
+
+  // Damage player
+  damagePlayer(player, 1);
+
+  // Remove a random Parami stack (if player has any)
+  const removed = removeRandomParami();
+  if (removed) {
+    events.emit('player:removeParami', { parami: removed });
+  }
+
+  // Bounce enemy away
+  bounceAndStunEnemy(k, player, enemy);
+}
+
+// Handle Manussa collision: no damage, just gentle bump away
+function handleManussaCollision(_k: KAPLAYCtx, player: any, enemy: any): void {
+  // Push Manussa away from player (gentle)
+  const dx = enemy.pos.x - player.pos.x;
+  const dy = enemy.pos.y - player.pos.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (dist > 0) {
+    const pushDist = 30;
+    enemy.pos.x += (dx / dist) * pushDist;
+    enemy.pos.y += (dy / dist) * pushDist;
+  }
+  // No damage, no stun
+}
+
+// Handle Manussa death: severe karmic penalty
+function handleManussaDeath(): void {
+  // 1. Wipe karma this life
+  setKarmaThisLife(0);
+
+  // 2. Remove 1 random Parami
+  const removedParami = removeRandomParami();
+  if (removedParami) {
+    events.emit('player:removeParami', { parami: removedParami });
+  }
+
+  // 3. Add 1 random Klesha
+  const klesha = getRandomKlesha();
+  addKlesha(klesha);
+  events.emit('player:applyKlesha', { klesha });
+
+  // 4. Reduce all powerup timers to 1 second
+  reduceAllTimers(1000);
+
+  // Emit the human:killed event
+  events.emit('human:killed', {});
 }
 
 export function setupCollisions(k: KAPLAYCtx): void {
@@ -28,6 +121,11 @@ export function setupCollisions(k: KAPLAYCtx): void {
     if (enemy.hp() <= 0) {
       const pos = { x: enemy.pos.x, y: enemy.pos.y };
 
+      // Manussa death triggers severe penalty
+      if (enemy.isManussa) {
+        handleManussaDeath();
+      }
+
       events.emit('enemy:killed', {
         id: enemy.enemyId,
         type: enemy.type,
@@ -36,11 +134,14 @@ export function setupCollisions(k: KAPLAYCtx): void {
       });
 
       // Chance to drop powerup (regular and Paduma checked independently)
-      if (shouldDropPowerup(k)) {
-        createPowerup(k, pos.x, pos.y);
-      }
-      if (shouldDropPaduma(k)) {
-        createPaduma(k, pos.x, pos.y);
+      // Manussa doesn't drop powerups
+      if (!enemy.isManussa) {
+        if (shouldDropPowerup(k)) {
+          createPowerup(k, pos.x, pos.y);
+        }
+        if (shouldDropPaduma(k)) {
+          createPaduma(k, pos.x, pos.y);
+        }
       }
 
       enemy.destroy();
@@ -66,9 +167,26 @@ export function setupCollisions(k: KAPLAYCtx): void {
     // Check if player is invincible or enemy is stunned
     if (player.invincible || enemy.stunned) return;
 
-    // Check for meditation shield
-    const activePowerup = getActivePowerup();
-    if (activePowerup === 'meditation') {
+    // Nerayika has special handling: 2 damage + Klesha (Klesha bypasses shield)
+    if (enemy.isNerayika) {
+      handleNerayikaCollision(k, player, enemy);
+      return;
+    }
+
+    // Tiracchana has special handling: 1 damage + removes Parami
+    if (enemy.isTiracchana) {
+      handleTiracchanaCollision(k, player, enemy);
+      return;
+    }
+
+    // Manussa has special handling: no damage, just gentle bump
+    if (enemy.isManussa) {
+      handleManussaCollision(k, player, enemy);
+      return;
+    }
+
+    // Check for meditation shield (standard enemies)
+    if (isShieldActive()) {
       events.emit('powerup:shieldBroken', {});
       bounceAndStunEnemy(k, player, enemy);
       return;

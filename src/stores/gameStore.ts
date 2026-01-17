@@ -162,3 +162,47 @@ export function consumeSavedShieldCharges(): number | null {
   state.savedShieldCharges = null;
   return charges;
 }
+
+// Remove one stack of a specific parami type (returns true if removed)
+export function removeParami(parami: string): boolean {
+  const index = state.paramis.indexOf(parami);
+  if (index === -1) return false;
+  state.paramis = [...state.paramis.slice(0, index), ...state.paramis.slice(index + 1)];
+  return true;
+}
+
+// Remove one stack of a random parami (returns the type removed, or null if none)
+export function removeRandomParami(): string | null {
+  if (state.paramis.length === 0) return null;
+  const randomIndex = Math.floor(Math.random() * state.paramis.length);
+  const removed = state.paramis[randomIndex];
+  state.paramis = [...state.paramis.slice(0, randomIndex), ...state.paramis.slice(randomIndex + 1)];
+  return removed;
+}
+
+// Set karmaThisLife to a specific value (for Manussa kill penalty)
+export function setKarmaThisLife(amount: number): void {
+  state.karmaThisLife = amount;
+}
+
+// Get a random klesha type to add (for Nerayika effect)
+export function getRandomKlesha(): string {
+  const kleshaTypes = Object.keys(KLESHA_CAPS);
+  return kleshaTypes[Math.floor(Math.random() * kleshaTypes.length)];
+}
+
+// Get a random parami type (for display/debug purposes)
+export function getRandomParami(): string {
+  const paramiTypes = Object.keys(PARAMI_CAPS);
+  return paramiTypes[Math.floor(Math.random() * paramiTypes.length)];
+}
+
+// Get all parami types
+export function getParamiTypes(): string[] {
+  return Object.keys(PARAMI_CAPS);
+}
+
+// Get all klesha types
+export function getKleshaTypes(): string[] {
+  return Object.keys(KLESHA_CAPS);
+}

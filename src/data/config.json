@@ -167,5 +167,51 @@
       "spawnRate": 1.4,
       "bossHP": 2.0
     }
+  },
+  "newEnemies": {
+    "nerayika": {
+      "size": { "width": 32, "height": 32 },
+      "color": "#FF4500",
+      "health": 4,
+      "speed": 200,
+      "chargeSpeed": 350,
+      "hesitateTime": 1000,
+      "karmaValue": 50,
+      "damage": 2,
+      "spawns": {
+        "minKalpa": 2,
+        "waves": { "4": 1, "5": 1, "6": 1, "7": 2, "8": 3 }
+      }
+    },
+    "tiracchana": {
+      "size": { "width": 20, "height": 20 },
+      "color": "#4169E1",
+      "health": 1,
+      "speed": 150,
+      "wobbleIntensity": 2.0,
+      "karmaValue": 20,
+      "damage": 1,
+      "packSize": 6,
+      "spawns": {
+        "minKalpa": 3,
+        "waves": { "3": 1, "4": 1, "5": 1, "6": 2, "7": 2, "8": 3 }
+      }
+    },
+    "manussa": {
+      "size": { "width": 20, "height": 40 },
+      "color": "#00FF00",
+      "health": 3,
+      "speed": 60,
+      "karmaValue": -1000,
+      "escapeKarma": 1000,
+      "damage": 0,
+      "escapeMessage": "Bhavatu Sabba Mangalam",
+      "chatBubbleDuration": 2000,
+      "spawns": {
+        "minKalpa": 4,
+        "wave": 1,
+        "count": 1
+      }
+    }
   }
 }

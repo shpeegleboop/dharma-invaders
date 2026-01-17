@@ -5,6 +5,9 @@ import { events } from '../utils/events';
 import { createHungryGhost } from '../entities/enemies/hungryGhost';
 import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
+import { createNerayika } from '../entities/enemies/nerayika';
+import { createTiracchana } from '../entities/enemies/tiracchana';
+import { createManussa, hasActiveManussa, resetManussaState } from '../entities/enemies/manussa';
 import { spawnMara } from '../entities/mara';
 import { getIsPaused } from '../ui/pauseMenu';
 import { isRebirthOverlayActive } from '../ui/rebirthOverlay';
@@ -14,11 +17,13 @@ import {
   setCurrentWaveNumber
 } from './waveManager';
 import { getSpawnRateScaling } from './cycleScaling';
+import { getCycle } from '../stores/gameStore';
 
 let state: WaveState = createWaveState();
 
 export function setupSpawner(k: KAPLAYCtx): void {
   resetWaveState(state);
+  resetManussaState(); // Clear any lingering Manussa from previous game
   startWave(k);
 
   k.onUpdate(() => {
@@ -42,7 +47,9 @@ export function setupSpawner(k: KAPLAYCtx): void {
     }
 
     // Check if wave complete (queue empty and no enemies left)
-    if (state.enemyQueue.length === 0 && k.get('enemy').length === 0) {
+    // Manussa doesn't count - it persists through waves
+    const enemies = k.get('enemy').filter((e: any) => !e.isManussa);
+    if (state.enemyQueue.length === 0 && enemies.length === 0) {
       completeWave(k);
     }
   });
@@ -83,7 +90,87 @@ function startWave(k: KAPLAYCtx): void {
     state.active = false;
     spawnMara(k);
   } else {
-    setCurrentWaveNumber(state.waveIndex + 1);
+    const waveNum = state.waveIndex + 1;
+    setCurrentWaveNumber(waveNum);
+    // Spawn new enemy types based on kalpa and wave
+    spawnNewEnemies(k, waveNum);
+  }
+}
+
+// Spawn new enemy types (Nerayika, Tiracchana, Manussa) based on kalpa and wave
+function spawnNewEnemies(k: KAPLAYCtx, waveNum: number): void {
+  const kalpa = getCycle();
+  const waveKey = String(waveNum);
+
+  // Nerayika: Kalpa 2+, waves defined in config
+  if (kalpa >= config.newEnemies.nerayika.spawns.minKalpa) {
+    const waves = config.newEnemies.nerayika.spawns.waves as Record<string, number>;
+    const count = waves[waveKey] || 0;
+    for (let i = 0; i < count; i++) {
+      // Stagger spawns slightly
+      k.wait(i * 0.3, () => {
+        const pos = getRandomEdgePosition(k);
+        createNerayika(k, pos.x, pos.y);
+      });
+    }
+  }
+
+  // Tiracchana: Kalpa 3+, spawn in packs from same edge
+  if (kalpa >= config.newEnemies.tiracchana.spawns.minKalpa) {
+    const waves = config.newEnemies.tiracchana.spawns.waves as Record<string, number>;
+    const packCount = waves[waveKey] || 0;
+    const packSize = config.newEnemies.tiracchana.packSize;
+
+    for (let pack = 0; pack < packCount; pack++) {
+      // Each pack spawns from the same edge with slight position variance
+      const basePos = getRandomEdgePosition(k);
+      const edge = getEdgeFromPosition(basePos);
+
+      k.wait(pack * 0.5, () => {
+        for (let i = 0; i < packSize; i++) {
+          // Stagger individual spawns within pack
+          k.wait(i * 0.1, () => {
+            const offset = getPackOffset(k, edge, i);
+            createTiracchana(k, basePos.x + offset.x, basePos.y + offset.y);
+          });
+        }
+      });
+    }
+  }
+
+  // Manussa: Kalpa 4+, wave 1 only, one at a time
+  if (kalpa >= config.newEnemies.manussa.spawns.minKalpa) {
+    if (waveNum === config.newEnemies.manussa.spawns.wave && !hasActiveManussa()) {
+      // Spawn in center of arena
+      const centerX = config.screen.width / 2;
+      const centerY = config.arena.offsetY + (config.arena.height / 2);
+      createManussa(k, centerX, centerY);
+    }
+  }
+}
+
+// Determine which edge a spawn position is on
+function getEdgeFromPosition(pos: { x: number; y: number }): 'top' | 'right' | 'bottom' | 'left' {
+  if (pos.y < config.arena.offsetY) return 'top';
+  if (pos.x > config.screen.width) return 'right';
+  if (pos.y > config.screen.height) return 'bottom';
+  return 'left';
+}
+
+// Get offset for pack member based on spawn edge
+function getPackOffset(k: KAPLAYCtx, edge: string, index: number): { x: number; y: number } {
+  const spread = 15; // Pixels between pack members
+  const variance = k.rand(-5, 5);
+
+  switch (edge) {
+    case 'top':
+    case 'bottom':
+      return { x: (index - 2.5) * spread + variance, y: variance };
+    case 'left':
+    case 'right':
+      return { x: variance, y: (index - 2.5) * spread + variance };
+    default:
+      return { x: 0, y: 0 };
   }
 }
 

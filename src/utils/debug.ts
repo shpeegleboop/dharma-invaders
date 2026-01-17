@@ -4,6 +4,9 @@ import config from '../data/config.json';
 import { events } from './events';
 import { spawnMara } from '../entities/mara';
 import { addParami, addKlesha, getGameState } from '../stores/gameStore';
+import { createNerayika } from '../entities/enemies/nerayika';
+import { createTiracchana } from '../entities/enemies/tiracchana';
+import { createManussa } from '../entities/enemies/manussa';
 
 // Paduma not included - it's an instant heal, not a timed powerup
 const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
@@ -117,6 +120,32 @@ export function setupDebug(k: KAPLAYCtx): void {
       player.heal(1);
       events.emit('player:healed', { amount: 1, newHealth: player.hp() });
     }
+  });
+
+  // Z: Spawn Nerayika (for testing)
+  k.onKeyPress('z', () => {
+    const x = config.enemies.spawnMargin;
+    const y = config.arena.offsetY + config.arena.height / 2;
+    createNerayika(k, x, y);
+    updateIndicator();
+  });
+
+  // X: Spawn Tiracchana pack (for testing)
+  k.onKeyPress('x', () => {
+    const baseX = config.enemies.spawnMargin;
+    const baseY = config.arena.offsetY + config.arena.height / 2;
+    for (let i = 0; i < 6; i++) {
+      createTiracchana(k, baseX, baseY + (i - 2.5) * 15);
+    }
+    updateIndicator();
+  });
+
+  // C: Spawn Manussa (for testing)
+  k.onKeyPress('c', () => {
+    const centerX = config.screen.width / 2;
+    const centerY = config.arena.offsetY + config.arena.height / 2;
+    createManussa(k, centerX, centerY);
+    updateIndicator();
   });
 
   // Keep player invincible if debug invincibility is on

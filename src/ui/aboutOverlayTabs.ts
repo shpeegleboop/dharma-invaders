@@ -27,19 +27,39 @@ export function renderControls(k: KAPLAYCtx, tabContent: GameObj[]): void {
 }
 
 export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
-  const enemies = [
+  // Base enemies (left column)
+  const baseEnemies = [
     { name: 'Hungry Ghost', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
     { name: 'Asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma' },
     { name: 'Deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma' },
-    { name: 'Mara', color: [139, 0, 0], desc: 'Lord of Illusion - Final Boss' },
+    { name: 'Mara', color: [139, 0, 0], desc: 'Lord of Illusion - Boss' },
   ];
-  let y = 140;
-  enemies.forEach(e => {
+  let y = 130;
+  baseEnemies.forEach(e => {
     const [r, g, b] = e.color;
-    tabContent.push(k.add([k.rect(20, 20), k.pos(120, y - 5), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.name, { size: 18 }), k.pos(155, y), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.desc, { size: 14 }), k.pos(155, y + 22), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-    y += 55;
+    tabContent.push(k.add([k.rect(18, 18), k.pos(60, y - 4), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.name, { size: 16 }), k.pos(90, y), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.desc, { size: 12 }), k.pos(90, y + 18), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+    y += 48;
+  });
+
+  // New enemies (right column) - unlock in later kalpas
+  tabContent.push(k.add([
+    k.text('Kalpa 2+', { size: 14 }), k.pos(420, 115), k.color(100, 100, 120), k.fixed(), k.z(101),
+  ]));
+  const newEnemies = [
+    { name: 'Nerayika', color: [255, 69, 0], desc: 'Charger, 4 HP, +Klesha', kalpa: 2 },
+    { name: 'Tiracchana', color: [65, 105, 225], desc: 'Pack, 1 HP, -Parami', kalpa: 3 },
+    { name: 'Manussa', color: [0, 255, 0], desc: 'Non-hostile, karma test', kalpa: 4 },
+  ];
+  y = 135;
+  newEnemies.forEach(e => {
+    const [r, g, b] = e.color;
+    tabContent.push(k.add([k.rect(18, 18), k.pos(420, y - 4), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.name, { size: 16 }), k.pos(450, y), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.desc, { size: 12 }), k.pos(450, y + 18), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`K${e.kalpa}+`, { size: 11 }), k.pos(740, y + 6), k.color(100, 100, 120), k.fixed(), k.z(101)]));
+    y += 48;
   });
 }
 

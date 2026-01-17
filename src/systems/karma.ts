@@ -46,6 +46,22 @@ export function setupKarma(k: KAPLAYCtx): void {
       karmaThisLifeText.text = `This life: ${state.karmaThisLife}`;
     }
   });
+
+  // Listen for Manussa escape - grants bonus karma
+  events.on('human:escaped', () => {
+    const escapeKarma = config.newEnemies.manussa.escapeKarma;
+    const karmaEarned = Math.round(escapeKarma * getKarmaMultiplier());
+    addKarma(karmaEarned);
+    const state = getGameState();
+    events.emit('karma:changed', { newValue: state.karmaTotal, delta: karmaEarned });
+
+    if (karmaText) {
+      karmaText.text = `Karma: ${state.karmaTotal}`;
+    }
+    if (karmaThisLifeText) {
+      karmaThisLifeText.text = `This life: ${state.karmaThisLife}`;
+    }
+  });
 }
 
 export function getKarma(): number {

@@ -63,3 +63,21 @@ export function clearShield(): void {
   state.active = false;
   state.charges = 0;
 }
+
+// Absorb damage with shield charges, returns remaining damage to apply to HP
+// E.g., absorbDamage(2) with 1 charge: consumes 1 charge, returns 1
+export function absorbDamage(damage: number): number {
+  if (!state.active || state.charges <= 0) {
+    return damage; // No shield, full damage passes through
+  }
+
+  const absorbed = Math.min(damage, state.charges);
+  state.charges -= absorbed;
+
+  if (state.charges <= 0) {
+    state.active = false;
+    state.charges = 0;
+  }
+
+  return damage - absorbed; // Remaining damage after absorption
+}

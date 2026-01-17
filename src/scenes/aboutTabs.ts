@@ -38,20 +38,40 @@ export function showControls(k: KAPLAYCtx, pageContent: GameObj[]): void {
 }
 
 export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
-  const enemies = [
+  // Base enemies (left column)
+  const baseEnemies = [
     { name: 'Hungry Ghost', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Realm of hungry spirits' },
     { name: 'Asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma', realm: 'Realm of jealous demigods' },
-    { name: 'Deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm of pleasure' },
-    { name: 'Mara', color: [139, 0, 0], desc: 'The Lord of Illusion - Final Boss', realm: 'Master of the Wheel of Samsara' },
+    { name: 'Deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm' },
+    { name: 'Mara', color: [139, 0, 0], desc: 'Lord of Illusion - Boss', realm: 'Master of Samsara' },
   ];
-  let y = 140;
-  enemies.forEach(e => {
+  let y = 130;
+  baseEnemies.forEach(e => {
     const [r, g, b] = e.color;
-    pageContent.push(k.add([k.rect(20, 20), k.pos(80, y - 5), k.color(r, g, b)]));
-    pageContent.push(k.add([k.text(e.name, { size: 18 }), k.pos(115, y), k.color(r, g, b)]));
-    pageContent.push(k.add([k.text(e.desc, { size: 14 }), k.pos(115, y + 22), k.color(150, 150, 170)]));
-    pageContent.push(k.add([k.text(e.realm, { size: 12 }), k.pos(115, y + 40), k.color(100, 100, 120)]));
-    y += 70;
+    pageContent.push(k.add([k.rect(18, 18), k.pos(50, y - 4), k.color(r, g, b)]));
+    pageContent.push(k.add([k.text(e.name, { size: 16 }), k.pos(80, y), k.color(r, g, b)]));
+    pageContent.push(k.add([k.text(e.desc, { size: 13 }), k.pos(80, y + 18), k.color(150, 150, 170)]));
+    pageContent.push(k.add([k.text(e.realm, { size: 11 }), k.pos(80, y + 34), k.color(100, 100, 120)]));
+    y += 58;
+  });
+
+  // New enemies (right column) - unlock in later kalpas
+  pageContent.push(k.add([
+    k.text('Unlocked in Later Kalpas', { size: 16 }), k.pos(420, 115), k.color(100, 100, 120),
+  ]));
+  const newEnemies = [
+    { name: 'Nerayika', color: [255, 69, 0], desc: 'Charger, 4 HP, applies Klesha', realm: 'Hell realm', kalpa: 2 },
+    { name: 'Tiracchana', color: [65, 105, 225], desc: 'Pack of 6, removes Parami', realm: 'Animal realm', kalpa: 3 },
+    { name: 'Manussa', color: [0, 255, 0], desc: 'Non-hostile, +1000 if spared', realm: 'Human realm', kalpa: 4 },
+  ];
+  y = 145;
+  newEnemies.forEach(e => {
+    const [r, g, b] = e.color;
+    pageContent.push(k.add([k.rect(18, 18), k.pos(420, y - 4), k.color(r, g, b)]));
+    pageContent.push(k.add([k.text(e.name, { size: 16 }), k.pos(450, y), k.color(r, g, b)]));
+    pageContent.push(k.add([k.text(e.desc, { size: 13 }), k.pos(450, y + 18), k.color(150, 150, 170)]));
+    pageContent.push(k.add([k.text(`${e.realm} (Kalpa ${e.kalpa}+)`, { size: 11 }), k.pos(450, y + 34), k.color(100, 100, 120)]));
+    y += 58;
   });
 }
 
