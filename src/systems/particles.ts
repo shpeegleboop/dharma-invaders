@@ -22,6 +22,7 @@ export function spawnHitParticles(x: number, y: number): void {
       k.pos(x, y),
       k.anchor('center'),
       k.color(k.Color.fromHex('#9966FF')),
+      k.opacity(1),
       k.lifespan(0.25, { fade: 0.15 }),
       k.z(50),
     ]);
