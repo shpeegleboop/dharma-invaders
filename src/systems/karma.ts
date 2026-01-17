@@ -37,6 +37,11 @@ export function setupKarma(k: KAPLAYCtx): void {
 
   // Listen for enemy kills
   events.on('enemy:killed', (data) => {
+    // Manussa karma is handled specially via human:killed/human:escaped events
+    if (data.type === 'manussa') {
+      return;
+    }
+
     // Apply Nekkhamma/Micchaditthi karma multiplier
     const karmaEarned = Math.round(data.karmaValue * getKarmaMultiplier());
     addKarma(karmaEarned);
@@ -49,6 +54,11 @@ export function setupKarma(k: KAPLAYCtx): void {
     if (karmaThisLifeText) {
       karmaThisLifeText.text = `This life: ${state.karmaThisLife}`;
     }
+  });
+
+  // Listen for Manussa kill (without Ahirika) - just update display since karma was wiped
+  events.on('human:killed', () => {
+    updateKarmaDisplay();
   });
 
   // Listen for Manussa escape - grants bonus karma (or penalty if Ahirika)
