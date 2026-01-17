@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getRebirthTier, getTierColor } from '../systems/rebirthTiers';
-import { addParami, addKlesha } from '../stores/gameStore';
+import { addParami, addKlesha, isParamiCapped, isKleshaCapped } from '../stores/gameStore';
 
 // Available paramis and kleshas for random selection
 const PARAMI_POOL = [
@@ -33,9 +33,11 @@ export function showRebirthOverlay(
   const tier = getRebirthTier(karmaThisLife);
   const tierColor = getTierColor(tier.name);
 
-  // Select random paramis and kleshas
-  const grantedParamis = pickRandom(PARAMI_POOL, tier.paramis);
-  const grantedKleshas = pickRandom(KLESHA_POOL, tier.kleshas);
+  // Select random paramis and kleshas (excluding those at max stacks)
+  const availableParamis = PARAMI_POOL.filter(p => !isParamiCapped(p));
+  const availableKleshas = KLESHA_POOL.filter(k => !isKleshaCapped(k));
+  const grantedParamis = pickRandom(availableParamis, Math.min(tier.paramis, availableParamis.length));
+  const grantedKleshas = pickRandom(availableKleshas, Math.min(tier.kleshas, availableKleshas.length));
 
   // Add to store
   grantedParamis.forEach((p) => addParami(p));
