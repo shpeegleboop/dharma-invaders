@@ -109,6 +109,15 @@ export function setupDebug(k: KAPLAYCtx): void {
     state.kleshas.length = 0;
   });
 
+  // V: Heal player (simulate Paduma pickup)
+  k.onKeyPress('v', () => {
+    const player = k.get('player')[0];
+    if (player) {
+      player.heal(1);
+      events.emit('player:healed', { amount: 1 });
+    }
+  });
+
   // Keep player invincible if debug invincibility is on
   k.onUpdate(() => {
     if (state.invincible) {
