@@ -21,7 +21,7 @@ export function createManussa(k: KAPLAYCtx, x: number, y: number): GameObj {
   // Random wander direction, changes periodically
   let wanderDir = { x: k.rand(-1, 1), y: k.rand(-1, 1) };
   let wanderTimer = 0;
-  const wanderInterval = 2000; // Change direction every 2s
+  const wanderInterval = cfg.wanderInterval;
 
   const manussa = k.add([
     k.rect(cfg.size.width, cfg.size.height),
@@ -89,7 +89,7 @@ export function createManussa(k: KAPLAYCtx, x: number, y: number): GameObj {
     manussa.pos.y += wanderDir.y * cfg.speed * k.dt();
 
     // Clamp to arena bounds (bounce off edges)
-    const margin = 20;
+    const margin = cfg.bounceMargin;
     const minX = margin;
     const maxX = config.screen.width - margin;
     const minY = config.arena.offsetY + margin;

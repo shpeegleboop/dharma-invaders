@@ -1,177 +1,24 @@
-// Collision detection system
+// Collision detection system - orchestrates all collision handlers
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma } from '../entities/powerup';
-import { getActivePowerup, isPiercingActive, isShieldActive } from './powerupEffects';
-import { damageMara, getMaraPhase } from '../entities/mara';
-import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
+import { isPiercingActive, isShieldActive } from './powerupEffects';
+import { bounceAndStunEnemy } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
 import { getProjectileDamageModifier, getMaxHealthModifier } from './rebirthEffects';
-import { absorbDamage } from './shieldSystem';
-import {
-  addKlesha, getRandomKlesha, removeRandomParami,
-  setKarmaThisLife, hasKlesha
-} from '../stores/gameStore';
-import { reduceAllTimers } from './powerupEffects';
 import { spawnHitParticles } from './particles';
+import {
+  handleNerayikaCollision,
+  handleTiracchanaCollision,
+  handleManussaCollision,
+  handleManussaDeath,
+} from './specialEnemyCollisions';
+import { setupBossCollisions } from './bossCollisions';
 
 // Calculate effective projectile damage with Panna/Anottappa modifiers
 function getProjectileDamage(): number {
   return Math.max(1, config.projectile.damage + getProjectileDamageModifier());
-}
-
-// Handle Nerayika collision: 2 damage + random Klesha (Klesha bypasses shield)
-function handleNerayikaCollision(k: KAPLAYCtx, player: any, enemy: any): void {
-  const damage = enemy.damage || config.newEnemies.nerayika.damage;
-
-  // Shield absorbs damage but Klesha still applies
-  const remainingDamage = absorbDamage(damage);
-
-  // If shield absorbed any damage, emit events for HUD update
-  if (remainingDamage < damage) {
-    events.emit('powerup:shieldBroken', {});
-  }
-
-  // Apply remaining damage to player HP
-  if (remainingDamage > 0) {
-    damagePlayer(player, remainingDamage);
-  }
-
-  // Klesha ALWAYS applies, even if shield blocked all damage
-  const klesha = getRandomKlesha();
-  addKlesha(klesha);
-  events.emit('player:applyKlesha', { klesha });
-
-  // Visual feedback for klesha
-  const kleshaText = k.add([
-    k.text(`+${klesha}`, { size: 14 }),
-    k.pos(enemy.pos.x, enemy.pos.y - 30),
-    k.anchor('center'),
-    k.color(255, 100, 100),
-    k.outline(2, k.rgb(0, 0, 0)),
-    k.opacity(1),
-    k.lifespan(1.2, { fade: 0.3 }),
-    k.z(100),
-  ]);
-  kleshaText.onUpdate(() => { kleshaText.pos.y -= 20 * k.dt(); });
-
-  // Bounce enemy away
-  bounceAndStunEnemy(k, player, enemy);
-}
-
-// Handle Tiracchana collision: 1 damage + removes 1 Parami stack
-function handleTiracchanaCollision(k: KAPLAYCtx, player: any, enemy: any): void {
-  // Shield blocks damage normally
-  if (isShieldActive()) {
-    events.emit('powerup:shieldBroken', {});
-    bounceAndStunEnemy(k, player, enemy);
-    // Parami removal only happens if damage gets through
-    return;
-  }
-
-  // Damage player
-  damagePlayer(player, 1);
-
-  // Remove a random Parami stack (if player has any)
-  const removed = removeRandomParami();
-  if (removed) {
-    events.emit('player:removeParami', { parami: removed });
-    // Visual feedback for parami removal
-    const paramiText = k.add([
-      k.text(`-${removed}`, { size: 14 }),
-      k.pos(enemy.pos.x, enemy.pos.y - 30),
-      k.anchor('center'),
-      k.color(144, 238, 144),
-      k.outline(2, k.rgb(0, 0, 0)),
-      k.opacity(1),
-      k.lifespan(1.2, { fade: 0.3 }),
-      k.z(100),
-    ]);
-    paramiText.onUpdate(() => { paramiText.pos.y -= 20 * k.dt(); });
-  }
-
-  // Bounce enemy away
-  bounceAndStunEnemy(k, player, enemy);
-}
-
-// Handle Manussa collision: no damage, just gentle bump away
-function handleManussaCollision(_k: KAPLAYCtx, player: any, enemy: any): void {
-  // Push Manussa away from player (gentle)
-  const dx = enemy.pos.x - player.pos.x;
-  const dy = enemy.pos.y - player.pos.y;
-  const dist = Math.sqrt(dx * dx + dy * dy);
-
-  if (dist > 0) {
-    const pushDist = 30;
-    enemy.pos.x += (dx / dist) * pushDist;
-    enemy.pos.y += (dy / dist) * pushDist;
-  }
-  // No damage, no stun
-}
-
-// Handle Manussa death: severe karmic penalty (or reward if Ahirika active)
-function handleManussaDeath(k: KAPLAYCtx, x: number, y: number): void {
-  // Ahirika flips the mechanics - killing Manussa becomes advantageous
-  if (hasKlesha('Ahirika')) {
-    events.emit('human:killed:ahirika', {});
-    // Show +1000 karma feedback
-    const karmaText = k.add([
-      k.text('+1000 karma', { size: 14 }),
-      k.pos(x, y - 50),
-      k.anchor('center'),
-      k.color(255, 215, 0),
-      k.outline(2, k.rgb(0, 0, 0)),
-      k.opacity(1),
-      k.lifespan(1.2, { fade: 0.3 }),
-      k.z(100),
-    ]);
-    karmaText.onUpdate(() => { karmaText.pos.y -= 20 * k.dt(); });
-    return;
-  }
-
-  // Normal penalty for killing Manussa:
-  // 1. Wipe karma this life
-  setKarmaThisLife(0);
-
-  // 2. Remove 1 random Parami
-  const removedParami = removeRandomParami();
-  if (removedParami) {
-    events.emit('player:removeParami', { parami: removedParami });
-    const lostText = k.add([
-      k.text(`-${removedParami}`, { size: 14 }),
-      k.pos(x - 40, y - 50),
-      k.anchor('center'),
-      k.color(144, 238, 144),
-      k.outline(2, k.rgb(0, 0, 0)),
-      k.opacity(1),
-      k.lifespan(1.2, { fade: 0.3 }),
-      k.z(100),
-    ]);
-    lostText.onUpdate(() => { lostText.pos.y -= 20 * k.dt(); });
-  }
-
-  // 3. Add 1 random Klesha
-  const klesha = getRandomKlesha();
-  addKlesha(klesha);
-  events.emit('player:applyKlesha', { klesha });
-  const gainedText = k.add([
-    k.text(`+${klesha}`, { size: 14 }),
-    k.pos(x + 40, y - 50),
-    k.anchor('center'),
-    k.color(255, 100, 100),
-    k.outline(2, k.rgb(0, 0, 0)),
-    k.opacity(1),
-    k.lifespan(1.2, { fade: 0.3 }),
-    k.z(100),
-  ]);
-  gainedText.onUpdate(() => { gainedText.pos.y -= 20 * k.dt(); });
-
-  // 4. Reduce all powerup timers to 1 second
-  reduceAllTimers(1000);
-
-  // Emit the human:killed event
-  events.emit('human:killed', {});
 }
 
 export function setupCollisions(k: KAPLAYCtx): void {
@@ -190,6 +37,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
 
     // Manussa says "Ouch!" when hit but survives
     if (enemy.isManussa && enemy.hp() > 0) {
+      const riseSpeed = config.effects.fastTextRiseSpeed;
       const ouch = k.add([
         k.text('Ouch!', { size: 16 }),
         k.pos(enemy.pos.x, enemy.pos.y - 30),
@@ -201,7 +49,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
         k.z(100),
       ]);
       ouch.onUpdate(() => {
-        ouch.pos.y -= 40 * k.dt();
+        ouch.pos.y -= riseSpeed * k.dt();
       });
     }
 
@@ -210,7 +58,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
 
       // Manussa death triggers severe penalty
       if (enemy.isManussa) {
-        // Show death text
+        const deathRiseSpeed = config.effects.deathTextRiseSpeed;
         const deathText = k.add([
           k.text('bruh, why?', { size: 16 }),
           k.pos(pos.x, pos.y - 30),
@@ -222,7 +70,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
           k.z(100),
         ]);
         deathText.onUpdate(() => {
-          deathText.pos.y -= 25 * k.dt();
+          deathText.pos.y -= deathRiseSpeed * k.dt();
         });
         handleManussaDeath(k, pos.x, pos.y);
       }
@@ -302,70 +150,6 @@ export function setupCollisions(k: KAPLAYCtx): void {
     bounceAndStunEnemy(k, player, enemy);
   });
 
-  // Player projectile hits boss
-  k.onCollide('projectile', 'boss', (projectile, boss) => {
-    // Boss is invincible during entrance
-    if (getMaraPhase() === 'entering' || getMaraPhase() === 'defeated') {
-      projectile.destroy();
-      return;
-    }
-
-    // Spawn hit particles at impact point
-    spawnHitParticles(boss.pos.x, boss.pos.y);
-
-    // Check if projectile should pierce (wisdom powerup)
-    if (!isPiercingActive()) {
-      projectile.destroy();
-    }
-
-    // Apply Panna/Anottappa damage modifier to boss
-    damageMara(getProjectileDamage());
-  });
-
-  // Player touches boss
-  k.onCollide('player', 'boss', (player, boss) => {
-    // Boss is invincible during entrance/death - still block but no damage
-    if (getMaraPhase() === 'entering' || getMaraPhase() === 'defeated') {
-      pushPlayerAwayFromBoss(player, boss);
-      return;
-    }
-
-    // Check if player is invincible
-    if (player.invincible) {
-      pushPlayerAwayFromBoss(player, boss);
-      return;
-    }
-
-    // Check for meditation shield
-    const activePowerup = getActivePowerup();
-    if (activePowerup === 'meditation') {
-      events.emit('powerup:shieldBroken', {});
-      pushPlayerAwayFromBoss(player, boss);
-      return;
-    }
-
-    // Damage player (2 damage from boss contact)
-    damagePlayer(player, 2);
-
-    // Push player away
-    pushPlayerAwayFromBoss(player, boss);
-  });
-
-  // Boss projectile hits player
-  k.onCollide('bossProjectile', 'player', (projectile, player) => {
-    projectile.destroy();
-
-    // Check if player is invincible
-    if (player.invincible) return;
-
-    // Check for meditation shield
-    const activePowerup = getActivePowerup();
-    if (activePowerup === 'meditation') {
-      events.emit('powerup:shieldBroken', {});
-      return;
-    }
-
-    // Damage player (handles hurt, flash, i-frames, death check)
-    damagePlayer(player, 1);
-  });
+  // Boss collisions (projectile vs boss, player vs boss, boss projectile vs player)
+  setupBossCollisions(k, getProjectileDamage);
 }

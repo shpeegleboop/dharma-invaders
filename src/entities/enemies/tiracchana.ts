@@ -79,12 +79,14 @@ export function createTiracchana(k: KAPLAYCtx, x: number, y: number): GameObj {
       const dirY = dy / dist;
 
       // Intense wobble (perpendicular to movement)
-      const wobble = Math.sin(time * 8 + wobbleOffset) * cfg.wobbleIntensity;
+      const wobbleFreq = config.effects?.wobbleFrequency ?? 8;
+      const wobble = Math.sin(time * wobbleFreq + wobbleOffset) * cfg.wobbleIntensity;
       const perpX = -dirY * wobble;
       const perpY = dirX * wobble;
 
       // Combined movement
-      const waveMultiplier = 1 + 0.025 * getCurrentWaveNumber();
+      const waveSpeedMult = config.effects?.waveSpeedMultiplier ?? 0.025;
+      const waveMultiplier = 1 + waveSpeedMult * getCurrentWaveNumber();
       const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier * getEnemySpeedScaling();
 
       tiracchana.pos.x += (dirX + perpX * 0.3) * speed * k.dt();

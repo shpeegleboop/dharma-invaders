@@ -70,7 +70,8 @@ export function createHungryGhost(k: KAPLAYCtx, x: number, y: number): GameObj {
       const wobbleY = Math.cos(wobbleOffset * 1.3) * wobbleAmount;
 
       // Apply movement with delta time (with patience slowdown, wave scaling, and cycle scaling)
-      const waveMultiplier = 1 + 0.025 * getCurrentWaveNumber();
+      const waveSpeedMult = config.effects?.waveSpeedMultiplier ?? 0.025;
+      const waveMultiplier = 1 + waveSpeedMult * getCurrentWaveNumber();
       const speed = cfg.speed * getEnemySpeedMultiplier() * waveMultiplier * getEnemySpeedScaling();
       ghost.pos.x += (dirX + wobbleX) * speed * k.dt();
       ghost.pos.y += (dirY + wobbleY) * speed * k.dt();

@@ -146,6 +146,15 @@
     "invincible": false,
     "skipToWave": 0
   },
+  "effects": {
+    "textRiseSpeed": 20,
+    "fastTextRiseSpeed": 40,
+    "deathTextRiseSpeed": 25,
+    "packSpread": 15,
+    "packVariance": 5,
+    "wobbleFrequency": 8,
+    "waveSpeedMultiplier": 0.025
+  },
   "titleScreen": {
     "scale": 0.52,
     "offsetX": 167,
@@ -215,6 +224,8 @@
       "damage": 0,
       "escapeMessage": "Bhavatu Sabba Mangalam",
       "chatBubbleDuration": 2000,
+      "wanderInterval": 2000,
+      "bounceMargin": 20,
       "spawns": {
         "minKalpa": 4,
         "wave": 1,
