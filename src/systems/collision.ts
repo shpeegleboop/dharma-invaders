@@ -134,6 +134,20 @@ export function setupCollisions(k: KAPLAYCtx): void {
 
       // Manussa death triggers severe penalty
       if (enemy.isManussa) {
+        // Show "Ouch!" bubble
+        const ouch = k.add([
+          k.text('Ouch!', { size: 18 }),
+          k.pos(pos.x, pos.y - 30),
+          k.anchor('center'),
+          k.color(255, 100, 100),
+          k.outline(2, k.rgb(0, 0, 0)),
+          k.opacity(1),
+          k.lifespan(1, { fade: 0.3 }),
+          k.z(100),
+        ]);
+        ouch.onUpdate(() => {
+          ouch.pos.y -= 30 * k.dt();
+        });
         handleManussaDeath();
       }
 
