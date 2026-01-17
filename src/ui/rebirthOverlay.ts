@@ -7,11 +7,11 @@ import { addParami, addKlesha, isParamiCapped, isKleshaCapped } from '../stores/
 // Available paramis and kleshas for random selection
 const PARAMI_POOL = [
   'Dana', 'Viriya', 'Metta', 'Upekkha',
-  'Sila', 'Khanti', 'Panna', 'Adhitthana', 'Nekkhamma',
+  'Sila', 'Khanti', 'Panna', 'Adhitthana', 'Nekkhamma', 'Sacca',
 ];
 const KLESHA_POOL = [
   'Lobha', 'Dosa', 'Mana', 'Vicikiccha',
-  'Moha', 'Thina', 'Anottappa', 'Micchaditthi',
+  'Moha', 'Thina', 'Anottappa', 'Micchaditthi', 'Ahirika',
 ];
 
 let overlayObjects: GameObj[] = [];
