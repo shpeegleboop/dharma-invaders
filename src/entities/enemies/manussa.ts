@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../../data/config.json';
 import { events } from '../../utils/events';
 import { getIsPaused } from '../../ui/pauseMenu';
+import { hasKlesha } from '../../stores/gameStore';
 
 let manussaIdCounter = 0;
 let currentManussa: GameObj | null = null;
@@ -134,23 +135,57 @@ export function createManussa(k: KAPLAYCtx, x: number, y: number): GameObj {
   return manussa;
 }
 
-// Manussa escapes at end of wave 8 - reward player
+// Manussa escapes at end of wave 8 - reward or penalty based on Ahirika
 function triggerManussaEscape(k: KAPLAYCtx, manussa: GameObj): void {
   const cfg = config.newEnemies.manussa;
+  const ahirikaActive = hasKlesha('Ahirika');
 
-  // Show chat bubble
+  // Show chat bubble - different message if Ahirika active
+  const message = ahirikaActive ? 'You let me go... fool!' : cfg.escapeMessage;
+  const textColor = ahirikaActive ? k.rgb(255, 100, 100) : k.rgb(255, 255, 255);
+
   chatBubble = k.add([
-    k.text(cfg.escapeMessage, { size: 16 }),
+    k.text(message, { size: 16 }),
     k.pos(manussa.pos.x, manussa.pos.y - 40),
     k.anchor('center'),
-    k.color(255, 255, 255),
+    k.color(textColor),
     k.outline(2, k.rgb(0, 0, 0)),
     k.z(100),
   ]);
 
   // Emit escape event and destroy after delay
   k.wait(cfg.chatBubbleDuration / 1000, () => {
-    events.emit('human:escaped', {});
+    const pos = { x: manussa.pos.x, y: manussa.pos.y };
+    events.emit('human:escaped', { x: pos.x, y: pos.y });
+
+    // Show karma feedback
+    if (ahirikaActive) {
+      // Penalty feedback
+      const penaltyText = k.add([
+        k.text('Karma wiped!', { size: 14 }),
+        k.pos(pos.x, pos.y - 60),
+        k.anchor('center'),
+        k.color(255, 100, 100),
+        k.outline(2, k.rgb(0, 0, 0)),
+        k.opacity(1),
+        k.lifespan(1.2, { fade: 0.3 }),
+        k.z(100),
+      ]);
+      penaltyText.onUpdate(() => { penaltyText.pos.y -= 20 * k.dt(); });
+    } else {
+      const karmaText = k.add([
+        k.text('+1000 karma', { size: 14 }),
+        k.pos(pos.x, pos.y - 60),
+        k.anchor('center'),
+        k.color(255, 215, 0),
+        k.outline(2, k.rgb(0, 0, 0)),
+        k.opacity(1),
+        k.lifespan(1.2, { fade: 0.3 }),
+        k.z(100),
+      ]);
+      karmaText.onUpdate(() => { karmaText.pos.y -= 20 * k.dt(); });
+    }
+
     if (chatBubble && chatBubble.exists()) {
       chatBubble.destroy();
       chatBubble = null;

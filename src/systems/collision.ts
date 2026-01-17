@@ -86,10 +86,22 @@ function handleManussaCollision(_k: KAPLAYCtx, player: any, enemy: any): void {
 }
 
 // Handle Manussa death: severe karmic penalty (or reward if Ahirika active)
-function handleManussaDeath(): void {
+function handleManussaDeath(k: KAPLAYCtx, x: number, y: number): void {
   // Ahirika flips the mechanics - killing Manussa becomes advantageous
   if (hasKlesha('Ahirika')) {
     events.emit('human:killed:ahirika', {});
+    // Show +1000 karma feedback
+    const karmaText = k.add([
+      k.text('+1000 karma', { size: 14 }),
+      k.pos(x, y - 50),
+      k.anchor('center'),
+      k.color(255, 215, 0),
+      k.outline(2, k.rgb(0, 0, 0)),
+      k.opacity(1),
+      k.lifespan(1.2, { fade: 0.3 }),
+      k.z(100),
+    ]);
+    karmaText.onUpdate(() => { karmaText.pos.y -= 20 * k.dt(); });
     return;
   }
 
@@ -101,12 +113,34 @@ function handleManussaDeath(): void {
   const removedParami = removeRandomParami();
   if (removedParami) {
     events.emit('player:removeParami', { parami: removedParami });
+    const lostText = k.add([
+      k.text(`-${removedParami}`, { size: 14 }),
+      k.pos(x - 40, y - 50),
+      k.anchor('center'),
+      k.color(144, 238, 144),
+      k.outline(2, k.rgb(0, 0, 0)),
+      k.opacity(1),
+      k.lifespan(1.2, { fade: 0.3 }),
+      k.z(100),
+    ]);
+    lostText.onUpdate(() => { lostText.pos.y -= 20 * k.dt(); });
   }
 
   // 3. Add 1 random Klesha
   const klesha = getRandomKlesha();
   addKlesha(klesha);
   events.emit('player:applyKlesha', { klesha });
+  const gainedText = k.add([
+    k.text(`+${klesha}`, { size: 14 }),
+    k.pos(x + 40, y - 50),
+    k.anchor('center'),
+    k.color(255, 100, 100),
+    k.outline(2, k.rgb(0, 0, 0)),
+    k.opacity(1),
+    k.lifespan(1.2, { fade: 0.3 }),
+    k.z(100),
+  ]);
+  gainedText.onUpdate(() => { gainedText.pos.y -= 20 * k.dt(); });
 
   // 4. Reduce all powerup timers to 1 second
   reduceAllTimers(1000);
@@ -165,7 +199,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
         deathText.onUpdate(() => {
           deathText.pos.y -= 25 * k.dt();
         });
-        handleManussaDeath();
+        handleManussaDeath(k, pos.x, pos.y);
       }
 
       events.emit('enemy:killed', {
