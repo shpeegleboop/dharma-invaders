@@ -11,7 +11,7 @@ const PARAMI_CAPS: Record<string, number> = {
   Panna: 2,
   Adhitthana: 1,
   Nekkhamma: 2,
-  Sacca: 3,
+  Sacca: 1,
 };
 
 const KLESHA_CAPS: Record<string, number> = {

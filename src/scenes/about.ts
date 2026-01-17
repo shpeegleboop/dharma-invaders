@@ -142,7 +142,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       'Panna (2): +1 damage/stack',
       'Adhitthana (1): +1 shield charge',
       'Nekkhamma (2): +50% karma/stack',
-      'Sacca (3): +5% lotus drop/stack',
+      'Sacca (1): +5% lotus drop',
     ];
     let y = 170;
     paramis.forEach(p => {

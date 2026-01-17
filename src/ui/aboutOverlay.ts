@@ -153,7 +153,7 @@ function renderRebirth(): void {
     'Panna (2): +1 damage',
     'Adhitthana (1): +1 shield',
     'Nekkhamma (2): +50% karma',
-    'Sacca (3): +5% lotus drop',
+    'Sacca (1): +5% lotus drop',
   ];
   let y = 172;
   paramis.forEach(p => {
