@@ -3,7 +3,7 @@ import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma } from '../entities/powerup';
-import { getActivePowerup } from './powerupEffects';
+import { getActivePowerup, isPiercingActive } from './powerupEffects';
 import { damageMara, getMaraPhase } from '../entities/mara';
 import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
@@ -18,10 +18,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
   // Projectile hits enemy
   k.onCollide('projectile', 'enemy', (projectile, enemy) => {
     // Check if projectile should pierce (wisdom powerup)
-    const activePowerup = getActivePowerup();
-    const shouldPierce = activePowerup === 'wisdom';
-
-    if (!shouldPierce) {
+    if (!isPiercingActive()) {
       projectile.destroy();
     }
 
@@ -92,10 +89,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
     }
 
     // Check if projectile should pierce (wisdom powerup)
-    const activePowerup = getActivePowerup();
-    const shouldPierce = activePowerup === 'wisdom';
-
-    if (!shouldPierce) {
+    if (!isPiercingActive()) {
       projectile.destroy();
     }
 
