@@ -54,6 +54,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
       const healAmount = config.powerups.paduma.healAmount;
       player.heal(healAmount);
       events.emit('player:healed', { amount: healAmount });
+      events.emit('player:powerup', { type: 'paduma' });
     } else {
       events.emit('player:powerup', { type: powerup.virtueType });
     }

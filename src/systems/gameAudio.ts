@@ -40,6 +40,9 @@ export function setupGameAudio(): void {
       case 'meditation':
         playSFX('powerup_meditation');
         break;
+      case 'paduma':
+        playSFX('powerup_paduma');
+        break;
     }
   });
 

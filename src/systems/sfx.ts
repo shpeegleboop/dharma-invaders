@@ -12,6 +12,7 @@ export type SFXSound =
   | 'powerup_patience'
   | 'powerup_diligence'
   | 'powerup_meditation'
+  | 'powerup_paduma'
   | 'shield_break'
   | 'boss_enter'
   | 'boss_phase'
@@ -22,7 +23,7 @@ const sfx: Record<SFXSound, Howl | null> = {
   shoot: null, enemy_hit: null, enemy_death: null, player_hit: null,
   player_death: null, powerup_compassion: null, powerup_wisdom: null,
   powerup_patience: null, powerup_diligence: null, powerup_meditation: null,
-  shield_break: null, boss_enter: null, boss_phase: null, boss_death: null,
+  powerup_paduma: null, shield_break: null, boss_enter: null, boss_phase: null, boss_death: null,
   wave_complete: null,
 };
 
@@ -41,6 +42,7 @@ export function initSFX(volume: number): void {
   sfx.powerup_patience = new Howl({ src: ['/audio/sfx/powerup_patience.mp3'], volume: sfxVolume });
   sfx.powerup_diligence = new Howl({ src: ['/audio/sfx/powerup_diligence.mp3'], volume: sfxVolume });
   sfx.powerup_meditation = new Howl({ src: ['/audio/sfx/powerup_meditation.mp3'], volume: sfxVolume });
+  sfx.powerup_paduma = new Howl({ src: ['/audio/sfx/powerup_paduma.mp3'], volume: sfxVolume });
   sfx.shield_break = new Howl({ src: ['/audio/sfx/shield_break.mp3'], volume: sfxVolume });
   sfx.boss_enter = new Howl({ src: ['/audio/sfx/boss_enter.mp3'], volume: sfxVolume });
   sfx.boss_phase = new Howl({ src: ['/audio/sfx/boss_phase.mp3'], volume: sfxVolume });
