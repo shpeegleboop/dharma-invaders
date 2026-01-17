@@ -129,24 +129,41 @@ export function setupCollisions(k: KAPLAYCtx): void {
     // Apply Panna/Anottappa damage modifier
     enemy.hurt(getProjectileDamage());
 
+    // Manussa says "Ouch!" when hit but survives
+    if (enemy.isManussa && enemy.hp() > 0) {
+      const ouch = k.add([
+        k.text('Ouch!', { size: 16 }),
+        k.pos(enemy.pos.x, enemy.pos.y - 30),
+        k.anchor('center'),
+        k.color(255, 255, 100),
+        k.outline(2, k.rgb(0, 0, 0)),
+        k.opacity(1),
+        k.lifespan(0.6, { fade: 0.2 }),
+        k.z(100),
+      ]);
+      ouch.onUpdate(() => {
+        ouch.pos.y -= 40 * k.dt();
+      });
+    }
+
     if (enemy.hp() <= 0) {
       const pos = { x: enemy.pos.x, y: enemy.pos.y };
 
       // Manussa death triggers severe penalty
       if (enemy.isManussa) {
-        // Show "Ouch!" bubble
-        const ouch = k.add([
-          k.text('Ouch!', { size: 18 }),
+        // Show death text
+        const deathText = k.add([
+          k.text('another death? bruh.', { size: 16 }),
           k.pos(pos.x, pos.y - 30),
           k.anchor('center'),
           k.color(255, 100, 100),
           k.outline(2, k.rgb(0, 0, 0)),
           k.opacity(1),
-          k.lifespan(1, { fade: 0.3 }),
+          k.lifespan(1.5, { fade: 0.4 }),
           k.z(100),
         ]);
-        ouch.onUpdate(() => {
-          ouch.pos.y -= 30 * k.dt();
+        deathText.onUpdate(() => {
+          deathText.pos.y -= 25 * k.dt();
         });
         handleManussaDeath();
       }

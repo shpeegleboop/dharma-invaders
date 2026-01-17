@@ -200,7 +200,7 @@
     "manussa": {
       "size": { "width": 20, "height": 40 },
       "color": "#00FF00",
-      "health": 3,
+      "health": 7,
       "speed": 60,
       "karmaValue": -1000,
       "escapeKarma": 1000,
