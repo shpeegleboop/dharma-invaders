@@ -135,7 +135,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Patience', color: '#32CD32', effect: 'Slow enemies' },
       { name: 'Diligence', color: '#FFD700', effect: 'Rapid fire' },
       { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
-      { name: 'Paduma', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
+      { name: 'Paduma (Lotus)', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
     ];
     let px = 70;
     powerups.forEach(p => {
@@ -147,10 +147,10 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
 
     // Paramis section
     pageContent.push(k.add([
-      k.text('Paramis (Perfections)', { size: 18 }), k.pos(55, 210), k.color(144, 238, 144),
+      k.text('Paramis (Perfections)', { size: 18 }), k.pos(40, 210), k.color(144, 238, 144),
     ]));
     pageContent.push(k.add([
-      k.text('Max', { size: 14 }), k.pos(370, 212), k.color(100, 100, 120),
+      k.text('Max', { size: 14 }), k.pos(380, 212), k.color(100, 100, 120),
     ]));
     const paramis = [
       { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
@@ -166,18 +166,18 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
     ];
     let y = 238;
     paramis.forEach(p => {
-      pageContent.push(k.add([k.text(p.name, { size: 15 }), k.pos(60, y), k.color(180, 255, 180)]));
-      pageContent.push(k.add([k.text(p.effect, { size: 15 }), k.pos(280, y), k.color(140, 200, 140)]));
+      pageContent.push(k.add([k.text(p.name, { size: 15 }), k.pos(45, y), k.color(180, 255, 180)]));
+      pageContent.push(k.add([k.text(p.effect, { size: 15 }), k.pos(260, y), k.color(140, 200, 140)]));
       pageContent.push(k.add([k.text(`${p.max}`, { size: 15 }), k.pos(380, y), k.color(100, 150, 100)]));
       y += 29;
     });
 
     // Kleshas section
     pageContent.push(k.add([
-      k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(420, 210), k.color(255, 100, 100),
+      k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(405, 210), k.color(255, 100, 100),
     ]));
     pageContent.push(k.add([
-      k.text('Max', { size: 14 }), k.pos(755, 212), k.color(100, 100, 120),
+      k.text('Max', { size: 14 }), k.pos(765, 212), k.color(100, 100, 120),
     ]));
     const kleshas = [
       { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
@@ -191,8 +191,8 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
     ];
     y = 238;
     kleshas.forEach(kl => {
-      pageContent.push(k.add([k.text(kl.name, { size: 15 }), k.pos(425, y), k.color(255, 150, 150)]));
-      pageContent.push(k.add([k.text(kl.effect, { size: 15 }), k.pos(635, y), k.color(200, 140, 140)]));
+      pageContent.push(k.add([k.text(kl.name, { size: 15 }), k.pos(410, y), k.color(255, 150, 150)]));
+      pageContent.push(k.add([k.text(kl.effect, { size: 15 }), k.pos(615, y), k.color(200, 140, 140)]));
       pageContent.push(k.add([k.text(`${kl.max}`, { size: 15 }), k.pos(765, y), k.color(150, 100, 100)]));
       y += 29;
     });
