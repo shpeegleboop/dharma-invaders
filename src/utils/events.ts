@@ -18,6 +18,7 @@ type GameEvents = {
 
   // Manussa (Human) special events
   'human:killed': Record<string, never>;
+  'human:killed:ahirika': Record<string, never>;
   'human:escaped': Record<string, never>;
 
   // Game flow

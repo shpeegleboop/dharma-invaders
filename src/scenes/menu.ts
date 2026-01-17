@@ -24,7 +24,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
   // Subtitle
   k.add([
-    k.text('Escape the Wheel of Samsara', { size: 20 }),
+    k.text('"Escape" from Samsara', { size: 20 }),
     k.pos(config.screen.width / 2, config.screen.height / 3 + 50),
     k.anchor('center'),
     k.color(180, 180, 200),

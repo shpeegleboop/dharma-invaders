@@ -11,7 +11,7 @@ import { getProjectileDamageModifier } from './rebirthEffects';
 import { absorbDamage } from './shieldSystem';
 import {
   addKlesha, getRandomKlesha, removeRandomParami,
-  setKarmaThisLife
+  setKarmaThisLife, hasKlesha
 } from '../stores/gameStore';
 import { reduceAllTimers } from './powerupEffects';
 import { spawnHitParticles } from './particles';
@@ -85,8 +85,15 @@ function handleManussaCollision(_k: KAPLAYCtx, player: any, enemy: any): void {
   // No damage, no stun
 }
 
-// Handle Manussa death: severe karmic penalty
+// Handle Manussa death: severe karmic penalty (or reward if Ahirika active)
 function handleManussaDeath(): void {
+  // Ahirika flips the mechanics - killing Manussa becomes advantageous
+  if (hasKlesha('Ahirika')) {
+    events.emit('human:killed:ahirika', {});
+    return;
+  }
+
+  // Normal penalty for killing Manussa:
   // 1. Wipe karma this life
   setKarmaThisLife(0);
 

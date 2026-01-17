@@ -23,6 +23,7 @@ const KLESHA_CAPS: Record<string, number> = {
   Thina: 2,
   Anottappa: 1,
   Micchaditthi: 2,
+  Ahirika: 1,
 };
 
 interface GameState {
@@ -205,4 +206,9 @@ export function getParamiTypes(): string[] {
 // Get all klesha types
 export function getKleshaTypes(): string[] {
   return Object.keys(KLESHA_CAPS);
+}
+
+// Check if player has a specific klesha
+export function hasKlesha(klesha: string): boolean {
+  return state.kleshas.includes(klesha);
 }

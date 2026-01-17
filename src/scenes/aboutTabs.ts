@@ -50,10 +50,10 @@ export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
 
   // Base enemies (left column)
   const baseEnemies = [
-    { name: 'Preta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Realm of hungry spirits' },
-    { name: 'Asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma', realm: 'Realm of jealous demigods' },
-    { name: 'Deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm' },
-    { name: 'Mara', color: [139, 0, 0], desc: 'Lord of Illusion - Boss', realm: 'Master of Samsara' },
+    { name: 'Petā', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Realm of hungry spirits' },
+    { name: 'Asurā', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma', realm: 'Realm of jealous demigods' },
+    { name: 'Devā', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm' },
+    { name: 'Māra', color: [139, 0, 0], desc: 'Lord of Illusion - Boss', realm: 'Master of Samsara' },
   ];
   let y = 125;
   baseEnemies.forEach(e => {
@@ -70,25 +70,25 @@ export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
     k.text('Unlocked in Later Kalpas', { size: 20 }), k.pos(420, 105), k.color(100, 100, 120),
   ]));
 
-  // Nerayika - hexagon
+  // Nerayikā - hexagon
   y = 150;
   pageContent.push(k.add([k.polygon(hexVerts(14)), k.pos(432, y), k.anchor('center'), k.color(255, 69, 0)]));
-  pageContent.push(k.add([k.text('Nerayika', { size: 20 }), k.pos(465, y - 14), k.color(255, 69, 0)]));
+  pageContent.push(k.add([k.text('Nerayikā', { size: 20 }), k.pos(465, y - 14), k.color(255, 69, 0)]));
   pageContent.push(k.add([k.text('Charger, 4 HP, applies Klesha', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Hell realm (Kalpa 2+)', { size: 14 }), k.pos(465, y + 28), k.color(100, 100, 120)]));
 
-  // Tiracchana - triangle
+  // Tiracchānā - triangle
   y += 70;
   const triVerts = [k.vec2(0, -14), k.vec2(14, 12), k.vec2(-14, 12)];
   pageContent.push(k.add([k.polygon(triVerts), k.pos(432, y), k.anchor('center'), k.color(65, 105, 225)]));
-  pageContent.push(k.add([k.text('Tiracchana', { size: 20 }), k.pos(465, y - 14), k.color(65, 105, 225)]));
-  pageContent.push(k.add([k.text('Pack of 6, removes Parami', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
+  pageContent.push(k.add([k.text('Tiracchānā', { size: 20 }), k.pos(465, y - 14), k.color(65, 105, 225)]));
+  pageContent.push(k.add([k.text('Pack of 6, removes Pāramī', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Animal realm (Kalpa 3+)', { size: 14 }), k.pos(465, y + 28), k.color(100, 100, 120)]));
 
-  // Manussa - rectangle
+  // Manussā - rectangle
   y += 70;
   pageContent.push(k.add([k.rect(24, 24), k.pos(432, y), k.anchor('center'), k.color(0, 255, 0)]));
-  pageContent.push(k.add([k.text('Manussa', { size: 20 }), k.pos(465, y - 14), k.color(0, 255, 0)]));
+  pageContent.push(k.add([k.text('Manussā', { size: 20 }), k.pos(465, y - 14), k.color(0, 255, 0)]));
   pageContent.push(k.add([k.text('Non-hostile, +1000 if spared', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Human realm (Kalpa 4+)', { size: 14 }), k.pos(465, y + 28), k.color(100, 100, 120)]));
 }
@@ -96,23 +96,32 @@ export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
 export function showLore(k: KAPLAYCtx, pageContent: GameObj[]): void {
   const lines = [
     'In Buddhist cosmology, all sentient beings are trapped',
-    'in the Wheel of Samsara - the cycle of birth and rebirth.',
+    'in the wheel of Samsara - the cycle of rebirth.',
     '',
     'The Six Realms house beings in various states of existence:',
-    'Gods, Asuras, Humans, Animals, Hungry Ghosts, and Hell beings.',
+    'Devā(Gods), Asurā(Demons), Manussā(Humans),',
+    'Tiracchānā(Animals), Petā(Hungry Ghosts), and Nerayikā(Hell Beings).',
     '',
     'Mara, the demon of desire and death, keeps all beings',
-    'trapped in this cycle through illusion and attachment.',
+    'trapped in this cycle through delusion and attachment.',
     '',
-    'Only through cultivating the virtues - Compassion, Wisdom,',
-    'Patience, Diligence, and Meditation - can one break free',
-    'and achieve Nirvana: the cessation of suffering.',
+    'Skillful actions cultivate Pāramīs(perfections) in the bodymind',
+    'and weaken the grip of suffering. Unskillful actions generate',
+    'Kleshas(defilements) and multiply our miseries.',
+    '',
+    'Only through cultivating the virtues of Compassion, Wisdom,',
+    'Patience, and Diligence through the process of Meditation',
+    'can one see anicca(impermanence), realize anattā(no continuous',
+    '"self" exists within us from moment to moment), and attain Nirvana,',
+    'the state beyond existence and nonexistence, free from all suffering.',
+    '',
+    'May all beings be happy.',
   ];
-  let y = 140;
+  let y = 115;
   lines.forEach(line => {
     if (line) {
       pageContent.push(k.add([
-        k.text(line, { size: 14 }),
+        k.text(line, { size: 15 }),
         k.pos(config.screen.width / 2, y),
         k.anchor('center'),
         k.color(180, 180, 200),
@@ -153,14 +162,14 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
     k.text('Max', { size: 14 }), k.pos(380, 212), k.color(100, 100, 120),
   ]));
   const paramis = [
-    { name: 'Dana(Generosity)', effect: '1.25x drops', max: 1 },
+    { name: 'Dāna(Generosity)', effect: '1.25x drops', max: 1 },
     { name: 'Viriya(Energy)', effect: '+10% fire rate', max: 5 },
-    { name: 'Metta(Loving-kindness)', effect: '+1 HP', max: 7 },
-    { name: 'Upekkha(Equanimity)', effect: '-10% enemy spd', max: 5 },
-    { name: 'Sila(Virtue)', effect: 'Auto-shield', max: 1 },
-    { name: 'Khanti(Patience)', effect: '+20% duration', max: 5 },
-    { name: 'Panna(Wisdom)', effect: '+1 damage', max: 2 },
-    { name: 'Adhitthana(Resolve)', effect: '+1 shield', max: 1 },
+    { name: 'Mettā(Loving-kindness)', effect: '+1 HP', max: 7 },
+    { name: 'Upekkhā(Equanimity)', effect: '-10% enemy spd', max: 5 },
+    { name: 'Sīla(Morality)', effect: 'Auto-shield', max: 1 },
+    { name: 'Khantī(Patience)', effect: '+20% duration', max: 5 },
+    { name: 'Paññā(Wisdom)', effect: '+1 damage', max: 2 },
+    { name: 'Adhiṭṭhāna(Determination)', effect: '+1 shield', max: 1 },
     { name: 'Nekkhamma(Renunciation)', effect: '+50% karma', max: 2 },
     { name: 'Sacca(Truthfulness)', effect: '+5% lotus', max: 1 },
   ];
@@ -168,7 +177,7 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
   paramis.forEach(p => {
     pageContent.push(k.add([k.text(p.name, { size: 15 }), k.pos(45, y), k.color(180, 255, 180)]));
     pageContent.push(k.add([k.text(p.effect, { size: 15 }), k.pos(260, y), k.color(140, 200, 140)]));
-    pageContent.push(k.add([k.text(`${p.max}`, { size: 15 }), k.pos(380, y), k.color(100, 150, 100)]));
+    pageContent.push(k.add([k.text(`${p.max}`, { size: 15 }), k.pos(390, y), k.color(100, 150, 100)]));
     y += 29;
   });
 
@@ -177,23 +186,24 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
     k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(405, 210), k.color(255, 100, 100),
   ]));
   pageContent.push(k.add([
-    k.text('Max', { size: 14 }), k.pos(765, 212), k.color(100, 100, 120),
+    k.text('Max', { size: 14 }), k.pos(775, 212), k.color(100, 100, 120),
   ]));
   const kleshas = [
     { name: 'Lobha(Greed)', effect: '-25% drops', max: 2 },
-    { name: 'Dosa(Hatred)', effect: '+10% enemy spd', max: 3 },
-    { name: 'Mana(Pride)', effect: '-1 HP', max: 5 },
-    { name: 'Vicikiccha(Doubt)', effect: '-10% fire rate', max: 3 },
+    { name: 'Dosa(Aversion)', effect: '+10% enemy spd', max: 3 },
+    { name: 'Māna(Conceit)', effect: '-1 HP', max: 5 },
+    { name: 'Vicikicchā(Doubt)', effect: '-10% fire rate', max: 3 },
     { name: 'Moha(Delusion)', effect: '-20% duration', max: 2 },
-    { name: 'Thina(Sloth)', effect: '-10% player spd', max: 2 },
-    { name: 'Anottappa(Reckless)', effect: '-1 damage', max: 1 },
-    { name: 'Micchaditthi(Wrong View)', effect: '-25% karma', max: 2 },
+    { name: 'Thīna(Sloth)', effect: '-10% player spd', max: 2 },
+    { name: 'Anottappa(Recklessness)', effect: '-1 damage', max: 1 },
+    { name: 'Micchādiṭṭhi(Wrong View)', effect: '-25% karma', max: 2 },
+    { name: 'Ahirika(Shamelessness)', effect: 'Flip Manussā karma', max: 1 },
   ];
   y = 238;
   kleshas.forEach(kl => {
     pageContent.push(k.add([k.text(kl.name, { size: 15 }), k.pos(410, y), k.color(255, 150, 150)]));
     pageContent.push(k.add([k.text(kl.effect, { size: 15 }), k.pos(615, y), k.color(200, 140, 140)]));
-    pageContent.push(k.add([k.text(`${kl.max}`, { size: 15 }), k.pos(765, y), k.color(150, 100, 100)]));
+    pageContent.push(k.add([k.text(`${kl.max}`, { size: 15 }), k.pos(775, y), k.color(150, 100, 100)]));
     y += 29;
   });
 

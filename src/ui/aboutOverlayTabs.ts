@@ -39,10 +39,10 @@ export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
 
   // Base enemies (left column)
   const baseEnemies = [
-    { name: 'Preta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
-    { name: 'Asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma' },
-    { name: 'Deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma' },
-    { name: 'Mara', color: [139, 0, 0], desc: 'Lord of Illusion - Boss' },
+    { name: 'Petā', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
+    { name: 'Asurā', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma' },
+    { name: 'Devā', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma' },
+    { name: 'Māra', color: [139, 0, 0], desc: 'Lord of Illusion - Boss' },
   ];
   let y = 130;
   baseEnemies.forEach(e => {
@@ -58,25 +58,25 @@ export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
     k.text('Unlocked in Later Kalpas', { size: 18 }), k.pos(420, 112), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
 
-  // Nerayika - hexagon
+  // Nerayikā - hexagon
   y = 150;
   tabContent.push(k.add([k.polygon(hexVerts(12)), k.pos(432, y), k.anchor('center'), k.color(255, 69, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Nerayika', { size: 20 }), k.pos(460, y - 10), k.color(255, 69, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Nerayikā', { size: 20 }), k.pos(460, y - 10), k.color(255, 69, 0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Charger, 4 HP, +Klesha', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('K2+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
 
-  // Tiracchana - triangle
+  // Tiracchānā - triangle
   y += 60;
   const triVerts = [k.vec2(0, -12), k.vec2(12, 10), k.vec2(-12, 10)];
   tabContent.push(k.add([k.polygon(triVerts), k.pos(432, y), k.anchor('center'), k.color(65, 105, 225), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Tiracchana', { size: 20 }), k.pos(460, y - 10), k.color(65, 105, 225), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Pack of 6, 1 HP, -Parami', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Tiracchānā', { size: 20 }), k.pos(460, y - 10), k.color(65, 105, 225), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Pack of 6, 1 HP, -Pāramī', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('K3+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
 
-  // Manussa - rectangle
+  // Manussā - rectangle
   y += 60;
   tabContent.push(k.add([k.rect(22, 22), k.pos(432, y), k.anchor('center'), k.color(0, 255, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Manussa', { size: 20 }), k.pos(460, y - 10), k.color(0, 255, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Manussā', { size: 20 }), k.pos(460, y - 10), k.color(0, 255, 0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Non-hostile, karma test', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('K4+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
 }
@@ -109,17 +109,17 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
     k.text('Paramis (Buffs)', { size: 16 }), k.pos(55, 200), k.color(144, 238, 144), k.fixed(), k.z(101),
   ]));
   tabContent.push(k.add([
-    k.text('Max', { size: 12 }), k.pos(355, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Max', { size: 12 }), k.pos(365, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const paramis = [
-    { name: 'Dana', effect: '1.25x drop rate', max: 1 },
+    { name: 'Dāna', effect: '1.25x drop rate', max: 1 },
     { name: 'Viriya', effect: '+10% fire rate', max: 5 },
-    { name: 'Metta', effect: '+1 max HP', max: 7 },
-    { name: 'Upekkha', effect: '-10% enemy speed', max: 5 },
-    { name: 'Sila', effect: 'Auto-shield on spawn', max: 1 },
-    { name: 'Khanti', effect: '+20% powerup duration', max: 5 },
-    { name: 'Panna', effect: '+1 damage', max: 2 },
-    { name: 'Adhitthana', effect: '+1 shield charge', max: 1 },
+    { name: 'Mettā', effect: '+1 max HP', max: 7 },
+    { name: 'Upekkhā', effect: '-10% enemy speed', max: 5 },
+    { name: 'Sīla', effect: 'Auto-shield on spawn', max: 1 },
+    { name: 'Khantī', effect: '+20% powerup duration', max: 5 },
+    { name: 'Paññā', effect: '+1 damage', max: 2 },
+    { name: 'Adhiṭṭhāna', effect: '+1 shield charge', max: 1 },
     { name: 'Nekkhamma', effect: '+50% karma gain', max: 2 },
     { name: 'Sacca', effect: '+5% lotus drop', max: 1 },
   ];
@@ -127,7 +127,7 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
   paramis.forEach(p => {
     tabContent.push(k.add([k.text(p.name, { size: 14 }), k.pos(60, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
     tabContent.push(k.add([k.text(p.effect, { size: 14 }), k.pos(155, y), k.color(140, 200, 140), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`${p.max}`, { size: 14 }), k.pos(360, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${p.max}`, { size: 14 }), k.pos(370, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
     y += 26;
   });
 
@@ -136,23 +136,24 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
     k.text('Kleshas (Debuffs)', { size: 16 }), k.pos(400, 200), k.color(255, 100, 100), k.fixed(), k.z(101),
   ]));
   tabContent.push(k.add([
-    k.text('Max', { size: 12 }), k.pos(755, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Max', { size: 12 }), k.pos(765, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const kleshas = [
     { name: 'Lobha', effect: '-25% drop rate', max: 2 },
     { name: 'Dosa', effect: '+10% enemy speed', max: 3 },
-    { name: 'Mana', effect: '-1 max HP', max: 5 },
-    { name: 'Vicikiccha', effect: '-10% fire rate', max: 3 },
+    { name: 'Māna', effect: '-1 max HP', max: 5 },
+    { name: 'Vicikicchā', effect: '-10% fire rate', max: 3 },
     { name: 'Moha', effect: '-20% powerup duration', max: 2 },
-    { name: 'Thina', effect: '-10% player speed', max: 2 },
+    { name: 'Thīna', effect: '-10% player speed', max: 2 },
     { name: 'Anottappa', effect: '-1 damage', max: 1 },
-    { name: 'Micchaditthi', effect: '-25% karma gain', max: 2 },
+    { name: 'Micchādiṭṭhi', effect: '-25% karma gain', max: 2 },
+    { name: 'Ahirika', effect: 'Flip Manussā karma', max: 1 },
   ];
   y = 226;
   kleshas.forEach(kl => {
     tabContent.push(k.add([k.text(kl.name, { size: 14 }), k.pos(405, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
     tabContent.push(k.add([k.text(kl.effect, { size: 14 }), k.pos(520, y), k.color(200, 140, 140), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`${kl.max}`, { size: 14 }), k.pos(760, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${kl.max}`, { size: 14 }), k.pos(770, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
     y += 26;
   });
 }

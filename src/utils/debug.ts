@@ -100,11 +100,12 @@ export function setupDebug(k: KAPLAYCtx): void {
   k.onKeyPress('h', () => addKlesha('Dosa'));
   k.onKeyPress('j', () => addKlesha('Mana'));
   k.onKeyPress('k', () => addKlesha('Vicikiccha'));
-  // New kleshas: 6=Moha, 7=Thina, 8=Anottappa, 9=Micchaditthi
+  // New kleshas: 6=Moha, 7=Thina, 8=Anottappa, 9=Micchaditthi, -=Ahirika
   k.onKeyPress('6', () => addKlesha('Moha'));
   k.onKeyPress('7', () => addKlesha('Thina'));
   k.onKeyPress('8', () => addKlesha('Anottappa'));
   k.onKeyPress('9', () => addKlesha('Micchaditthi'));
+  k.onKeyPress('-', () => addKlesha('Ahirika'));
 
   // M: Clear all paramis and kleshas
   k.onKeyPress('m', () => {

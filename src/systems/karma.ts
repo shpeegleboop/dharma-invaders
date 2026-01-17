@@ -2,7 +2,11 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { getGameState, getKarmaTotal, addKarma } from '../stores/gameStore';
+import {
+  getGameState, getKarmaTotal, addKarma, hasKlesha,
+  setKarmaThisLife, removeRandomParami, addKlesha, getRandomKlesha
+} from '../stores/gameStore';
+import { reduceAllTimers } from './powerupEffects';
 import { getKarmaMultiplier } from './rebirthEffects';
 
 let karmaText: GameObj | null = null;
@@ -47,8 +51,41 @@ export function setupKarma(k: KAPLAYCtx): void {
     }
   });
 
-  // Listen for Manussa escape - grants bonus karma
+  // Listen for Manussa escape - grants bonus karma (or penalty if Ahirika)
   events.on('human:escaped', () => {
+    // Ahirika flips the mechanics - letting Manussa escape becomes a penalty
+    if (hasKlesha('Ahirika')) {
+      // Apply same penalties as normal Manussa kill
+      setKarmaThisLife(0);
+      const removedParami = removeRandomParami();
+      if (removedParami) {
+        events.emit('player:removeParami', { parami: removedParami });
+      }
+      const klesha = getRandomKlesha();
+      addKlesha(klesha);
+      events.emit('player:applyKlesha', { klesha });
+      reduceAllTimers(1000);
+      updateKarmaDisplay();
+      return;
+    }
+
+    // Normal reward for letting Manussa escape
+    const escapeKarma = config.newEnemies.manussa.escapeKarma;
+    const karmaEarned = Math.round(escapeKarma * getKarmaMultiplier());
+    addKarma(karmaEarned);
+    const state = getGameState();
+    events.emit('karma:changed', { newValue: state.karmaTotal, delta: karmaEarned });
+
+    if (karmaText) {
+      karmaText.text = `Karma: ${state.karmaTotal}`;
+    }
+    if (karmaThisLifeText) {
+      karmaThisLifeText.text = `This life: ${state.karmaThisLife}`;
+    }
+  });
+
+  // Listen for Manussa kill with Ahirika - grants bonus karma
+  events.on('human:killed:ahirika', () => {
     const escapeKarma = config.newEnemies.manussa.escapeKarma;
     const karmaEarned = Math.round(escapeKarma * getKarmaMultiplier());
     addKarma(karmaEarned);
