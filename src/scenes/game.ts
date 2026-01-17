@@ -19,7 +19,7 @@ import { resetRebirthOverlay } from '../ui/rebirthOverlay';
 import { setupRebirthHud } from '../ui/rebirthHud';
 import { events } from '../utils/events';
 import { playMusic } from '../systems/audio';
-import { getCycle } from '../stores/gameStore';
+import { getCycle, saveHealth, consumeSavedHealth } from '../stores/gameStore';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
@@ -120,5 +120,16 @@ export function createGameScene(k: KAPLAYCtx): void {
   });
 
   // Spawn player
-  createPlayer(k);
+  const player = createPlayer(k);
+
+  // Restore saved health from previous kalpa (if any)
+  const savedHP = consumeSavedHealth();
+  if (savedHP !== null) {
+    player.setHP(savedHP);
+  }
+
+  // Save player health when boss is defeated (for next kalpa)
+  events.on('boss:defeated', () => {
+    saveHealth(player.hp());
+  });
 }

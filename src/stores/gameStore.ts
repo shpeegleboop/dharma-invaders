@@ -8,6 +8,7 @@ interface GameState {
   cycle: number; // Current cycle (starts at 1, increments on Continue)
   paramis: string[];
   kleshas: string[];
+  savedHealth: number | null; // Health to restore on next kalpa (null = use max)
 }
 
 const defaultState: GameState = {
@@ -18,6 +19,7 @@ const defaultState: GameState = {
   cycle: 1,
   paramis: [],
   kleshas: [],
+  savedHealth: null,
 };
 
 let state: GameState = { ...defaultState };
@@ -86,4 +88,16 @@ export function incrementCycle(): void {
   state.cycle += 1;
   state.karmaThisLife = 0; // Reset karma for new cycle
   state.deathsWithZeroKarma = 0; // Reset mercy rule
+}
+
+// Save player health when beating boss (for next kalpa)
+export function saveHealth(health: number): void {
+  state.savedHealth = health;
+}
+
+// Get and consume saved health (returns null if none saved)
+export function consumeSavedHealth(): number | null {
+  const health = state.savedHealth;
+  state.savedHealth = null;
+  return health;
 }
