@@ -115,7 +115,7 @@ export function setupDebug(k: KAPLAYCtx): void {
     const player = k.get('player')[0];
     if (player) {
       player.heal(1);
-      events.emit('player:healed', { amount: 1 });
+      events.emit('player:healed', { amount: 1, newHealth: player.hp() });
     }
   });
 

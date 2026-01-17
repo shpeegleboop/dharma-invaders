@@ -30,17 +30,13 @@ export function setupHealth(k: KAPLAYCtx): void {
     updateDisplay();
   });
 
-  // Listen for player death (reset health display)
-  events.on('player:died', () => {
-    k.wait(0.5, () => {
-      currentHealth = getEffectiveMaxHealth();
-      updateDisplay();
-    });
-  });
+  // Health reset on respawn is handled by player.ts calling setHealthDisplay()
+  // after paramis/kleshas are applied
 
   // Listen for player healing (Paduma powerup)
   events.on('player:healed', (data) => {
-    currentHealth = Math.min(currentHealth + data.amount, getEffectiveMaxHealth());
+    // Use actual HP from Kaplay component to stay in sync
+    currentHealth = data.newHealth;
     updateDisplay();
   });
 }

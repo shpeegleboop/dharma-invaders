@@ -53,7 +53,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
       // Paduma heals immediately instead of activating a powerup
       const healAmount = config.powerups.paduma.healAmount;
       player.heal(healAmount);
-      events.emit('player:healed', { amount: healAmount });
+      events.emit('player:healed', { amount: healAmount, newHealth: player.hp() });
       events.emit('player:powerup', { type: 'paduma' });
     } else {
       events.emit('player:powerup', { type: powerup.virtueType });

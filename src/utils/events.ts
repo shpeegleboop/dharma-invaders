@@ -12,7 +12,7 @@ type GameEvents = {
   'player:hit': { damage: number; remainingHealth: number };
   'player:died': Record<string, never>;
   'player:powerup': { type: string };
-  'player:healed': { amount: number };
+  'player:healed': { amount: number; newHealth: number };
 
   // Game flow
   'wave:started': { waveNumber: number };

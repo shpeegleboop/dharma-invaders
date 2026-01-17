@@ -11,6 +11,7 @@ import { pushAllEnemies } from '../systems/enemyHelpers';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import { getGameState, resetLife } from '../stores/gameStore';
 import { updateKarmaDisplay } from '../systems/karma';
+import { setHealthDisplay } from '../systems/health';
 import {
   getMaxHealthModifier,
   getPlayerSpeedMultiplier,
@@ -108,7 +109,12 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
         // Move player to center
         player.pos.x = config.arena.width / 2;
         player.pos.y = config.arena.offsetY + config.arena.height / 2;
-        player.setHP(getEffectiveMaxHealth());
+
+        // Update max HP (may have changed due to Metta/Mana from rebirth)
+        const newMaxHealth = getEffectiveMaxHealth();
+        player.setMaxHP(newMaxHealth);
+        player.setHP(newMaxHealth);
+        setHealthDisplay(newMaxHealth);
 
         // Respawn invincibility from config
         const respawnInvincibility = config.roguelike.respawnInvincibility;
