@@ -202,10 +202,11 @@ export function getShootCooldownMultiplier(): number {
   return powerupMultiplier * rebirthMultiplier;
 }
 
-// Patience: (0.5)^stacks enemy speed, combined with rebirth
+// Patience: 10% slow per stack (max 50% at 5 stacks), combined with rebirth
 export function getEnemySpeedMultiplier(): number {
   const stacks = getStacks('patience');
-  const powerupMultiplier = stacks > 0 ? Math.pow(0.5, stacks) : 1;
+  const slowPerStack = stackingConfig.patience.slowPerStack ?? 0.10;
+  const powerupMultiplier = stacks > 0 ? 1 - (stacks * slowPerStack) : 1;
   const rebirthMultiplier = getRebirthEnemySpeed();
   return powerupMultiplier * rebirthMultiplier;
 }
