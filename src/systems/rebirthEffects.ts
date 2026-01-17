@@ -10,16 +10,11 @@ function countKlesha(name: string): number {
   return getGameState().kleshas.filter(k => k === name).length;
 }
 
-// Dana: additive +0.25 to base drop rate (not multiplicative)
-export function getDropRateBonus(): number {
-  const dana = countParami('Dana');
-  return dana * 0.25;
-}
-
-// Lobha: multiplicative -25% per stack (0.5x at max 2 stacks)
+// Dana (+25% per stack) vs Lobha (-25% per stack) - both multiplicative
 export function getDropRateMultiplier(): number {
+  const dana = countParami('Dana');
   const lobha = countKlesha('Lobha');
-  return Math.max(0.1, 1 - (lobha * 0.25));
+  return Math.max(0.1, 1 + (dana * 0.25) - (lobha * 0.25));
 }
 
 // Sacca: additive +0.05 to Paduma drop rate per stack

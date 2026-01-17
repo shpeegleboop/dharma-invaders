@@ -144,7 +144,7 @@ function renderRebirth(): void {
     k.text('Paramis (Buffs)', { size: 16 }), k.pos(60, 150), k.color(144, 238, 144), k.fixed(), k.z(101),
   ]));
   const paramis = [
-    'Dana (1): +25% drops',
+    'Dana (1): 1.25x drops',
     'Viriya (5): +10% fire rate',
     'Metta (7): +1 HP',
     'Upekkha (5): -10% enemy spd',

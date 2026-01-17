@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { isPaused } from '../ui/pauseMenu';
-import { getDropRateBonus, getDropRateMultiplier, getPadumaDropRateBonus } from '../systems/rebirthEffects';
+import { getDropRateMultiplier, getPadumaDropRateBonus } from '../systems/rebirthEffects';
 import { getCycle } from '../stores/gameStore';
 
 export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation' | 'paduma';
@@ -50,8 +50,7 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
 
 export function shouldDropPowerup(k: KAPLAYCtx): boolean {
   const baseChance = config.powerups.dropChance;
-  // Dana adds to base rate, Lobha multiplies result
-  const modifiedChance = (baseChance + getDropRateBonus()) * getDropRateMultiplier();
+  const modifiedChance = baseChance * getDropRateMultiplier();
   return k.rand(0, 1) < modifiedChance;
 }
 

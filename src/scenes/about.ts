@@ -133,7 +133,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       k.text('Paramis (Perfections)', { size: 18 }), k.pos(60, 145), k.color(144, 238, 144),
     ]));
     const paramis = [
-      'Dana (1): +25% drop rate',
+      'Dana (1): 1.25x drop rate',
       'Viriya (5): +10% fire rate/stack',
       'Metta (7): +1 HP/stack',
       'Upekkha (5): -10% enemy speed/stack',
