@@ -153,7 +153,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
       if (enemy.isManussa) {
         // Show death text
         const deathText = k.add([
-          k.text('another death? bruh.', { size: 16 }),
+          k.text('bruh, why?', { size: 16 }),
           k.pos(pos.x, pos.y - 30),
           k.anchor('center'),
           k.color(255, 100, 100),
