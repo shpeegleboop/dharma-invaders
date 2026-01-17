@@ -43,6 +43,19 @@ function handleNerayikaCollision(k: KAPLAYCtx, player: any, enemy: any): void {
   addKlesha(klesha);
   events.emit('player:applyKlesha', { klesha });
 
+  // Visual feedback for klesha
+  const kleshaText = k.add([
+    k.text(`+${klesha}`, { size: 14 }),
+    k.pos(enemy.pos.x, enemy.pos.y - 30),
+    k.anchor('center'),
+    k.color(255, 100, 100),
+    k.outline(2, k.rgb(0, 0, 0)),
+    k.opacity(1),
+    k.lifespan(1.2, { fade: 0.3 }),
+    k.z(100),
+  ]);
+  kleshaText.onUpdate(() => { kleshaText.pos.y -= 20 * k.dt(); });
+
   // Bounce enemy away
   bounceAndStunEnemy(k, player, enemy);
 }
@@ -64,6 +77,18 @@ function handleTiracchanaCollision(k: KAPLAYCtx, player: any, enemy: any): void 
   const removed = removeRandomParami();
   if (removed) {
     events.emit('player:removeParami', { parami: removed });
+    // Visual feedback for parami removal
+    const paramiText = k.add([
+      k.text(`-${removed}`, { size: 14 }),
+      k.pos(enemy.pos.x, enemy.pos.y - 30),
+      k.anchor('center'),
+      k.color(144, 238, 144),
+      k.outline(2, k.rgb(0, 0, 0)),
+      k.opacity(1),
+      k.lifespan(1.2, { fade: 0.3 }),
+      k.z(100),
+    ]);
+    paramiText.onUpdate(() => { paramiText.pos.y -= 20 * k.dt(); });
   }
 
   // Bounce enemy away

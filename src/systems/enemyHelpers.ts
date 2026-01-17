@@ -47,3 +47,30 @@ export function pushAllEnemies(k: KAPLAYCtx): void {
     pushEnemyFromCenter(enemy, config.enemies.respawnPushDistance);
   });
 }
+
+// Push all enemies away from a specific position by a fixed distance
+export function pushEnemiesFromPoint(
+  k: KAPLAYCtx,
+  x: number,
+  y: number,
+  pushDistance: number
+): void {
+  const enemies = k.get('enemy');
+  enemies.forEach((enemy) => {
+    const dx = enemy.pos.x - x;
+    const dy = enemy.pos.y - y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    // Push away from point
+    enemy.pos.x += (dx / dist) * pushDistance;
+    enemy.pos.y += (dy / dist) * pushDistance;
+
+    // Clamp to arena bounds
+    const margin = config.enemies.spawnMargin;
+    enemy.pos.x = Math.max(margin, Math.min(config.screen.width - margin, enemy.pos.x));
+    enemy.pos.y = Math.max(
+      config.arena.offsetY + margin,
+      Math.min(config.screen.height - margin, enemy.pos.y)
+    );
+  });
+}

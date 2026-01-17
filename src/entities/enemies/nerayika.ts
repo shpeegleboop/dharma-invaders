@@ -66,7 +66,9 @@ export function createNerayika(k: KAPLAYCtx, x: number, y: number): GameObj {
 
   nerayika.onUpdate(() => {
     if (getIsPaused()) return;
-    if (nerayika.stunned) return;
+
+    const player = k.get('player')[0];
+    if (nerayika.stunned || (player && player.invincible)) return;
 
     // Flee when Mara is defeated
     if (shouldEnemiesFlee()) {
@@ -106,10 +108,9 @@ export function createNerayika(k: KAPLAYCtx, x: number, y: number): GameObj {
 
       case 'pursuing':
         // Track player at half speed
-        const target = k.get('player')[0];
-        if (target) {
-          const pdx = target.pos.x - nerayika.pos.x;
-          const pdy = target.pos.y - nerayika.pos.y;
+        if (player) {
+          const pdx = player.pos.x - nerayika.pos.x;
+          const pdy = player.pos.y - nerayika.pos.y;
           const pdist = Math.sqrt(pdx * pdx + pdy * pdy);
           if (pdist > 0) {
             const pursuitSpeed = cfg.chargeSpeed * 0.5;

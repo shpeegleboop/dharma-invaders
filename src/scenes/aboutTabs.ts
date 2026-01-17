@@ -7,6 +7,7 @@ export function showControls(k: KAPLAYCtx, pageContent: GameObj[]): void {
     { label: 'Move', value: 'WASD' },
     { label: 'Aim', value: 'Mouse' },
     { label: 'Shoot', value: 'Left Click / SPACE (hold for auto-fire)' },
+    { label: 'Paṭighāta', value: 'Right Click (5s cooldown)' },
     { label: 'Pause', value: 'ESC' },
   ];
   let y = 140;

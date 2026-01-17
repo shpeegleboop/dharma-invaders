@@ -7,7 +7,9 @@ import { getShootCooldownMultiplier, isSpreadShotActive } from '../systems/power
 import { isGameOver } from '../systems/mercyRule';
 import { getIsPaused } from '../ui/pauseMenu';
 import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
-import { pushAllEnemies } from '../systems/enemyHelpers';
+import { pushAllEnemies, pushEnemiesFromPoint } from '../systems/enemyHelpers';
+import { spawnPushRing } from '../systems/particles';
+import { playSFX } from '../systems/audio';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import { getGameState, resetLife } from '../stores/gameStore';
 import { updateKarmaDisplay } from '../systems/karma';
@@ -25,7 +27,9 @@ function getEffectiveMaxHealth(): number {
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
   let canShoot = true;
+  let canPush = true;
   const maxHealth = getEffectiveMaxHealth();
+  const pushCfg = config.player.pushAbility;
 
   const player = k.add([
     k.rect(config.player.size.width, config.player.size.height),
@@ -83,6 +87,30 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   // Shoot with spacebar or mouse click
   k.onKeyDown('space', shoot);
   k.onMouseDown('left', shoot);
+
+  // Push ability function
+  function push() {
+    if (getIsPaused()) return;
+    if (player.invincible) return;
+    if (isRebirthOverlayActive()) return;
+    if (!canPush) return;
+    canPush = false;
+
+    // Visual and audio effect
+    spawnPushRing(player.pos.x, player.pos.y, pushCfg.ringColor);
+    playSFX('patighata');
+
+    // Push all enemies away from player
+    pushEnemiesFromPoint(k, player.pos.x, player.pos.y, pushCfg.pushDistance);
+
+    // Cooldown
+    k.wait(pushCfg.cooldown / 1000, () => {
+      canPush = true;
+    });
+  }
+
+  // Push with right-click
+  k.onMousePress('right', push);
 
   // Handle death - show rebirth overlay, then respawn (unless game over)
   events.on('player:died', () => {

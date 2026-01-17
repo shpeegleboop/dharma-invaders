@@ -104,37 +104,51 @@ function spawnNewEnemies(k: KAPLAYCtx, waveNum: number): void {
 
   // Nerayika: Kalpa 2+, waves defined in config
   if (kalpa >= config.newEnemies.nerayika.spawns.minKalpa) {
-    const waves = config.newEnemies.nerayika.spawns.waves as Record<string, number>;
+    const nerayikaCfg = config.newEnemies.nerayika;
+    const waves = nerayikaCfg.spawns.waves as Record<string, number>;
     const count = waves[waveKey] || 0;
+    const stagger = nerayikaCfg.spawns.stagger;
     for (let i = 0; i < count; i++) {
-      // Stagger spawns slightly
-      k.wait(i * 0.3, () => {
+      k.wait(i * stagger, () => {
         const pos = getRandomEdgePosition(k);
         createNerayika(k, pos.x, pos.y);
       });
     }
   }
 
-  // Tiracchana: Kalpa 3+, spawn in packs from same edge
+  // Tiracchana: Kalpa 3+, spawn in packs
+  // Pack 1: grouped from one edge, Packs 2+: scattered from all edges
   if (kalpa >= config.newEnemies.tiracchana.spawns.minKalpa) {
-    const waves = config.newEnemies.tiracchana.spawns.waves as Record<string, number>;
+    const tiracCfg = config.newEnemies.tiracchana;
+    const waves = tiracCfg.spawns.waves as Record<string, number>;
     const packCount = waves[waveKey] || 0;
-    const packSize = config.newEnemies.tiracchana.packSize;
+    const packSize = tiracCfg.packSize;
+    const packStagger = tiracCfg.spawns.packStagger;
+    const individualStagger = tiracCfg.spawns.individualStagger;
 
     for (let pack = 0; pack < packCount; pack++) {
-      // Each pack spawns from the same edge with slight position variance
-      const basePos = getRandomEdgePosition(k);
-      const edge = getEdgeFromPosition(basePos);
+      if (pack === 0) {
+        // First pack: grouped from one edge
+        const basePos = getRandomEdgePosition(k);
+        const edge = getEdgeFromPosition(basePos);
 
-      k.wait(pack * 0.5, () => {
         for (let i = 0; i < packSize; i++) {
-          // Stagger individual spawns within pack
-          k.wait(i * 0.1, () => {
+          k.wait(i * individualStagger, () => {
             const offset = getPackOffset(k, edge, i);
             createTiracchana(k, basePos.x + offset.x, basePos.y + offset.y);
           });
         }
-      });
+      } else {
+        // Later packs: each member from random edge
+        k.wait(pack * packStagger, () => {
+          for (let i = 0; i < packSize; i++) {
+            k.wait(i * individualStagger, () => {
+              const pos = getRandomEdgePosition(k);
+              createTiracchana(k, pos.x, pos.y);
+            });
+          }
+        });
+      }
     }
   }
 

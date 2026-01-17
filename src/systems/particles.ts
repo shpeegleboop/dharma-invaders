@@ -33,3 +33,33 @@ export function spawnHitParticles(x: number, y: number): void {
     });
   }
 }
+
+// Spawn expanding gold ring effect for push ability
+export function spawnPushRing(x: number, y: number, color: string): void {
+  if (!kCtx) return;
+  const k = kCtx;
+
+  // Create ring of particles expanding outward
+  const particleCount = 16;
+  const expandSpeed = 300;
+
+  for (let i = 0; i < particleCount; i++) {
+    const angle = (Math.PI * 2 / particleCount) * i;
+    const size = 6;
+
+    const particle = k.add([
+      k.rect(size, size),
+      k.pos(x, y),
+      k.anchor('center'),
+      k.color(k.Color.fromHex(color)),
+      k.opacity(1),
+      k.lifespan(0.4, { fade: 0.2 }),
+      k.z(50),
+    ]);
+
+    particle.onUpdate(() => {
+      particle.pos.x += Math.cos(angle) * expandSpeed * k.dt();
+      particle.pos.y += Math.sin(angle) * expandSpeed * k.dt();
+    });
+  }
+}

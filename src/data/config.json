@@ -25,7 +25,12 @@
     "deathDelay": 0.5,
     "respawnFlashInterval": 0.1,
     "iFrameDuration": 0.5,
-    "flashDuration": 0.15
+    "flashDuration": 0.15,
+    "pushAbility": {
+      "cooldown": 5000,
+      "pushDistance": 150,
+      "ringColor": "#FFD700"
+    }
   },
   "projectile": {
     "speed": 500,
@@ -180,7 +185,8 @@
       "damage": 2,
       "spawns": {
         "minKalpa": 2,
-        "waves": { "4": 1, "5": 1, "6": 1, "7": 2, "8": 3 }
+        "waves": { "1": 1, "2": 1, "3": 2, "4": 2, "5": 2, "6": 3, "7": 3, "8": 4 },
+        "stagger": 0.3
       }
     },
     "tiracchana": {
@@ -194,7 +200,9 @@
       "packSize": 6,
       "spawns": {
         "minKalpa": 3,
-        "waves": { "3": 1, "4": 1, "5": 1, "6": 2, "7": 2, "8": 3 }
+        "waves": { "2": 1, "3": 1, "4": 1, "5": 1, "6": 2, "7": 2, "8": 3 },
+        "packStagger": 0.5,
+        "individualStagger": 0.1
       }
     },
     "manussa": {

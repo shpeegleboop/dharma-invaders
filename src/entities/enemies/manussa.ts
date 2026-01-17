@@ -156,7 +156,7 @@ function triggerManussaEscape(k: KAPLAYCtx, manussa: GameObj): void {
   // Emit escape event and destroy after delay
   k.wait(cfg.chatBubbleDuration / 1000, () => {
     const pos = { x: manussa.pos.x, y: manussa.pos.y };
-    events.emit('human:escaped', { x: pos.x, y: pos.y });
+    events.emit('human:escaped', {});
 
     // Show karma feedback
     if (ahirikaActive) {

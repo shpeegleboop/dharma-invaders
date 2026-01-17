@@ -1,6 +1,7 @@
 // Game audio event wiring - connects game events to sound effects
 import { events } from '../utils/events';
 import { playMusic, playSFX } from './audio';
+import { getCycle } from '../stores/gameStore';
 
 export function setupGameAudio(): void {
   // Combat sounds
@@ -55,10 +56,14 @@ export function setupGameAudio(): void {
     playSFX('wave_complete');
   });
 
-  // Boss sounds
+  // Boss sounds - different music per kalpa
   events.on('boss:started', () => {
     playSFX('boss_enter');
-    playMusic('boss');
+    const kalpa = getCycle();
+    if (kalpa >= 4) playMusic('boss4');
+    else if (kalpa >= 3) playMusic('boss3');
+    else if (kalpa >= 2) playMusic('boss2');
+    else playMusic('boss');
   });
 
   events.on('boss:phaseChange', () => {

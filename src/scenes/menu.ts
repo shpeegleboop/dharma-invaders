@@ -46,7 +46,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
   // Controls hint
   k.add([
-    k.text('WASD to move | Mouse to aim | Click or SPACE to shoot', { size: 14 }),
+    k.text('WASD move | Mouse aim | Click shoot | Right-click paṭighāta', { size: 14 }),
     k.pos(config.screen.width / 2, config.screen.height - 80),
     k.anchor('center'),
     k.color(120, 120, 140),
