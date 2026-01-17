@@ -135,7 +135,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Patience', color: '#32CD32', effect: 'Slow enemies' },
       { name: 'Diligence', color: '#FFD700', effect: 'Rapid fire' },
       { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
-      { name: 'Paduma (Lotus)', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
+      { name: 'Paduma(Lotus)', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
     ];
     let px = 70;
     powerups.forEach(p => {
@@ -153,16 +153,16 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       k.text('Max', { size: 14 }), k.pos(380, 212), k.color(100, 100, 120),
     ]));
     const paramis = [
-      { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
-      { name: 'Viriya (Energy)', effect: '+10% fire rate', max: 5 },
-      { name: 'Metta (Loving-kindness)', effect: '+1 HP', max: 7 },
-      { name: 'Upekkha (Equanimity)', effect: '-10% enemy spd', max: 5 },
-      { name: 'Sila (Virtue)', effect: 'Auto-shield', max: 1 },
-      { name: 'Khanti (Patience)', effect: '+20% duration', max: 5 },
-      { name: 'Panna (Wisdom)', effect: '+1 damage', max: 2 },
-      { name: 'Adhitthana (Resolve)', effect: '+1 shield', max: 1 },
-      { name: 'Nekkhamma (Renunciation)', effect: '+50% karma', max: 2 },
-      { name: 'Sacca (Truthfulness)', effect: '+5% lotus', max: 1 },
+      { name: 'Dana(Generosity)', effect: '1.25x drops', max: 1 },
+      { name: 'Viriya(Energy)', effect: '+10% fire rate', max: 5 },
+      { name: 'Metta(Loving-kindness)', effect: '+1 HP', max: 7 },
+      { name: 'Upekkha(Equanimity)', effect: '-10% enemy spd', max: 5 },
+      { name: 'Sila(Virtue)', effect: 'Auto-shield', max: 1 },
+      { name: 'Khanti(Patience)', effect: '+20% duration', max: 5 },
+      { name: 'Panna(Wisdom)', effect: '+1 damage', max: 2 },
+      { name: 'Adhitthana(Resolve)', effect: '+1 shield', max: 1 },
+      { name: 'Nekkhamma(Renunciation)', effect: '+50% karma', max: 2 },
+      { name: 'Sacca(Truthfulness)', effect: '+5% lotus', max: 1 },
     ];
     let y = 238;
     paramis.forEach(p => {
@@ -180,14 +180,14 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       k.text('Max', { size: 14 }), k.pos(765, 212), k.color(100, 100, 120),
     ]));
     const kleshas = [
-      { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
-      { name: 'Dosa (Hatred)', effect: '+10% enemy spd', max: 3 },
-      { name: 'Mana (Pride)', effect: '-1 HP', max: 5 },
-      { name: 'Vicikiccha (Doubt)', effect: '-10% fire rate', max: 3 },
-      { name: 'Moha (Delusion)', effect: '-20% duration', max: 2 },
-      { name: 'Thina (Sloth)', effect: '-10% player spd', max: 2 },
-      { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
-      { name: 'Micchaditthi (Wrong View)', effect: '-25% karma', max: 2 },
+      { name: 'Lobha(Greed)', effect: '-25% drops', max: 2 },
+      { name: 'Dosa(Hatred)', effect: '+10% enemy spd', max: 3 },
+      { name: 'Mana(Pride)', effect: '-1 HP', max: 5 },
+      { name: 'Vicikiccha(Doubt)', effect: '-10% fire rate', max: 3 },
+      { name: 'Moha(Delusion)', effect: '-20% duration', max: 2 },
+      { name: 'Thina(Sloth)', effect: '-10% player spd', max: 2 },
+      { name: 'Anottappa(Reckless)', effect: '-1 damage', max: 1 },
+      { name: 'Micchaditthi(Wrong View)', effect: '-25% karma', max: 2 },
     ];
     y = 238;
     kleshas.forEach(kl => {
