@@ -123,57 +123,84 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
 
   function showRebirth(): void {
     clearPage();
-    pageContent.push(k.add([
-      k.text('Karma determines rebirth. High karma = Paramis (buffs). Low = Kleshas (debuffs).', { size: 14 }),
-      k.pos(config.screen.width / 2, 115), k.anchor('center'), k.color(150, 150, 170),
-    ]));
+    const w = config.screen.width;
 
-    // Paramis - left column
+    // Powerups section
     pageContent.push(k.add([
-      k.text('Paramis (Perfections)', { size: 18 }), k.pos(60, 145), k.color(144, 238, 144),
+      k.text('Virtue Powerups', { size: 16 }), k.pos(w / 2, 115), k.anchor('center'), k.color(255, 215, 0),
     ]));
-    const paramis = [
-      'Dana (1): 1.25x drop rate',
-      'Viriya (5): +10% fire rate/stack',
-      'Metta (7): +1 HP/stack',
-      'Upekkha (5): -10% enemy speed/stack',
-      'Sila (1): Auto-shield on spawn',
-      'Khanti (5): +20% powerup duration/stack',
-      'Panna (2): +1 damage/stack',
-      'Adhitthana (1): +1 shield charge',
-      'Nekkhamma (2): +50% karma/stack',
-      'Sacca (1): +5% lotus drop',
+    const powerups = [
+      { name: 'Compassion', color: '#FF69B4', effect: 'Spread shot' },
+      { name: 'Wisdom', color: '#4169E1', effect: 'Piercing' },
+      { name: 'Patience', color: '#32CD32', effect: 'Slow enemies' },
+      { name: 'Diligence', color: '#FFD700', effect: 'Rapid fire' },
+      { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
+      { name: 'Paduma', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
     ];
-    let y = 170;
-    paramis.forEach(p => {
-      pageContent.push(k.add([k.text(p, { size: 13 }), k.pos(70, y), k.color(180, 255, 180)]));
-      y += 20;
+    let px = 65;
+    powerups.forEach(p => {
+      pageContent.push(k.add([k.circle(6), k.pos(px, 140), k.color(k.Color.fromHex(p.color)), k.anchor('center')]));
+      pageContent.push(k.add([k.text(p.name, { size: 11 }), k.pos(px, 152), k.anchor('center'), k.color(200, 200, 220)]));
+      pageContent.push(k.add([k.text(p.effect, { size: 9 }), k.pos(px, 164), k.anchor('center'), k.color(140, 140, 160)]));
+      px += 125;
     });
 
-    // Kleshas - right column
+    // Paramis section
     pageContent.push(k.add([
-      k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(420, 145), k.color(255, 100, 100),
+      k.text('Paramis (Perfections)', { size: 14 }), k.pos(55, 190), k.color(144, 238, 144),
+    ]));
+    pageContent.push(k.add([
+      k.text('Max', { size: 10 }), k.pos(355, 192), k.color(100, 100, 120),
+    ]));
+    const paramis = [
+      { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
+      { name: 'Viriya (Energy)', effect: '+10% fire rate', max: 5 },
+      { name: 'Metta (Loving-kindness)', effect: '+1 HP', max: 7 },
+      { name: 'Upekkha (Equanimity)', effect: '-10% enemy spd', max: 5 },
+      { name: 'Sila (Virtue)', effect: 'Auto-shield', max: 1 },
+      { name: 'Khanti (Patience)', effect: '+20% duration', max: 5 },
+      { name: 'Panna (Wisdom)', effect: '+1 damage', max: 2 },
+      { name: 'Adhitthana (Resolve)', effect: '+1 shield', max: 1 },
+      { name: 'Nekkhamma (Renunciation)', effect: '+50% karma', max: 2 },
+      { name: 'Sacca (Truthfulness)', effect: '+5% lotus', max: 1 },
+    ];
+    let y = 208;
+    paramis.forEach(p => {
+      pageContent.push(k.add([k.text(p.name, { size: 11 }), k.pos(60, y), k.color(180, 255, 180)]));
+      pageContent.push(k.add([k.text(p.effect, { size: 11 }), k.pos(230, y), k.color(140, 200, 140)]));
+      pageContent.push(k.add([k.text(`${p.max}`, { size: 11 }), k.pos(360, y), k.color(100, 150, 100)]));
+      y += 17;
+    });
+
+    // Kleshas section
+    pageContent.push(k.add([
+      k.text('Kleshas (Afflictions)', { size: 14 }), k.pos(420, 190), k.color(255, 100, 100),
+    ]));
+    pageContent.push(k.add([
+      k.text('Max', { size: 10 }), k.pos(720, 192), k.color(100, 100, 120),
     ]));
     const kleshas = [
-      'Lobha (2): -25% drop rate/stack',
-      'Dosa (3): +10% enemy speed/stack',
-      'Mana (5): -1 HP/stack',
-      'Vicikiccha (3): -10% fire rate/stack',
-      'Moha (2): -20% powerup duration/stack',
-      'Thina (2): -10% player speed/stack',
-      'Anottappa (1): -1 damage',
-      'Micchaditthi (2): -25% karma/stack',
+      { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
+      { name: 'Dosa (Hatred)', effect: '+10% enemy spd', max: 3 },
+      { name: 'Mana (Pride)', effect: '-1 HP', max: 5 },
+      { name: 'Vicikiccha (Doubt)', effect: '-10% fire rate', max: 3 },
+      { name: 'Moha (Delusion)', effect: '-20% duration', max: 2 },
+      { name: 'Thina (Sloth)', effect: '-10% player spd', max: 2 },
+      { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
+      { name: 'Micchaditthi (Wrong View)', effect: '-25% karma', max: 2 },
     ];
-    y = 170;
+    y = 208;
     kleshas.forEach(kl => {
-      pageContent.push(k.add([k.text(kl, { size: 13 }), k.pos(430, y), k.color(255, 150, 150)]));
-      y += 20;
+      pageContent.push(k.add([k.text(kl.name, { size: 11 }), k.pos(425, y), k.color(255, 150, 150)]));
+      pageContent.push(k.add([k.text(kl.effect, { size: 11 }), k.pos(590, y), k.color(200, 140, 140)]));
+      pageContent.push(k.add([k.text(`${kl.max}`, { size: 11 }), k.pos(725, y), k.color(150, 100, 100)]));
+      y += 17;
     });
 
     // Footer
     pageContent.push(k.add([
-      k.text('(N) = max stacks. Effects stack with powerups and scale across Kalpas.', { size: 12 }),
-      k.pos(config.screen.width / 2, 390), k.anchor('center'), k.color(100, 100, 120),
+      k.text('Karma at death determines buffs/debuffs. Effects stack per rebirth.', { size: 11 }),
+      k.pos(w / 2, 395), k.anchor('center'), k.color(100, 100, 120),
     ]));
   }
 

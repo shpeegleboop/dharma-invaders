@@ -135,49 +135,78 @@ function renderBestiary(): void {
 function renderRebirth(): void {
   if (!kRef) return;
   const k = kRef;
+  const w = config.screen.width;
+
+  // Powerups row
   tabContent.push(k.add([
-    k.text('Karma determines rebirth. (N) = max stacks.', { size: 14 }),
-    k.pos(config.screen.width / 2, 125), k.anchor('center'), k.color(150, 150, 170), k.fixed(), k.z(101),
+    k.text('Powerups', { size: 14 }), k.pos(w / 2, 118), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101),
   ]));
-  // Paramis - left column
+  const powerups = [
+    { name: 'Compassion', color: '#FF69B4', effect: 'Spread' },
+    { name: 'Wisdom', color: '#4169E1', effect: 'Pierce' },
+    { name: 'Patience', color: '#32CD32', effect: 'Slow' },
+    { name: 'Diligence', color: '#FFD700', effect: 'Rapid' },
+    { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
+    { name: 'Paduma', color: '#FFB6C1', effect: 'Heal' },
+  ];
+  let px = 70;
+  powerups.forEach(p => {
+    tabContent.push(k.add([k.circle(5), k.pos(px, 138), k.color(k.Color.fromHex(p.color)), k.anchor('center'), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.name, { size: 9 }), k.pos(px, 148), k.anchor('center'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.effect, { size: 8 }), k.pos(px, 158), k.anchor('center'), k.color(120, 120, 140), k.fixed(), k.z(101)]));
+    px += 115;
+  });
+
+  // Paramis section
   tabContent.push(k.add([
-    k.text('Paramis (Buffs)', { size: 16 }), k.pos(60, 150), k.color(144, 238, 144), k.fixed(), k.z(101),
+    k.text('Paramis (Buffs)', { size: 12 }), k.pos(55, 175), k.color(144, 238, 144), k.fixed(), k.z(101),
+  ]));
+  tabContent.push(k.add([
+    k.text('Max', { size: 9 }), k.pos(340, 176), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const paramis = [
-    'Dana (1): 1.25x drops',
-    'Viriya (5): +10% fire rate',
-    'Metta (7): +1 HP',
-    'Upekkha (5): -10% enemy spd',
-    'Sila (1): Auto-shield',
-    'Khanti (5): +20% duration',
-    'Panna (2): +1 damage',
-    'Adhitthana (1): +1 shield',
-    'Nekkhamma (2): +50% karma',
-    'Sacca (1): +5% lotus drop',
+    { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
+    { name: 'Viriya (Energy)', effect: '+10% fire', max: 5 },
+    { name: 'Metta (Kindness)', effect: '+1 HP', max: 7 },
+    { name: 'Upekkha (Equanimity)', effect: '-10% enemy', max: 5 },
+    { name: 'Sila (Virtue)', effect: 'Auto-shield', max: 1 },
+    { name: 'Khanti (Patience)', effect: '+20% duration', max: 5 },
+    { name: 'Panna (Wisdom)', effect: '+1 damage', max: 2 },
+    { name: 'Adhitthana (Resolve)', effect: '+1 shield', max: 1 },
+    { name: 'Nekkhamma (Renounce)', effect: '+50% karma', max: 2 },
+    { name: 'Sacca (Truth)', effect: '+5% lotus', max: 1 },
   ];
-  let y = 172;
+  let y = 190;
   paramis.forEach(p => {
-    tabContent.push(k.add([k.text(p, { size: 12 }), k.pos(70, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
-    y += 18;
+    tabContent.push(k.add([k.text(p.name, { size: 10 }), k.pos(60, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.effect, { size: 10 }), k.pos(215, y), k.color(140, 200, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${p.max}`, { size: 10 }), k.pos(345, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
+    y += 15;
   });
-  // Kleshas - right column
+
+  // Kleshas section
   tabContent.push(k.add([
-    k.text('Kleshas (Debuffs)', { size: 16 }), k.pos(420, 150), k.color(255, 100, 100), k.fixed(), k.z(101),
+    k.text('Kleshas (Debuffs)', { size: 12 }), k.pos(400, 175), k.color(255, 100, 100), k.fixed(), k.z(101),
+  ]));
+  tabContent.push(k.add([
+    k.text('Max', { size: 9 }), k.pos(700, 176), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const kleshas = [
-    'Lobha (2): -25% drops',
-    'Dosa (3): +10% enemy spd',
-    'Mana (5): -1 HP',
-    'Vicikiccha (3): -10% fire rate',
-    'Moha (2): -20% duration',
-    'Thina (2): -10% player spd',
-    'Anottappa (1): -1 damage',
-    'Micchaditthi (2): -25% karma',
+    { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
+    { name: 'Dosa (Hatred)', effect: '+10% enemy', max: 3 },
+    { name: 'Mana (Pride)', effect: '-1 HP', max: 5 },
+    { name: 'Vicikiccha (Doubt)', effect: '-10% fire', max: 3 },
+    { name: 'Moha (Delusion)', effect: '-20% duration', max: 2 },
+    { name: 'Thina (Sloth)', effect: '-10% player', max: 2 },
+    { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
+    { name: 'Micchaditthi (Wrong)', effect: '-25% karma', max: 2 },
   ];
-  y = 172;
+  y = 190;
   kleshas.forEach(kl => {
-    tabContent.push(k.add([k.text(kl, { size: 12 }), k.pos(430, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
-    y += 18;
+    tabContent.push(k.add([k.text(kl.name, { size: 10 }), k.pos(405, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(kl.effect, { size: 10 }), k.pos(555, y), k.color(200, 140, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${kl.max}`, { size: 10 }), k.pos(705, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
+    y += 15;
   });
 }
 
