@@ -67,10 +67,9 @@ export function getKarmaMultiplier(): number {
   return Math.max(0.25, 1 + (nekkhamma * 0.50) - (micchaditthi * 0.25));
 }
 
-// Adhitthana (+1s respawn invincibility per stack)
-export function getInvincibilityBonus(): number {
-  const adhitthana = countParami('Adhitthana');
-  return adhitthana * 1000; // Returns milliseconds
+// Adhitthana (+1 shield charge per stack)
+export function getShieldChargesBonus(): number {
+  return countParami('Adhitthana');
 }
 
 // Sila (start each life with Meditation shield)

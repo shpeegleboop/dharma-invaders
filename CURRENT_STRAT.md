@@ -15,7 +15,7 @@ Implement 9 effects that work with current systems:
 | Sīla (Virtue) | Start each life with Meditation shield | `player.ts` respawn |
 | Khanti (Patience) | +20% powerup duration per stack | `powerupEffects.ts` |
 | Paññā (Wisdom) | +1 projectile damage per stack | `projectile.ts` |
-| Adhiṭṭhāna (Determination) | +1s respawn invincibility per stack | `player.ts` |
+| Adhiṭṭhāna (Determination) | +1 shield charge per stack | `powerupEffects.ts` |
 | Nekkhamma (Renunciation) | +0.5x karma multiplier per stack | `karma.ts` |
 
 ### Kleshas (4)

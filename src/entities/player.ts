@@ -14,7 +14,6 @@ import { updateKarmaDisplay } from '../systems/karma';
 import {
   getMaxHealthModifier,
   getPlayerSpeedMultiplier,
-  getInvincibilityBonus,
   hasSila,
 } from '../systems/rebirthEffects';
 
@@ -111,10 +110,10 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
         player.pos.y = config.arena.offsetY + config.arena.height / 2;
         player.setHP(getEffectiveMaxHealth());
 
-        // Respawn invincibility from config + Adhitthana bonus
-        const respawnInvincibility = config.roguelike.respawnInvincibility + getInvincibilityBonus();
+        // Respawn invincibility from config
+        const respawnInvincibility = config.roguelike.respawnInvincibility;
 
-        // Sila: grant Meditation shield on respawn
+        // Sila: grant Meditation shield on respawn (benefits from Adhitthana charges)
         if (hasSila()) {
           events.emit('player:powerup', { type: 'meditation' });
         }

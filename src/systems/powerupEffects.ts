@@ -8,16 +8,19 @@ import {
   getFireRateMultiplier as getRebirthFireRate,
   getEnemySpeedMultiplier as getRebirthEnemySpeed,
   getPowerupDurationMultiplier,
+  getShieldChargesBonus,
 } from './rebirthEffects';
 
 type PowerupState = {
   active: VirtueType | null;
   timeRemaining: number;
+  shieldCharges: number;
 };
 
 const state: PowerupState = {
   active: null,
   timeRemaining: 0,
+  shieldCharges: 0,
 };
 
 let hudText: GameObj | null = null;
@@ -27,6 +30,7 @@ export function setupPowerupEffects(k: KAPLAYCtx): void {
   kRef = k;
   state.active = null;
   state.timeRemaining = 0;
+  state.shieldCharges = 0;
 
   // Create powerup display in HUD (left side, below health)
   hudText = k.add([
@@ -43,10 +47,15 @@ export function setupPowerupEffects(k: KAPLAYCtx): void {
     activatePowerup(k, data.type as VirtueType);
   });
 
-  // Listen for shield break
+  // Listen for shield hit - decrement charges, break if none left
   events.on('powerup:shieldBroken', () => {
     if (state.active === 'meditation') {
-      deactivatePowerup();
+      state.shieldCharges--;
+      if (state.shieldCharges <= 0) {
+        deactivatePowerup();
+      } else {
+        updateHUD();
+      }
     }
   });
 
@@ -79,8 +88,10 @@ function activatePowerup(_k: KAPLAYCtx, type: VirtueType): void {
   // Meditation lasts until hit, others have duration (with Khanti/Moha modifier)
   if (type === 'meditation') {
     state.timeRemaining = -1; // Infinite until broken
+    state.shieldCharges = 1 + getShieldChargesBonus(); // Base 1 + Adhitthana bonus
   } else {
     state.timeRemaining = config.powerups.duration * getPowerupDurationMultiplier();
+    state.shieldCharges = 0;
   }
 
   events.emit('powerup:activated', { type });
@@ -108,7 +119,8 @@ function updateHUD(): void {
   const name = virtueConfig.name;
 
   if (state.active === 'meditation') {
-    hudText.text = `${name} (Shield)`;
+    const chargeText = state.shieldCharges > 1 ? ` x${state.shieldCharges}` : '';
+    hudText.text = `${name} (Shield${chargeText})`;
   } else {
     const seconds = Math.ceil(state.timeRemaining / 1000);
     hudText.text = `${name} (${seconds}s)`;
