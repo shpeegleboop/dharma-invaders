@@ -112,11 +112,16 @@ function activatePowerup(type: VirtueType): void {
   // Paduma is instant heal, handled elsewhere
   if (type === 'paduma') return;
 
-  // Meditation uses shield system
+  // Meditation uses shield system - stacks uncapped
   if (type === 'meditation') {
+    const wasActive = state.shieldActive;
     state.shieldActive = true;
-    state.shieldCharges = 1 + getShieldChargesBonus();
-    events.emit('powerup:activated', { type });
+    // Add 1 charge + Adhitthana bonus (only apply bonus on first pickup)
+    const bonus = wasActive ? 0 : getShieldChargesBonus();
+    state.shieldCharges += 1 + bonus;
+    if (!wasActive) {
+      events.emit('powerup:activated', { type });
+    }
     updateHUD();
     return;
   }
