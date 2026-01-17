@@ -64,7 +64,7 @@ function renderUI(): void {
 
   // Title
   uiElements.push(k.add([
-    k.text('HELP & REFERENCE', { size: 32 }),
+    k.text('QUALITIES OF MIND', { size: 32 }),
     k.pos(w / 2, 50), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101),
   ]));
 
@@ -165,16 +165,16 @@ function renderRebirth(): void {
     k.text('Max', { size: 12 }), k.pos(340, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const paramis = [
-    { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
-    { name: 'Viriya (Energy)', effect: '+10% fire', max: 5 },
-    { name: 'Metta (Kindness)', effect: '+1 HP', max: 7 },
-    { name: 'Upekkha (Equanimity)', effect: '-10% enemy', max: 5 },
-    { name: 'Sila (Virtue)', effect: 'Auto-shield', max: 1 },
-    { name: 'Khanti (Patience)', effect: '+20% duration', max: 5 },
-    { name: 'Panna (Wisdom)', effect: '+1 damage', max: 2 },
-    { name: 'Adhitthana (Resolve)', effect: '+1 shield', max: 1 },
-    { name: 'Nekkhamma (Renounce)', effect: '+50% karma', max: 2 },
-    { name: 'Sacca (Truth)', effect: '+5% lotus', max: 1 },
+    { name: 'Dana', effect: '1.25x drop rate', max: 1 },
+    { name: 'Viriya', effect: '+10% fire rate', max: 5 },
+    { name: 'Metta', effect: '+1 max HP', max: 7 },
+    { name: 'Upekkha', effect: '-10% enemy speed', max: 5 },
+    { name: 'Sila', effect: 'Auto-shield on spawn', max: 1 },
+    { name: 'Khanti', effect: '+20% powerup duration', max: 5 },
+    { name: 'Panna', effect: '+1 damage', max: 2 },
+    { name: 'Adhitthana', effect: '+1 shield charge', max: 1 },
+    { name: 'Nekkhamma', effect: '+50% karma gain', max: 2 },
+    { name: 'Sacca', effect: '+5% lotus drop', max: 1 },
   ];
   let y = 222;
   paramis.forEach(p => {
@@ -192,14 +192,14 @@ function renderRebirth(): void {
     k.text('Max', { size: 12 }), k.pos(710, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const kleshas = [
-    { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
-    { name: 'Dosa (Hatred)', effect: '+10% enemy', max: 3 },
-    { name: 'Mana (Pride)', effect: '-1 HP', max: 5 },
-    { name: 'Vicikiccha (Doubt)', effect: '-10% fire', max: 3 },
-    { name: 'Moha (Delusion)', effect: '-20% duration', max: 2 },
-    { name: 'Thina (Sloth)', effect: '-10% player', max: 2 },
-    { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
-    { name: 'Micchaditthi (Wrong)', effect: '-25% karma', max: 2 },
+    { name: 'Lobha', effect: '-25% drop rate', max: 2 },
+    { name: 'Dosa', effect: '+10% enemy speed', max: 3 },
+    { name: 'Mana', effect: '-1 max HP', max: 5 },
+    { name: 'Vicikiccha', effect: '-10% fire rate', max: 3 },
+    { name: 'Moha', effect: '-20% powerup duration', max: 2 },
+    { name: 'Thina', effect: '-10% player speed', max: 2 },
+    { name: 'Anottappa', effect: '-1 damage', max: 1 },
+    { name: 'Micchaditthi', effect: '-25% karma gain', max: 2 },
   ];
   y = 222;
   kleshas.forEach(kl => {
