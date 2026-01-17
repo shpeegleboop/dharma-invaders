@@ -123,71 +123,58 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
 
   function showRebirth(): void {
     clearPage();
-    // Header
     pageContent.push(k.add([
-      k.text('When you die, your karma determines your rebirth.', { size: 18 }),
-      k.pos(config.screen.width / 2, 120),
-      k.anchor('center'),
-      k.color(180, 180, 200),
+      k.text('Karma determines rebirth. High karma = Paramis (buffs). Low = Kleshas (debuffs).', { size: 14 }),
+      k.pos(config.screen.width / 2, 115), k.anchor('center'), k.color(150, 150, 170),
     ]));
 
-    // Paramis section
+    // Paramis - left column
     pageContent.push(k.add([
-      k.text('Paramis (Perfections) - Buffs', { size: 20 }),
-      k.pos(60, 160),
-      k.color(144, 238, 144),
+      k.text('Paramis (Perfections)', { size: 18 }), k.pos(60, 145), k.color(144, 238, 144),
     ]));
-
     const paramis = [
-      { name: 'Dana', trans: 'Generosity', desc: 'Selfless giving', effect: '+25% powerup drops' },
-      { name: 'Viriya', trans: 'Diligence', desc: 'Persistent effort', effect: '+15% fire rate' },
-      { name: 'Metta', trans: 'Loving-kindness', desc: 'Universal goodwill', effect: '+1 max health' },
-      { name: 'Upekkha', trans: 'Equanimity', desc: 'Mental calmness', effect: 'Enemies 10% slower' },
+      'Dana (1): +25% drop rate',
+      'Viriya (5): +10% fire rate/stack',
+      'Metta (7): +1 HP/stack',
+      'Upekkha (5): -10% enemy speed/stack',
+      'Sila (1): Auto-shield on spawn',
+      'Khanti (5): +20% powerup duration/stack',
+      'Panna (2): +1 damage/stack',
+      'Adhitthana (1): +1 shield charge',
+      'Nekkhamma (2): +50% karma/stack',
+      'Sacca (3): +5% lotus drop/stack',
     ];
-
-    let y = 190;
+    let y = 170;
     paramis.forEach(p => {
-      pageContent.push(k.add([
-        k.text(`${p.name} (${p.trans})`, { size: 16 }),
-        k.pos(70, y),
-        k.color(180, 255, 180),
-      ]));
-      pageContent.push(k.add([
-        k.text(`${p.desc} | ${p.effect}`, { size: 14 }),
-        k.pos(70, y + 18),
-        k.color(130, 130, 150),
-      ]));
-      y += 44;
+      pageContent.push(k.add([k.text(p, { size: 13 }), k.pos(70, y), k.color(180, 255, 180)]));
+      y += 20;
     });
 
-    // Kleshas section
+    // Kleshas - right column
     pageContent.push(k.add([
-      k.text('Kleshas (Afflictions) - Debuffs', { size: 20 }),
-      k.pos(60, y + 15),
-      k.color(255, 100, 100),
+      k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(420, 145), k.color(255, 100, 100),
     ]));
-
     const kleshas = [
-      { name: 'Lobha', trans: 'Greed', desc: 'Clinging attachment', effect: '-25% powerup drops' },
-      { name: 'Dosa', trans: 'Hatred', desc: 'Aversion and anger', effect: 'Enemies 10% faster' },
-      { name: 'Mana', trans: 'Conceit', desc: 'Pride and arrogance', effect: '-1 max health' },
-      { name: 'Vicikiccha', trans: 'Doubt', desc: 'Spiritual uncertainty', effect: '-15% fire rate' },
+      'Lobha (2): -25% drop rate/stack',
+      'Dosa (3): +10% enemy speed/stack',
+      'Mana (5): -1 HP/stack',
+      'Vicikiccha (3): -10% fire rate/stack',
+      'Moha (2): -20% powerup duration/stack',
+      'Thina (2): -10% player speed/stack',
+      'Anottappa (1): -1 damage',
+      'Micchaditthi (2): -25% karma/stack',
     ];
-
-    y += 45;
+    y = 170;
     kleshas.forEach(kl => {
-      pageContent.push(k.add([
-        k.text(`${kl.name} (${kl.trans})`, { size: 16 }),
-        k.pos(70, y),
-        k.color(255, 150, 150),
-      ]));
-      pageContent.push(k.add([
-        k.text(`${kl.desc} | ${kl.effect}`, { size: 14 }),
-        k.pos(70, y + 18),
-        k.color(130, 130, 150),
-      ]));
-      y += 44;
+      pageContent.push(k.add([k.text(kl, { size: 13 }), k.pos(430, y), k.color(255, 150, 150)]));
+      y += 20;
     });
+
+    // Footer
+    pageContent.push(k.add([
+      k.text('(N) = max stacks. Effects stack with powerups and scale across Kalpas.', { size: 12 }),
+      k.pos(config.screen.width / 2, 390), k.anchor('center'), k.color(100, 100, 120),
+    ]));
   }
 
   showControls();

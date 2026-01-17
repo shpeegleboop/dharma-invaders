@@ -136,28 +136,48 @@ function renderRebirth(): void {
   if (!kRef) return;
   const k = kRef;
   tabContent.push(k.add([
-    k.text('When you die, karma determines rebirth quality.', { size: 16 }),
-    k.pos(config.screen.width / 2, 130), k.anchor('center'), k.color(180, 180, 200), k.fixed(), k.z(101),
+    k.text('Karma determines rebirth. (N) = max stacks.', { size: 14 }),
+    k.pos(config.screen.width / 2, 125), k.anchor('center'), k.color(150, 150, 170), k.fixed(), k.z(101),
   ]));
-  // Paramis
+  // Paramis - left column
   tabContent.push(k.add([
-    k.text('Paramis (Buffs)', { size: 18 }), k.pos(100, 165), k.color(144, 238, 144), k.fixed(), k.z(101),
+    k.text('Paramis (Buffs)', { size: 16 }), k.pos(60, 150), k.color(144, 238, 144), k.fixed(), k.z(101),
   ]));
-  const paramis = ['Dana: +25% drops', 'Viriya: +15% fire rate', 'Metta: +1 HP', 'Upekkha: Enemies slower'];
-  let y = 190;
+  const paramis = [
+    'Dana (1): +25% drops',
+    'Viriya (5): +10% fire rate',
+    'Metta (7): +1 HP',
+    'Upekkha (5): -10% enemy spd',
+    'Sila (1): Auto-shield',
+    'Khanti (5): +20% duration',
+    'Panna (2): +1 damage',
+    'Adhitthana (1): +1 shield',
+    'Nekkhamma (2): +50% karma',
+    'Sacca (3): +5% lotus drop',
+  ];
+  let y = 172;
   paramis.forEach(p => {
-    tabContent.push(k.add([k.text(p, { size: 14 }), k.pos(110, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
-    y += 22;
+    tabContent.push(k.add([k.text(p, { size: 12 }), k.pos(70, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
+    y += 18;
   });
-  // Kleshas
+  // Kleshas - right column
   tabContent.push(k.add([
-    k.text('Kleshas (Debuffs)', { size: 18 }), k.pos(420, 165), k.color(255, 100, 100), k.fixed(), k.z(101),
+    k.text('Kleshas (Debuffs)', { size: 16 }), k.pos(420, 150), k.color(255, 100, 100), k.fixed(), k.z(101),
   ]));
-  const kleshas = ['Lobha: -25% drops', 'Vicikiccha: -15% fire rate', 'Mana: -1 HP', 'Dosa: Enemies faster'];
-  y = 190;
+  const kleshas = [
+    'Lobha (2): -25% drops',
+    'Dosa (3): +10% enemy spd',
+    'Mana (5): -1 HP',
+    'Vicikiccha (3): -10% fire rate',
+    'Moha (2): -20% duration',
+    'Thina (2): -10% player spd',
+    'Anottappa (1): -1 damage',
+    'Micchaditthi (2): -25% karma',
+  ];
+  y = 172;
   kleshas.forEach(kl => {
-    tabContent.push(k.add([k.text(kl, { size: 14 }), k.pos(430, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
-    y += 22;
+    tabContent.push(k.add([k.text(kl, { size: 12 }), k.pos(430, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
+    y += 18;
   });
 }
 
