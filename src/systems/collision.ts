@@ -14,6 +14,7 @@ import {
   setKarmaThisLife
 } from '../stores/gameStore';
 import { reduceAllTimers } from './powerupEffects';
+import { spawnHitParticles } from './particles';
 
 // Calculate effective projectile damage with Panna/Anottappa modifiers
 function getProjectileDamage(): number {
@@ -110,6 +111,9 @@ function handleManussaDeath(): void {
 export function setupCollisions(k: KAPLAYCtx): void {
   // Projectile hits enemy
   k.onCollide('projectile', 'enemy', (projectile, enemy) => {
+    // Spawn hit particles at impact point
+    spawnHitParticles(enemy.pos.x, enemy.pos.y);
+
     // Check if projectile should pierce (wisdom powerup)
     if (!isPiercingActive()) {
       projectile.destroy();
@@ -200,12 +204,15 @@ export function setupCollisions(k: KAPLAYCtx): void {
   });
 
   // Player projectile hits boss
-  k.onCollide('projectile', 'boss', (projectile, _boss) => {
+  k.onCollide('projectile', 'boss', (projectile, boss) => {
     // Boss is invincible during entrance
     if (getMaraPhase() === 'entering' || getMaraPhase() === 'defeated') {
       projectile.destroy();
       return;
     }
+
+    // Spawn hit particles at impact point
+    spawnHitParticles(boss.pos.x, boss.pos.y);
 
     // Check if projectile should pierce (wisdom powerup)
     if (!isPiercingActive()) {

@@ -11,6 +11,7 @@ import { setupBossHealthBar } from '../systems/bossHealthBar';
 import { setupMercyRule } from '../systems/mercyRule';
 import { setupDebug } from '../utils/debug';
 import { setupGameAudio } from '../systems/gameAudio';
+import { initParticles } from '../systems/particles';
 import { setupFleeListener } from '../systems/enemyFlee';
 import { setupPlayerDamage } from '../systems/playerDamage';
 import { setupPauseMenu } from '../ui/pauseMenu';
@@ -94,6 +95,7 @@ export function createGameScene(k: KAPLAYCtx): void {
   }
 
   // Setup systems
+  initParticles(k);
   setupCollisions(k);
   setupKarma(k);
   setupHealth(k);

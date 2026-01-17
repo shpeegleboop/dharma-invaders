@@ -27,9 +27,19 @@ export function renderControls(k: KAPLAYCtx, tabContent: GameObj[]): void {
 }
 
 export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
+  // Helper to create hexagon vertices
+  const hexVerts = (size: number) => {
+    const verts = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 3) * i - Math.PI / 2;
+      verts.push(k.vec2(Math.cos(angle) * size, Math.sin(angle) * size));
+    }
+    return verts;
+  };
+
   // Base enemies (left column)
   const baseEnemies = [
-    { name: 'Hungry Ghost', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
+    { name: 'Preta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
     { name: 'Asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma' },
     { name: 'Deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma' },
     { name: 'Mara', color: [139, 0, 0], desc: 'Lord of Illusion - Boss' },
@@ -37,30 +47,38 @@ export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
   let y = 130;
   baseEnemies.forEach(e => {
     const [r, g, b] = e.color;
-    tabContent.push(k.add([k.rect(18, 18), k.pos(60, y - 4), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.name, { size: 16 }), k.pos(90, y), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.desc, { size: 12 }), k.pos(90, y + 18), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-    y += 48;
+    tabContent.push(k.add([k.rect(22, 22), k.pos(55, y), k.anchor('center'), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.name, { size: 20 }), k.pos(85, y - 8), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.desc, { size: 16 }), k.pos(85, y + 14), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+    y += 60;
   });
 
   // New enemies (right column) - unlock in later kalpas
   tabContent.push(k.add([
-    k.text('Kalpa 2+', { size: 14 }), k.pos(420, 115), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Unlocked in Later Kalpas', { size: 18 }), k.pos(420, 112), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
-  const newEnemies = [
-    { name: 'Nerayika', color: [255, 69, 0], desc: 'Charger, 4 HP, +Klesha', kalpa: 2 },
-    { name: 'Tiracchana', color: [65, 105, 225], desc: 'Pack, 1 HP, -Parami', kalpa: 3 },
-    { name: 'Manussa', color: [0, 255, 0], desc: 'Non-hostile, karma test', kalpa: 4 },
-  ];
-  y = 135;
-  newEnemies.forEach(e => {
-    const [r, g, b] = e.color;
-    tabContent.push(k.add([k.rect(18, 18), k.pos(420, y - 4), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.name, { size: 16 }), k.pos(450, y), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.desc, { size: 12 }), k.pos(450, y + 18), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`K${e.kalpa}+`, { size: 11 }), k.pos(740, y + 6), k.color(100, 100, 120), k.fixed(), k.z(101)]));
-    y += 48;
-  });
+
+  // Nerayika - hexagon
+  y = 150;
+  tabContent.push(k.add([k.polygon(hexVerts(12)), k.pos(432, y), k.anchor('center'), k.color(255, 69, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Nerayika', { size: 20 }), k.pos(460, y - 10), k.color(255, 69, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Charger, 4 HP, +Klesha', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('K2+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
+
+  // Tiracchana - triangle
+  y += 60;
+  const triVerts = [k.vec2(0, -12), k.vec2(12, 10), k.vec2(-12, 10)];
+  tabContent.push(k.add([k.polygon(triVerts), k.pos(432, y), k.anchor('center'), k.color(65, 105, 225), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Tiracchana', { size: 20 }), k.pos(460, y - 10), k.color(65, 105, 225), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Pack of 6, 1 HP, -Parami', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('K3+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
+
+  // Manussa - rectangle
+  y += 60;
+  tabContent.push(k.add([k.rect(22, 22), k.pos(432, y), k.anchor('center'), k.color(0, 255, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Manussa', { size: 20 }), k.pos(460, y - 10), k.color(0, 255, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Non-hostile, karma test', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('K4+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
 }
 
 export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {

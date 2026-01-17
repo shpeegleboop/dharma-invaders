@@ -1,0 +1,34 @@
+// Particle effects for visual feedback
+import type { KAPLAYCtx } from 'kaplay';
+
+let kCtx: KAPLAYCtx | null = null;
+
+export function initParticles(k: KAPLAYCtx): void {
+  kCtx = k;
+}
+
+export function spawnHitParticles(x: number, y: number): void {
+  if (!kCtx) return;
+  const k = kCtx;
+
+  const count = Math.floor(k.rand(5, 9));
+  for (let i = 0; i < count; i++) {
+    const angle = k.rand(0, Math.PI * 2);
+    const speed = k.rand(80, 150);
+    const size = k.rand(3, 5);
+
+    const particle = k.add([
+      k.rect(size, size),
+      k.pos(x, y),
+      k.anchor('center'),
+      k.color(k.Color.fromHex('#9966FF')),
+      k.lifespan(0.25, { fade: 0.15 }),
+      k.z(50),
+    ]);
+
+    particle.onUpdate(() => {
+      particle.pos.x += Math.cos(angle) * speed * k.dt();
+      particle.pos.y += Math.sin(angle) * speed * k.dt();
+    });
+  }
+}
