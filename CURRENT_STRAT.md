@@ -1,184 +1,148 @@
-# Current Strategy — Phase 6+ Implementation
+# Current Strategy — Phase 7 Planning
 
 **Created:** 2026-01-16
 **Updated:** 2026-01-16
-**Goal:** Complete remaining buffs/debuffs, then add powerup stacking and health persistence
+**Status:** Phase 6 COMPLETE. Ready for Phase 7.
 
 ---
 
-## Step 1: Phase 6 Pāramīs/Kleshas ✅ COMPLETE
+## Phase 6 Summary — COMPLETE ✅
 
-Implemented 9 effects that work with current systems:
+All steps finished:
 
-### Pāramīs (5)
-| Pāramī | Effect | Integration |
-|--------|--------|-------------|
-| Sīla (Virtue) | Start each life with Meditation shield | `player.ts` respawn |
-| Khanti (Patience) | +20% powerup duration per stack | `powerupEffects.ts` |
-| Paññā (Wisdom) | +1 projectile damage per stack | `projectile.ts` |
-| Adhiṭṭhāna (Determination) | +1 shield charge per stack | `powerupEffects.ts` |
-| Nekkhamma (Renunciation) | +0.5x karma multiplier per stack | `karma.ts` |
+| Step | Task | Status |
+|------|------|--------|
+| 1 | 9 new Pāramīs/Kleshas | ✅ Complete |
+| 2 | Health persistence across kalpas | ✅ Complete |
+| 3 | Paduma healing powerup | ✅ Complete |
+| 4 | Powerup stacking foundation | ✅ Complete |
+| 5 | Parami/Klesha stack caps | ✅ Complete |
+| 6 | About menus + bug fixes | ✅ Complete |
 
-### Kleshas (4)
-| Klesha | Effect | Integration |
-|--------|--------|-------------|
-| Moha (Delusion) | -20% powerup duration per stack | `powerupEffects.ts` |
-| Thīna (Torpor) | -10% player speed per stack | `player.ts` |
-| Anottappa (Recklessness) | -1 projectile damage per stack (min 1) | `projectile.ts` |
-| Micchādiṭṭhi (Wrong View) | -0.25x karma multiplier per stack | `karma.ts` |
+### Key Implementations
 
-### Deferred Effects
-- **Sacca** (enemy health bars) → Phase 7 (new enemies)
-- **Ahirika** (TBD) → Phase 7 (new enemies)
-- **Uddhacca** (screenshake) → Phase 10 (polish)
+**Powerup Stacking:**
+- Map-based state for multiple simultaneous powerups
+- Diligence: (0.5)^stacks cooldown, max 3 stacks (8x fire rate)
+- Patience: 10% additive slow per stack, max 5 stacks (50% slow)
+- Compassion/Wisdom: Binary (on/off), time stacks to 40s max
+- Shield: Uncapped charges, persists across kalpas
 
-### Test Criteria
-- [x] Debug keys grant effects (1-5 paramis, 6-9 kleshas)
-- [x] Effects stack correctly (multiple of same type)
-- [x] Rebirth HUD displays new effects (two-line wrapping)
-- [x] Multipliers apply in gameplay
-
----
-
-## Step 2: Health Persistence Across Kalpas ✅ COMPLETE
-
-**Goal:** Player does NOT return to full health when continuing to next kalpa.
-
-### Implementation
-- `gameStore.ts`: Added `savedHealth` field, `saveHealth()`, `consumeSavedHealth()`
-- `game.ts`: Saves health on boss defeat, restores on new kalpa
-- Health display syncs correctly via `setHealthDisplay()`
-
-### Test Criteria
-- [x] Beat Mara at 1 HP
-- [x] Choose Continue (Bodhisattva mode)
-- [x] Verify player starts Kalpa 2 at 1 HP
-
----
-
-## Step 3: Add Paduma (Lotus) Healing Powerup ✅ COMPLETE
-
-**Goal:** New powerup that restores health, only available Kalpa 2+.
-
-### Implementation
-- Separate drop system: `shouldDropPaduma()` + `createPaduma()`
-- 5% drop chance (independent of regular 15% powerup drops)
-- Floats upward with sinusoidal sway (unique visual)
-- Heals instantly without replacing active powerup
-- Debug key: V to heal
-
-### Test Criteria
-- [x] Kalpa 1: No Paduma drops
-- [x] Kalpa 2+: Paduma drops at 5% rate
-- [x] Collecting Paduma restores 1 HP (capped at max)
-- [x] Does NOT replace current powerup
-
----
-
-## Step 4: Powerup Stacking Foundation ← NEXT
-
-**Goal:** Multiple powerups can be active simultaneously with stacking rules.
-
-### Current State
+**Parami/Klesha Caps:**
 ```typescript
-// powerupEffects.ts
-type PowerupState = {
-  active: VirtueType | null;  // Only ONE active
-  timeRemaining: number;
-};
-```
-
-### Target State
-```typescript
-type PowerupState = {
-  active: Map<VirtueType, { stacks: number; timeRemaining: number }>;
-};
-```
-
-### Stacking Rules (config.json)
-```json
-"stackRules": {
-  "meditation": { "maxStacks": 1, "stacksWith": [] },
-  "diligence": { "maxStacks": 3, "stacksWith": ["compassion", "wisdom", "patience"] },
-  "compassion": { "maxStacks": 2, "stacksWith": ["diligence", "wisdom"] },
-  "wisdom": { "maxStacks": 3, "stacksWith": ["diligence", "compassion"] },
-  "patience": { "maxStacks": 2, "stacksWith": ["diligence"] },
-  "paduma": { "maxStacks": 1, "stacksWith": ["all"] }
+PARAMI_CAPS = {
+  Dana: 1, Viriya: 5, Metta: 7, Upekkha: 5, Sila: 1,
+  Khanti: 5, Panna: 2, Adhitthana: 1, Nekkhamma: 2, Sacca: 1
+}
+KLESHA_CAPS = {
+  Lobha: 2, Dosa: 3, Mana: 5, Vicikiccha: 3,
+  Moha: 2, Thina: 2, Anottappa: 1, Micchaditthi: 2
 }
 ```
 
-### Behavior
-- Picking up same powerup: Add stack (up to max), refresh duration
-- Picking up compatible powerup: Add to active set
-- Picking up incompatible powerup: Replace (or reject?)
-- Meditation: Always exclusive (shield mechanic)
+**New Parami:**
+- Sacca (Truthfulness): +5% Paduma drop rate, max 1 stack
 
-### Test Criteria
-- [ ] Pick up Diligence, then Compassion → both active
-- [ ] Pick up Diligence ×3 → 3 stacks, rapid fire intensifies
-- [ ] Pick up Meditation → clears other powerups
-- [ ] HUD shows all active powerups with stack counts
+**About Menus:**
+- Main menu: English translations, max stacks column, powerup sprites
+- Pause menu: "QUALITIES OF MIND" title, Pali-only names, full effect descriptions
+
+**Bug Fix:**
+- Wisdom piercing now works when shield is active (uses `isPiercingActive()` instead of `getActivePowerup()`)
 
 ---
 
-## Step 5: Parami/Klesha Stack Caps
+## Phase 7: New Enemy Types — NEXT
 
-**Goal:** Limit how many of each buff/debuff can accumulate.
+**Goal:** Add 3 enemies that unlock in later kalpas, increasing variety not volume.
 
-### Config Addition
-```json
-"rebirthEffects": {
-  "maxParamiStacks": 5,
-  "maxKleshaStacks": 5,
-  "perEffectCaps": {
-    "Metta": 3,
-    "Mana": 2
-  }
+### Naraka (Hell Beings) — Kalpa 2+, after 45s
+
+```typescript
+{
+  behavior: 'charge',      // Pause → aim → charge
+  speed: 200,              // Fast when charging
+  health: 1,
+  karmaValue: 15,
+  color: '#FF4500'         // Orange-red
 }
 ```
 
-### Changes
-- `addParami()` checks cap before adding
-- `addKlesha()` checks cap before adding
-- Per-effect caps override global cap
+**Pattern:** Spawn → pause 1s → lock onto player → charge straight → repeat if missed
 
-### Test Criteria
-- [ ] Spam debug key for Mettā → caps at configured max
-- [ ] Different effects can have different caps
-- [ ] UI shows "(MAX)" indicator when capped
+### Animal (Tiryagyoni) — Kalpa 3+, after 60s
+
+```typescript
+{
+  behavior: 'swarm',       // Group movement toward player
+  speed: 60,               // Slow but persistent
+  health: 1,
+  karmaValue: 5,           // Low karma (not malicious)
+  spawnCount: 5,           // Always in groups
+  color: '#8B4513'         // Brown
+}
+```
+
+**Pattern:** Simple tracking with slight randomness, clumps naturally
+
+### Human (Manuṣya) — Kalpa 4+, after 90s
+
+```typescript
+{
+  behavior: 'wander',      // Random movement, avoids player
+  speed: 80,
+  health: 1,
+  karmaValue: -50,         // LOSE karma for killing
+  karmaForSparing: 100,    // GAIN karma if they escape
+  escapeTime: 10000,       // Despawn after 10s
+  color: '#FFE4B5'         // Skin tone
+}
+```
+
+**Design:** Tests restraint, reinforces non-harm principle. High risk (gets in way) for high reward.
+
+### Implementation Steps
+
+1. Add enemy configs to `config.json`
+2. Create `src/entities/enemies/naraka.ts`
+3. Create `src/entities/enemies/animal.ts`
+4. Create `src/entities/enemies/human.ts`
+5. Update `spawner.ts` to check kalpa + elapsed time
+6. Handle Human despawn → karma grant
+7. Handle Human killed → karma penalty
 
 ---
 
-## Step 6: Balance Pass
+## Phase 8: Boss Evolution
 
-**Goal:** Playtest and tune all numbers.
+**Goal:** Mara gains new attacks per kalpa, keeping boss fights fresh.
 
-### Areas to Tune
-- Karma thresholds for rebirth tiers
-- Effect strength per stack (10%? 15%? 20%?)
-- Powerup drop rates
-- Paduma rarity
-- Stack caps
-- Fire rate floor (currently 0.2x)
-- Kalpa scaling curves
-
-### Method
-- Play through Kalpas 1-5
-- Note difficulty spikes
-- Verify game is winnable with bad RNG (max debuffs)
-- Verify game isn't trivial with good RNG (max buffs)
+| Kalpa | New Attack | Description |
+|-------|------------|-------------|
+| 1 | (Base) | Aimed projectiles, minion spawns, phase 3 speed |
+| 2 | **Spread Shot** | 5 projectiles in 90° arc, every 3rd attack |
+| 3 | **Sweep Beam** | Horizontal line of 10 projectiles |
+| 4+ | **Rage Mode** | Start at phase 3 speed, spawn Asura minions |
 
 ---
 
-## Implementation Order Rationale
+## Debug Keys Reference
 
-1. **Step 1 first** — Completes the parami/klesha system
-2. **Step 2 before Step 3** — Creates the *need* for healing
-3. **Step 3 after Step 2** — Provides the *solution* to health persistence
-4. **Step 4 after Step 3** — Paduma needs stacking to work properly anyway
-5. **Step 5 after Step 4** — Can't cap stacks until stacking works
-6. **Step 6 last** — Balance requires all systems in place
+| Key | Action |
+|-----|--------|
+| F1 | Toggle hitbox visibility |
+| F2 | Skip to wave 8 |
+| F3 | Skip directly to boss |
+| F4 | Cycle through powerups |
+| F6 | Toggle invincibility |
+| T/Y/U/I | Add Dana/Viriya/Metta/Upekkha |
+| 1/2/3/4/5 | Add Sila/Khanti/Panna/Adhitthana/Nekkhamma |
+| 0 | Add Sacca |
+| G/H/J/K | Add Lobha/Dosa/Mana/Vicikiccha |
+| 6/7/8/9 | Add Moha/Thina/Anottappa/Micchaditthi |
+| M | Clear all paramis and kleshas |
+| V | Heal player |
 
 ---
 
-*One step at a time. Test before proceeding.* 🪷
+*Phase 6 complete. Onward to new realms.* 🪷
