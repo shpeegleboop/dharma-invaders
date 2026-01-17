@@ -150,7 +150,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       k.text('Paramis (Perfections)', { size: 18 }), k.pos(55, 210), k.color(144, 238, 144),
     ]));
     pageContent.push(k.add([
-      k.text('Max', { size: 14 }), k.pos(355, 212), k.color(100, 100, 120),
+      k.text('Max', { size: 14 }), k.pos(370, 212), k.color(100, 100, 120),
     ]));
     const paramis = [
       { name: 'Dana (Generosity)', effect: '1.25x drops', max: 1 },
@@ -164,12 +164,12 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Nekkhamma (Renunciation)', effect: '+50% karma', max: 2 },
       { name: 'Sacca (Truthfulness)', effect: '+5% lotus', max: 1 },
     ];
-    let y = 235;
+    let y = 238;
     paramis.forEach(p => {
       pageContent.push(k.add([k.text(p.name, { size: 15 }), k.pos(60, y), k.color(180, 255, 180)]));
-      pageContent.push(k.add([k.text(p.effect, { size: 15 }), k.pos(245, y), k.color(140, 200, 140)]));
-      pageContent.push(k.add([k.text(`${p.max}`, { size: 15 }), k.pos(365, y), k.color(100, 150, 100)]));
-      y += 24;
+      pageContent.push(k.add([k.text(p.effect, { size: 15 }), k.pos(280, y), k.color(140, 200, 140)]));
+      pageContent.push(k.add([k.text(`${p.max}`, { size: 15 }), k.pos(380, y), k.color(100, 150, 100)]));
+      y += 29;
     });
 
     // Kleshas section
@@ -177,7 +177,7 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(420, 210), k.color(255, 100, 100),
     ]));
     pageContent.push(k.add([
-      k.text('Max', { size: 14 }), k.pos(725, 212), k.color(100, 100, 120),
+      k.text('Max', { size: 14 }), k.pos(755, 212), k.color(100, 100, 120),
     ]));
     const kleshas = [
       { name: 'Lobha (Greed)', effect: '-25% drops', max: 2 },
@@ -189,18 +189,18 @@ export function createAboutScene(k: KAPLAYCtx, data?: AboutSceneData): void {
       { name: 'Anottappa (Reckless)', effect: '-1 damage', max: 1 },
       { name: 'Micchaditthi (Wrong View)', effect: '-25% karma', max: 2 },
     ];
-    y = 235;
+    y = 238;
     kleshas.forEach(kl => {
       pageContent.push(k.add([k.text(kl.name, { size: 15 }), k.pos(425, y), k.color(255, 150, 150)]));
-      pageContent.push(k.add([k.text(kl.effect, { size: 15 }), k.pos(600, y), k.color(200, 140, 140)]));
-      pageContent.push(k.add([k.text(`${kl.max}`, { size: 15 }), k.pos(735, y), k.color(150, 100, 100)]));
-      y += 24;
+      pageContent.push(k.add([k.text(kl.effect, { size: 15 }), k.pos(635, y), k.color(200, 140, 140)]));
+      pageContent.push(k.add([k.text(`${kl.max}`, { size: 15 }), k.pos(765, y), k.color(150, 100, 100)]));
+      y += 29;
     });
 
     // Footer
     pageContent.push(k.add([
       k.text('Karma at death determines buffs/debuffs. Effects stack per rebirth.', { size: 14 }),
-      k.pos(w / 2, 480), k.anchor('center'), k.color(100, 100, 120),
+      k.pos(w / 2, 540), k.anchor('center'), k.color(100, 100, 120),
     ]));
   }
 
