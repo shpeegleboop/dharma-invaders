@@ -84,12 +84,13 @@ export function setupDebug(k: KAPLAYCtx): void {
   k.onKeyPress('y', () => addParami('Viriya'));
   k.onKeyPress('u', () => addParami('Metta'));
   k.onKeyPress('i', () => addParami('Upekkha'));
-  // New paramis: 1=Sila, 2=Khanti, 3=Panna, 4=Adhitthana, 5=Nekkhamma
+  // New paramis: 1=Sila, 2=Khanti, 3=Panna, 4=Adhitthana, 5=Nekkhamma, 0=Sacca
   k.onKeyPress('1', () => addParami('Sila'));
   k.onKeyPress('2', () => addParami('Khanti'));
   k.onKeyPress('3', () => addParami('Panna'));
   k.onKeyPress('4', () => addParami('Adhitthana'));
   k.onKeyPress('5', () => addParami('Nekkhamma'));
+  k.onKeyPress('0', () => addParami('Sacca'));
 
   // Klesha debug keys: G=Lobha, H=Dosa, J=Mana, K=Vicikiccha
   k.onKeyPress('g', () => addKlesha('Lobha'));

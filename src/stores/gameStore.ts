@@ -1,5 +1,30 @@
 // Simple module-level state for roguelike game state (no React/Zustand needed)
 
+// Per-effect stack caps
+const PARAMI_CAPS: Record<string, number> = {
+  Dana: 1,
+  Viriya: 5,
+  Metta: 7,
+  Upekkha: 5,
+  Sila: 1,
+  Khanti: 5,
+  Panna: 2,
+  Adhitthana: 1,
+  Nekkhamma: 2,
+  Sacca: 3,
+};
+
+const KLESHA_CAPS: Record<string, number> = {
+  Lobha: 2,
+  Dosa: 3,
+  Mana: 5,
+  Vicikiccha: 3,
+  Moha: 2,
+  Thina: 2,
+  Anottappa: 1,
+  Micchaditthi: 2,
+};
+
 interface GameState {
   karmaTotal: number;
   karmaThisLife: number;
@@ -77,12 +102,34 @@ export function resetAll(): void {
   state = { ...defaultState };
 }
 
-export function addParami(parami: string): void {
+export function addParami(parami: string): boolean {
+  const currentCount = state.paramis.filter((p) => p === parami).length;
+  const cap = PARAMI_CAPS[parami] ?? 99;
+  if (currentCount >= cap) return false; // At cap
   state.paramis = [...state.paramis, parami];
+  return true;
 }
 
-export function addKlesha(klesha: string): void {
+export function addKlesha(klesha: string): boolean {
+  const currentCount = state.kleshas.filter((k) => k === klesha).length;
+  const cap = KLESHA_CAPS[klesha] ?? 99;
+  if (currentCount >= cap) return false; // At cap
   state.kleshas = [...state.kleshas, klesha];
+  return true;
+}
+
+// Check if a parami is at its cap
+export function isParamiCapped(parami: string): boolean {
+  const currentCount = state.paramis.filter((p) => p === parami).length;
+  const cap = PARAMI_CAPS[parami] ?? 99;
+  return currentCount >= cap;
+}
+
+// Check if a klesha is at its cap
+export function isKleshaCapped(klesha: string): boolean {
+  const currentCount = state.kleshas.filter((k) => k === klesha).length;
+  const cap = KLESHA_CAPS[klesha] ?? 99;
+  return currentCount >= cap;
 }
 
 // Called when player chooses "Continue" after defeating Mara

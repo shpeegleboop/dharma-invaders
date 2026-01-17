@@ -2,7 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { isPaused } from '../ui/pauseMenu';
-import { getDropRateMultiplier } from '../systems/rebirthEffects';
+import { getDropRateBonus, getDropRateMultiplier, getPadumaDropRateBonus } from '../systems/rebirthEffects';
 import { getCycle } from '../stores/gameStore';
 
 export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation' | 'paduma';
@@ -50,14 +50,17 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
 
 export function shouldDropPowerup(k: KAPLAYCtx): boolean {
   const baseChance = config.powerups.dropChance;
-  const modifiedChance = baseChance * getDropRateMultiplier();
+  // Dana adds to base rate, Lobha multiplies result
+  const modifiedChance = (baseChance + getDropRateBonus()) * getDropRateMultiplier();
   return k.rand(0, 1) < modifiedChance;
 }
 
-// Paduma: separate 5% drop chance, only in Kalpa 2+
+// Paduma: separate drop chance, only in Kalpa 2+, boosted by Sacca
 export function shouldDropPaduma(k: KAPLAYCtx): boolean {
   if (getCycle() < config.powerups.paduma.minKalpa) return false;
-  return k.rand(0, 1) < config.powerups.paduma.dropChance;
+  const baseChance = config.powerups.paduma.dropChance;
+  const modifiedChance = baseChance + getPadumaDropRateBonus();
+  return k.rand(0, 1) < modifiedChance;
 }
 
 export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
