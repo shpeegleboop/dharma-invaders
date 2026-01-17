@@ -1,13 +1,14 @@
 # Current Strategy — Phase 6+ Implementation
 
 **Created:** 2026-01-16
+**Updated:** 2026-01-16
 **Goal:** Complete remaining buffs/debuffs, then add powerup stacking and health persistence
 
 ---
 
-## Step 1: Phase 6 Pāramīs/Kleshas ← CURRENT
+## Step 1: Phase 6 Pāramīs/Kleshas ✅ COMPLETE
 
-Implement 9 effects that work with current systems:
+Implemented 9 effects that work with current systems:
 
 ### Pāramīs (5)
 | Pāramī | Effect | Integration |
@@ -32,62 +33,49 @@ Implement 9 effects that work with current systems:
 - **Uddhacca** (screenshake) → Phase 10 (polish)
 
 ### Test Criteria
-- [ ] Debug keys grant effects
-- [ ] Effects stack correctly (multiple of same type)
-- [ ] Rebirth HUD displays new effects
-- [ ] Multipliers apply in gameplay
+- [x] Debug keys grant effects (1-5 paramis, 6-9 kleshas)
+- [x] Effects stack correctly (multiple of same type)
+- [x] Rebirth HUD displays new effects (two-line wrapping)
+- [x] Multipliers apply in gameplay
 
 ---
 
-## Step 2: Health Persistence Across Kalpas
+## Step 2: Health Persistence Across Kalpas ✅ COMPLETE
 
 **Goal:** Player does NOT return to full health when continuing to next kalpa.
 
-### Changes
-- Remove `player.setHP(maxHealth)` from nirvana → continue flow
-- Keep current health when entering next kalpa
-- This makes the game harder and creates need for healing
+### Implementation
+- `gameStore.ts`: Added `savedHealth` field, `saveHealth()`, `consumeSavedHealth()`
+- `game.ts`: Saves health on boss defeat, restores on new kalpa
+- Health display syncs correctly via `setHealthDisplay()`
 
 ### Test Criteria
-- [ ] Beat Mara at 1 HP
-- [ ] Choose Continue (Bodhisattva mode)
-- [ ] Verify player starts Kalpa 2 at 1 HP
+- [x] Beat Mara at 1 HP
+- [x] Choose Continue (Bodhisattva mode)
+- [x] Verify player starts Kalpa 2 at 1 HP
 
 ---
 
-## Step 3: Add Paduma (Lotus) Healing Powerup
+## Step 3: Add Paduma (Lotus) Healing Powerup ✅ COMPLETE
 
 **Goal:** New powerup that restores health, only available Kalpa 2+.
 
-### Design
-```json
-{
-  "paduma": {
-    "color": "#FFC0CB",
-    "name": "Paduma",
-    "effect": "heal",
-    "healAmount": 1,
-    "dropChance": 0.05,
-    "minKalpa": 2
-  }
-}
-```
-
-### Changes
-- Add `paduma` to `config.json` powerups
-- Update `powerup.ts` to handle heal effect
-- Update spawner/drop logic to check `getCycle() >= minKalpa`
-- Lower drop chance than other powerups (5% vs 15%)
+### Implementation
+- Separate drop system: `shouldDropPaduma()` + `createPaduma()`
+- 5% drop chance (independent of regular 15% powerup drops)
+- Floats upward with sinusoidal sway (unique visual)
+- Heals instantly without replacing active powerup
+- Debug key: V to heal
 
 ### Test Criteria
-- [ ] Kalpa 1: No Paduma drops
-- [ ] Kalpa 2+: Paduma drops occasionally
-- [ ] Collecting Paduma at < max HP restores 1 HP
-- [ ] Collecting at max HP does nothing (or small karma bonus?)
+- [x] Kalpa 1: No Paduma drops
+- [x] Kalpa 2+: Paduma drops at 5% rate
+- [x] Collecting Paduma restores 1 HP (capped at max)
+- [x] Does NOT replace current powerup
 
 ---
 
-## Step 4: Powerup Stacking Foundation
+## Step 4: Powerup Stacking Foundation ← NEXT
 
 **Goal:** Multiple powerups can be active simultaneously with stacking rules.
 

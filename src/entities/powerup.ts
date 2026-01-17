@@ -62,6 +62,7 @@ export function shouldDropPaduma(k: KAPLAYCtx): boolean {
 
 export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
   const virtueConfig = config.powerups.virtues.paduma;
+  const startX = x;
 
   const powerup = k.add([
     k.circle(config.powerups.size.width / 2),
@@ -75,14 +76,17 @@ export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
     { virtueType: 'paduma' as VirtueType },
   ]);
 
-  let pulsePhase = 0;
+  let phase = 0;
 
   powerup.onUpdate(() => {
     if (isPaused) return;
-    powerup.pos.y += config.powerups.fallSpeed * k.dt();
-    pulsePhase += 4 * k.dt();
-    powerup.opacity = 0.7 + Math.sin(pulsePhase) * 0.3;
-    if (powerup.pos.y > config.screen.height + 50) {
+    phase += 2 * k.dt();
+    // Float upward with sinusoidal sway
+    powerup.pos.y -= config.powerups.fallSpeed * 0.5 * k.dt();
+    powerup.pos.x = startX + Math.sin(phase) * 30;
+    powerup.opacity = 0.7 + Math.sin(phase * 2) * 0.3;
+    // Destroy when off top of screen
+    if (powerup.pos.y < -50) {
       powerup.destroy();
     }
   });
