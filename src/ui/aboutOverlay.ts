@@ -162,7 +162,7 @@ function renderRebirth(): void {
     k.text('Paramis (Buffs)', { size: 16 }), k.pos(55, 200), k.color(144, 238, 144), k.fixed(), k.z(101),
   ]));
   tabContent.push(k.add([
-    k.text('Max', { size: 12 }), k.pos(340, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Max', { size: 12 }), k.pos(355, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const paramis = [
     { name: 'Dana', effect: '1.25x drop rate', max: 1 },
@@ -176,12 +176,12 @@ function renderRebirth(): void {
     { name: 'Nekkhamma', effect: '+50% karma gain', max: 2 },
     { name: 'Sacca', effect: '+5% lotus drop', max: 1 },
   ];
-  let y = 222;
+  let y = 226;
   paramis.forEach(p => {
     tabContent.push(k.add([k.text(p.name, { size: 14 }), k.pos(60, y), k.color(180, 255, 180), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(p.effect, { size: 14 }), k.pos(230, y), k.color(140, 200, 140), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`${p.max}`, { size: 14 }), k.pos(350, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
-    y += 22;
+    tabContent.push(k.add([k.text(p.effect, { size: 14 }), k.pos(155, y), k.color(140, 200, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${p.max}`, { size: 14 }), k.pos(360, y), k.color(100, 150, 100), k.fixed(), k.z(101)]));
+    y += 26;
   });
 
   // Kleshas section
@@ -189,7 +189,7 @@ function renderRebirth(): void {
     k.text('Kleshas (Debuffs)', { size: 16 }), k.pos(400, 200), k.color(255, 100, 100), k.fixed(), k.z(101),
   ]));
   tabContent.push(k.add([
-    k.text('Max', { size: 12 }), k.pos(710, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Max', { size: 12 }), k.pos(755, 202), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
   const kleshas = [
     { name: 'Lobha', effect: '-25% drop rate', max: 2 },
@@ -201,12 +201,12 @@ function renderRebirth(): void {
     { name: 'Anottappa', effect: '-1 damage', max: 1 },
     { name: 'Micchaditthi', effect: '-25% karma gain', max: 2 },
   ];
-  y = 222;
+  y = 226;
   kleshas.forEach(kl => {
     tabContent.push(k.add([k.text(kl.name, { size: 14 }), k.pos(405, y), k.color(255, 150, 150), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(kl.effect, { size: 14 }), k.pos(575, y), k.color(200, 140, 140), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(`${kl.max}`, { size: 14 }), k.pos(720, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
-    y += 22;
+    tabContent.push(k.add([k.text(kl.effect, { size: 14 }), k.pos(520, y), k.color(200, 140, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(`${kl.max}`, { size: 14 }), k.pos(760, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
+    y += 26;
   });
 }
 
