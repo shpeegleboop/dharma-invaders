@@ -43,7 +43,7 @@ export function initSFX(volume: number): void {
   sfx.powerup_patience = new Howl({ src: ['/audio/sfx/powerup_patience.mp3'], volume: sfxVolume });
   sfx.powerup_diligence = new Howl({ src: ['/audio/sfx/powerup_diligence.mp3'], volume: sfxVolume });
   sfx.powerup_meditation = new Howl({ src: ['/audio/sfx/powerup_meditation.mp3'], volume: sfxVolume });
-  sfx.powerup_paduma = new Howl({ src: ['/audio/sfx/powerup_paduma.mp3'], volume: sfxVolume });
+  sfx.powerup_paduma = new Howl({ src: ['/audio/sfx/powerup_paduma.mp3'], volume: sfxVolume * 0.5 });
   sfx.shield_break = new Howl({ src: ['/audio/sfx/shield_break.mp3'], volume: sfxVolume });
   sfx.boss_enter = new Howl({ src: ['/audio/sfx/boss_enter.mp3'], volume: sfxVolume });
   sfx.boss_phase = new Howl({ src: ['/audio/sfx/boss_phase.mp3'], volume: sfxVolume });
@@ -61,7 +61,9 @@ export function setSFXVolumeInternal(vol: number): void {
   sfxVolume = vol;
   Object.entries(sfx).forEach(([key, sound]) => {
     if (sound) {
-      const multiplier = key === 'shoot' ? 0.3 : 1;
+      let multiplier = 1;
+      if (key === 'shoot') multiplier = 0.3;
+      else if (key === 'powerup_paduma') multiplier = 0.5;
       sound.volume(sfxVolume * multiplier);
     }
   });

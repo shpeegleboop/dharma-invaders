@@ -26,14 +26,4 @@ Thumbs.db
 src-tauri/target/
 
 # Dev docs (keep private)
-CLAUDE.md
-VISION.md
-SESSION_HANDOFF.md
-ROADMAP.md
-LORE.md
-AUDIO.md
-FUTURE_IDEAS.md
-CURRENT_STRAT.md
-AUDIT.md
-POWERUPS.md
-parami_cap.md
+*.md
