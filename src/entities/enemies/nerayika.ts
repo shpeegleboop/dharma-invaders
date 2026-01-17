@@ -5,7 +5,7 @@ import { events } from '../../utils/events';
 import { getIsPaused } from '../../ui/pauseMenu';
 import { shouldEnemiesFlee, applyFleeMovement } from '../../systems/enemyFlee';
 
-type NerayikaState = 'hesitating' | 'charging' | 'exiting';
+type NerayikaState = 'hesitating' | 'charging' | 'pursuing' | 'exiting';
 
 let nerayikaIdCounter = 0;
 
@@ -91,7 +91,7 @@ export function createNerayika(k: KAPLAYCtx, x: number, y: number): GameObj {
         nerayika.pos.x += chargeDir.x * cfg.chargeSpeed * k.dt();
         nerayika.pos.y += chargeDir.y * cfg.chargeSpeed * k.dt();
 
-        // Check if off screen
+        // Check if off screen - switch to pursuing instead of destroying
         const margin = config.enemies.offscreenMargin;
         if (
           nerayika.pos.x < -margin ||
@@ -99,9 +99,24 @@ export function createNerayika(k: KAPLAYCtx, x: number, y: number): GameObj {
           nerayika.pos.y < config.arena.offsetY - margin ||
           nerayika.pos.y > config.screen.height + margin
         ) {
-          state = 'exiting';
-          events.emit('enemy:escaped', { id: nerayika.enemyId });
-          nerayika.destroy();
+          state = 'pursuing';
+          nerayika.opacity = 0.8; // Slightly dimmed during pursuit
+        }
+        break;
+
+      case 'pursuing':
+        // Track player at half speed
+        const target = k.get('player')[0];
+        if (target) {
+          const pdx = target.pos.x - nerayika.pos.x;
+          const pdy = target.pos.y - nerayika.pos.y;
+          const pdist = Math.sqrt(pdx * pdx + pdy * pdy);
+          if (pdist > 0) {
+            const pursuitSpeed = cfg.chargeSpeed * 0.5;
+            nerayika.pos.x += (pdx / pdist) * pursuitSpeed * k.dt();
+            nerayika.pos.y += (pdy / pdist) * pursuitSpeed * k.dt();
+            nerayika.angle = k.rad2deg(Math.atan2(pdy, pdx)) + 90;
+          }
         }
         break;
     }
