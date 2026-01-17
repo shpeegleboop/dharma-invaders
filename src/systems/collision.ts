@@ -2,7 +2,7 @@
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { createPowerup, shouldDropPowerup } from '../entities/powerup';
+import { createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma } from '../entities/powerup';
 import { getActivePowerup } from './powerupEffects';
 import { damageMara, getMaraPhase } from '../entities/mara';
 import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
@@ -38,9 +38,12 @@ export function setupCollisions(k: KAPLAYCtx): void {
         karmaValue: enemy.karmaValue,
       });
 
-      // Chance to drop powerup
+      // Chance to drop powerup (regular and Paduma checked independently)
       if (shouldDropPowerup(k)) {
         createPowerup(k, pos.x, pos.y);
+      }
+      if (shouldDropPaduma(k)) {
+        createPaduma(k, pos.x, pos.y);
       }
 
       enemy.destroy();

@@ -10,14 +10,8 @@ export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'm
 const BASE_VIRTUE_TYPES: VirtueType[] = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
 
 export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
-  // Build available virtue types (paduma only in Kalpa 2+)
-  const availableTypes: VirtueType[] = [...BASE_VIRTUE_TYPES];
-  if (getCycle() >= config.powerups.paduma.minKalpa) {
-    availableTypes.push('paduma');
-  }
-
-  // Random virtue type from available pool
-  const virtueType = availableTypes[Math.floor(k.rand(0, availableTypes.length))];
+  // Random virtue type (Paduma handled separately via createPaduma)
+  const virtueType = BASE_VIRTUE_TYPES[Math.floor(k.rand(0, BASE_VIRTUE_TYPES.length))];
   const virtueConfig = config.powerups.virtues[virtueType];
 
   const powerup = k.add([
@@ -58,4 +52,40 @@ export function shouldDropPowerup(k: KAPLAYCtx): boolean {
   const baseChance = config.powerups.dropChance;
   const modifiedChance = baseChance * getDropRateMultiplier();
   return k.rand(0, 1) < modifiedChance;
+}
+
+// Paduma: separate 5% drop chance, only in Kalpa 2+
+export function shouldDropPaduma(k: KAPLAYCtx): boolean {
+  if (getCycle() < config.powerups.paduma.minKalpa) return false;
+  return k.rand(0, 1) < config.powerups.paduma.dropChance;
+}
+
+export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
+  const virtueConfig = config.powerups.virtues.paduma;
+
+  const powerup = k.add([
+    k.circle(config.powerups.size.width / 2),
+    k.pos(x, y),
+    k.anchor('center'),
+    k.area(),
+    k.color(k.Color.fromHex(virtueConfig.color)),
+    k.opacity(0.9),
+    k.outline(2, k.Color.fromHex('#FFFFFF')),
+    'powerup',
+    { virtueType: 'paduma' as VirtueType },
+  ]);
+
+  let pulsePhase = 0;
+
+  powerup.onUpdate(() => {
+    if (isPaused) return;
+    powerup.pos.y += config.powerups.fallSpeed * k.dt();
+    pulsePhase += 4 * k.dt();
+    powerup.opacity = 0.7 + Math.sin(pulsePhase) * 0.3;
+    if (powerup.pos.y > config.screen.height + 50) {
+      powerup.destroy();
+    }
+  });
+
+  return powerup;
 }
