@@ -27,6 +27,7 @@ import {
   saveShieldCharges,
   consumeSavedShieldCharges,
 } from '../stores/gameStore';
+import { getMaxHealthModifier } from '../systems/rebirthEffects';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
@@ -133,8 +134,11 @@ export function createGameScene(k: KAPLAYCtx): void {
   // Restore saved health and shield from previous kalpa (if any)
   const savedHP = consumeSavedHealth();
   if (savedHP !== null) {
-    player.setHP(savedHP);
-    setHealthDisplay(savedHP);
+    // Clamp to current max health (in case Metta/Mana changed)
+    const maxHealth = Math.max(1, config.player.health + getMaxHealthModifier());
+    const clampedHP = Math.min(savedHP, maxHealth);
+    player.setHP(clampedHP);
+    setHealthDisplay(clampedHP);
   }
   const savedShield = consumeSavedShieldCharges();
   if (savedShield !== null) {

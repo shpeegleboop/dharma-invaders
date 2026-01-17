@@ -7,7 +7,7 @@ import { getActivePowerup, isPiercingActive, isShieldActive } from './powerupEff
 import { damageMara, getMaraPhase } from '../entities/mara';
 import { bounceAndStunEnemy, pushPlayerAwayFromBoss } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
-import { getProjectileDamageModifier } from './rebirthEffects';
+import { getProjectileDamageModifier, getMaxHealthModifier } from './rebirthEffects';
 import { absorbDamage } from './shieldSystem';
 import {
   addKlesha, getRandomKlesha, removeRandomParami,
@@ -195,8 +195,10 @@ export function setupCollisions(k: KAPLAYCtx): void {
     if (powerup.virtueType === 'paduma') {
       // Paduma heals immediately instead of activating a powerup
       const healAmount = config.powerups.paduma.healAmount;
-      player.heal(healAmount);
-      events.emit('player:healed', { amount: healAmount, newHealth: player.hp() });
+      const maxHealth = Math.max(1, config.player.health + getMaxHealthModifier());
+      const newHealth = Math.min(player.hp() + healAmount, maxHealth);
+      player.setHP(newHealth);
+      events.emit('player:healed', { amount: healAmount, newHealth });
       events.emit('player:powerup', { type: 'paduma' });
     } else {
       events.emit('player:powerup', { type: powerup.virtueType });
