@@ -3,14 +3,21 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { isPaused } from '../ui/pauseMenu';
 import { getDropRateMultiplier } from '../systems/rebirthEffects';
+import { getCycle } from '../stores/gameStore';
 
-export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation';
+export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation' | 'paduma';
 
-const VIRTUE_TYPES: VirtueType[] = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
+const BASE_VIRTUE_TYPES: VirtueType[] = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
 
 export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
-  // Random virtue type
-  const virtueType = VIRTUE_TYPES[Math.floor(k.rand(0, VIRTUE_TYPES.length))];
+  // Build available virtue types (paduma only in Kalpa 2+)
+  const availableTypes: VirtueType[] = [...BASE_VIRTUE_TYPES];
+  if (getCycle() >= config.powerups.paduma.minKalpa) {
+    availableTypes.push('paduma');
+  }
+
+  // Random virtue type from available pool
+  const virtueType = availableTypes[Math.floor(k.rand(0, availableTypes.length))];
   const virtueConfig = config.powerups.virtues[virtueType];
 
   const powerup = k.add([

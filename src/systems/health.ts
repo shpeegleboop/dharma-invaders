@@ -37,6 +37,12 @@ export function setupHealth(k: KAPLAYCtx): void {
       updateDisplay();
     });
   });
+
+  // Listen for player healing (Paduma powerup)
+  events.on('player:healed', (data) => {
+    currentHealth = Math.min(currentHealth + data.amount, getEffectiveMaxHealth());
+    updateDisplay();
+  });
 }
 
 function updateDisplay(): void {
@@ -47,4 +53,9 @@ function updateDisplay(): void {
 
 export function getHealth(): number {
   return currentHealth;
+}
+
+export function setHealthDisplay(health: number): void {
+  currentHealth = health;
+  updateDisplay();
 }

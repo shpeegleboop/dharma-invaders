@@ -64,7 +64,13 @@
       "wisdom": { "color": "#4169E1", "name": "Wisdom" },
       "patience": { "color": "#32CD32", "name": "Patience" },
       "diligence": { "color": "#FFD700", "name": "Diligence" },
-      "meditation": { "color": "#9370DB", "name": "Meditation" }
+      "meditation": { "color": "#9370DB", "name": "Meditation" },
+      "paduma": { "color": "#FFB6C1", "name": "Paduma" }
+    },
+    "paduma": {
+      "dropChance": 0.05,
+      "minKalpa": 2,
+      "healAmount": 1
     }
   },
   "boss": {

@@ -48,8 +48,15 @@ export function setupCollisions(k: KAPLAYCtx): void {
   });
 
   // Player collects powerup
-  k.onCollide('player', 'powerup', (_player, powerup) => {
-    events.emit('player:powerup', { type: powerup.virtueType });
+  k.onCollide('player', 'powerup', (player, powerup) => {
+    if (powerup.virtueType === 'paduma') {
+      // Paduma heals immediately instead of activating a powerup
+      const healAmount = config.powerups.paduma.healAmount;
+      player.heal(healAmount);
+      events.emit('player:healed', { amount: healAmount });
+    } else {
+      events.emit('player:powerup', { type: powerup.virtueType });
+    }
     powerup.destroy();
   });
 

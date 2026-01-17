@@ -5,7 +5,7 @@ import { events } from './events';
 import { spawnMara } from '../entities/mara';
 import { addParami, addKlesha, getGameState } from '../stores/gameStore';
 
-const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
+const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation', 'paduma'];
 
 type DebugState = {
   hitboxes: boolean;

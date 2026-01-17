@@ -3,7 +3,7 @@ import type { KAPLAYCtx } from 'kaplay';
 import { createPlayer } from '../entities/player';
 import { setupCollisions } from '../systems/collision';
 import { setupKarma, getKarma } from '../systems/karma';
-import { setupHealth } from '../systems/health';
+import { setupHealth, setHealthDisplay } from '../systems/health';
 import { setupSpawner } from '../systems/spawner';
 import { setupWaveDisplay } from '../systems/waveDisplay';
 import { setupPowerupEffects } from '../systems/powerupEffects';
@@ -126,6 +126,7 @@ export function createGameScene(k: KAPLAYCtx): void {
   const savedHP = consumeSavedHealth();
   if (savedHP !== null) {
     player.setHP(savedHP);
+    setHealthDisplay(savedHP);
   }
 
   // Save player health when boss is defeated (for next kalpa)
