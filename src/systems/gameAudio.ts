@@ -60,8 +60,8 @@ export function setupGameAudio(): void {
   events.on('boss:started', () => {
     playSFX('boss_enter');
     const kalpa = getCycle();
-    if (kalpa >= 4) playMusic('boss4');
-    else if (kalpa >= 3) playMusic('boss3');
+    if (kalpa >= 4) playMusic('boss2');
+    else if (kalpa >= 3) playMusic('boss');
     else if (kalpa >= 2) playMusic('boss2');
     else playMusic('boss');
   });
