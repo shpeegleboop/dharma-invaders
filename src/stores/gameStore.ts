@@ -1,4 +1,9 @@
 // Simple module-level state for roguelike game state (no React/Zustand needed)
+import {
+  loadSave,
+  getPersistedDifficulty,
+  setPersistedDifficulty,
+} from '../systems/persistence';
 
 // Per-effect stack caps
 const PARAMI_CAPS: Record<string, number> = {
@@ -213,27 +218,21 @@ export function hasKlesha(klesha: string): boolean {
   return state.kleshas.includes(klesha);
 }
 
-// Difficulty system
+// Difficulty system - delegates to persistence module
 export type Difficulty = 'sotapanna' | 'sakadagami' | 'anagami' | 'noah';
 const DIFFICULTIES: Difficulty[] = ['sotapanna', 'sakadagami', 'anagami', 'noah'];
-let difficulty: Difficulty = 'sakadagami';
 
 export function getDifficulty(): Difficulty {
-  return difficulty;
+  return getPersistedDifficulty() as Difficulty;
 }
 
 export function setDifficulty(d: Difficulty): void {
-  difficulty = d;
-  localStorage.setItem('dharmaInvaders_difficulty', d);
-}
-
-export function loadDifficulty(): void {
-  const saved = localStorage.getItem('dharmaInvaders_difficulty') as Difficulty | null;
-  if (saved && DIFFICULTIES.includes(saved)) {
-    difficulty = saved;
-  }
+  setPersistedDifficulty(d);
 }
 
 export function getDifficulties(): Difficulty[] {
   return DIFFICULTIES;
 }
+
+// Initialize persistence on module load
+loadSave();

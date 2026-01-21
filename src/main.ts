@@ -9,11 +9,11 @@ import { createCreditsScene } from './scenes/credits';
 import { createAboutScene } from './scenes/about';
 import { createTitleScreen } from './scenes/titleScreen';
 import { initAudio } from './systems/audio';
-import { loadDifficulty } from './stores/gameStore';
+// gameStore imports persistence and calls loadSave() on module init
+import './stores/gameStore';
 
 // Initialize systems
 initAudio();
-loadDifficulty();
 
 // Initialize Kaplay with game config
 const k = kaplay({

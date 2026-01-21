@@ -1,7 +1,7 @@
 # Dharma Invaders — Session Handoff
 
-**Last Updated:** 2026-01-17 (Session 4)
-**Status:** Phase 7 COMPLETE + Architecture refactor, ready for Phase 8
+**Last Updated:** 2026-01-20 (Session 6)
+**Status:** Phase 8.5 COMPLETE — Difficulty system + balance tuning
 **Codebase Audit:** A (2026-01-17) — Split large files, centralized magic numbers
 
 ---
@@ -11,8 +11,8 @@
 ```
 READ THIS FILE FIRST. It supersedes conflicting information in other docs.
 
-Current task: Phase 8 — Boss Evolution (NEXT)
-Completed: Phase 7 — New Enemy Types
+Current task: Phase 9 — Cutscenes (NEXT)
+Completed: Phase 8 — Boss Evolution
 
 Source of truth hierarchy:
 1. SESSION_HANDOFF.md (this file) — Implementation details
@@ -116,12 +116,13 @@ Commit after every working feature with a descriptive message. This is non-negot
 |--------|--------|-------|
 | Core gameplay | ✅ Complete | 8 waves, 6 enemy types |
 | Mara boss | ✅ Complete | 3 phases, figure-8 movement |
-| 6 virtue powerups | ✅ Complete | Compassion, Wisdom, Patience, Diligence, Meditation, Paduma |
+| 7 powerups | ✅ Complete | Compassion, Wisdom, Patience, Diligence, Meditation, Paduma, Vajra |
 | Audio system | ✅ Complete | Menu, gameplay, kalpa-based boss (1-4), victory, game over |
 | Pause menu | ✅ Complete | With confirmations |
 | Title screen | ✅ Complete | Geometric lotus with quote |
 | Mercy rule | ✅ Complete | 3 deaths without kill = game over |
-| Debug tools | ✅ Complete | F1-F6, parami/klesha keys, enemy spawn keys |
+| Debug tools | ✅ Complete | F1-F7, parami/klesha keys, enemy spawn keys, N=Vajra |
+| Difficulty system | ✅ Complete | 4 levels (Sotāpanna→NOAH), localStorage persistence |
 | Rebirth HUD | ✅ Complete | Bottom bar shows paramis (green) / kleshas (red) |
 | Pause About | ✅ Complete | (B) opens help overlay mid-game |
 | New enemies | ✅ Complete | Nerayikā, Tiracchānā, Manussā with kalpa gates |
@@ -138,7 +139,8 @@ Commit after every working feature with a descriptive message. This is non-negot
 | **5** | Kalpa system + difficulty scaling | ✅ Complete |
 | **6** | Balance + remaining buffs/debuffs | ✅ Complete |
 | **7** | New enemy types | ✅ Complete |
-| **8** | Boss evolution | ⏳ Next |
+| **8** | Boss evolution | ✅ Complete |
+| **9** | Cutscenes | ⏳ Next |
 
 ---
 
@@ -254,6 +256,7 @@ Examples:
 | F3 | Skip directly to boss |
 | F4 | Cycle through powerups |
 | F6 | Toggle invincibility |
+| F7 | Cycle difficulty (bypasses menu restriction) |
 | V | Heal player (+1 HP) |
 | T/Y/U/I | Add Dāna/Viriya/Mettā/Upekkhā |
 | 1/2/3/4/5 | Add Sīla/Khantī/Paññā/Adhiṭṭhāna/Nekkhamma |
@@ -265,6 +268,7 @@ Examples:
 | Z | Spawn Nerayikā |
 | X | Spawn Tiracchānā pack (6) |
 | C | Spawn Manussā |
+| N | Spawn Vajra |
 
 ---
 
@@ -308,7 +312,8 @@ src/
 │   ├── powerupEffects.ts
 │   ├── shieldSystem.ts
 │   ├── particles.ts           # Hit particle effects + push ring
-│   ├── cycleScaling.ts
+│   ├── cycleScaling.ts        # Kalpa + difficulty scaling
+│   ├── difficulty.ts          # Difficulty multiplier helpers
 │   ├── rebirthEffects.ts
 │   └── audio.ts
 ├── stores/
@@ -513,39 +518,175 @@ case 'pursuing':
 
 ---
 
-## Part 12: Next Phase — Boss Evolution (Phase 8)
+## Part 12: Phase 8 Summary — Boss Evolution ✅
 
 **Goal:** Mara gains new attacks per kalpa, keeping boss fights fresh.
 
+### Kalpa-Based Attacks
+
 | Kalpa | New Attack | Description |
 |-------|------------|-------------|
-| 1 | (Base) | Aimed projectiles, minion spawns, phase 3 speed |
-| 2 | **Spread Shot** | 5 projectiles in 90° arc |
-| 3 | **Sweep Beam** | Horizontal line of 10 projectiles |
-| 4+ | **Rage Mode** | Start at phase 3 speed, spawn Asurā minions |
+| 1 | (Base) | Aimed projectiles, minion spawns in phase 2+, phase 3 speed |
+| 2+ | **Spread Shot** | 5 projectiles in 90° arc toward player (4s cooldown) |
+| 3+ | **Sweep Beam** | Horizontal line of 10 projectiles downward (5s cooldown) |
+| 4+ | **Rage Mode** | Phase 3 speed/flash from start, spawn Asurā minions instead of Petā |
+
+### Config Added
+
+```json
+"boss.evolution": {
+  "spreadShot": { "minKalpa": 2, "projectileCount": 5, "arcAngle": 1.57, "cooldown": 4000 },
+  "sweepBeam": { "minKalpa": 3, "projectileCount": 10, "width": 600, "cooldown": 5000 },
+  "rageMode": { "minKalpa": 4, "useAsuraMinions": true }
+}
+```
+
+### Files Modified
+
+- `config.json` — Added `boss.evolution` section
+- `mara.ts` — Rage mode flag, delegates attacks to maraCombat
+- `maraCombat.ts` — Added `updateMaraAttacks()`, `fireSpreadShot()`, `fireSweepBeam()`, minion type selection
+- `spawner.ts` — Handle minion type in `boss:spawnMinion` event
+- `events.ts` — Added optional `type` field to `boss:spawnMinion`
 
 ---
 
-## Part 13: Git Commit History (Recent)
+## Part 12.5: Vajra Powerup — COMPLETE ✅
+
+**Rare 1.5% drop that clears all enemies on screen.**
+
+| Property | Value |
+|----------|-------|
+| Drop Rate | 1.5% (replaces normal powerup roll) |
+| Karma | +500 flat (not per-enemy) |
+| Visual | Golden rotating rectangle with sparkle particles |
+| Sound | `vajra.mp3` (plays immediately, effect delayed 1s) |
+| Affected by | Difficulty drop rate multiplier |
+
+**Kills:** All enemies except Manussā (innocents) and Māra (boss immune)
+**Does NOT:** Grant individual karma per kill, drop powerups from killed enemies, play enemy death sounds
+
+**Files:** `config.json`, `powerup.ts`, `particles.ts`, `collision.ts`, `sfx.ts`, `debug.ts`
+
+**Added to About menus:** Both pause overlay and main menu show Vajra with icon and description.
+
+---
+
+## Part 12.6: Session 6 — Difficulty System + Balance ✅
+
+### Difficulty System
+
+**4 difficulty levels** named after Buddhist stages of awakening (plus NOAH for masochists):
+
+| Difficulty | Spawn | Speed | Boss HP | Drops | Color |
+|------------|-------|-------|---------|-------|-------|
+| **Sotāpanna** (Stream-enterer) | 0.75x | 0.85x | 0.75x | 1.25x | Green |
+| **Sakadāgāmī** (Once-returner) | 1.0x | 1.0x | 1.0x | 1.0x | Orange |
+| **Anāgāmī** (Non-returner) | 1.3x | 1.15x | 1.25x | 0.8x | Light red |
+| **NOAH** | 1.5x | 1.2x | 1.5x | 0.75x | Dark red |
+
+**Multiplier stacking:** Difficulty × Kalpa scaling (multiplicative)
+
+### Config Structure
+
+```json
+"difficulty": {
+  "sotapanna": {
+    "displayName": "Sotāpanna",
+    "subtitle": "Stream-enterer",
+    "spawnMultiplier": 0.75,
+    "enemySpeedMultiplier": 0.85,
+    "bossHealthMultiplier": 0.75,
+    "dropRateMultiplier": 1.25
+  },
+  // ... sakadagami, anagami, noah
+}
+```
+
+### Implementation
+
+```typescript
+// src/systems/difficulty.ts — Get multipliers
+export function getDifficultyMultiplier(stat: DifficultyMultiplier): number {
+  const diff = getDifficulty();
+  return config.difficulty[diff][stat] ?? 1;
+}
+
+// src/systems/cycleScaling.ts — Apply to existing scaling
+export function getEnemySpeedScaling(): number {
+  return getScalingMultiplier(caps.enemySpeed) * getDifficultyMultiplier('enemySpeedMultiplier');
+}
+
+// src/stores/gameStore.ts — Persistence
+export function setDifficulty(d: Difficulty): void {
+  difficulty = d;
+  localStorage.setItem('dharmaInvaders_difficulty', d);
+}
+```
+
+### UI
+
+- **Menu:** (D) key or click arrows to cycle, color-coded text
+- **HUD:** Tiny text under "Dharma Invaders" title (non-default only)
+- **Debug:** F7 cycles difficulty mid-game
+
+### Files Created/Modified
+
+**New:**
+- `src/systems/difficulty.ts` — Multiplier helpers
+
+**Modified:**
+- `config.json` — Added `difficulty` section
+- `gameStore.ts` — Difficulty state + localStorage
+- `main.ts` — `loadDifficulty()` on startup
+- `cycleScaling.ts` — Apply difficulty to spawn/speed/bossHP
+- `powerup.ts` — Apply difficulty to drop rates
+- `menu.ts` — Difficulty selector UI
+- `game.ts` — HUD indicator
+- `debug.ts` — F7 key
+
+### Balance Changes (Session 6)
+
+| Change | Before | After | Reason |
+|--------|--------|-------|--------|
+| Diligence stacking | 0.5^stacks | 0.75^stacks | Max 2.4x fire rate (was 8x) |
+| Asura speed | 150 | 125 | Less aggressive early game |
+| Tiracchana speed | 150 | 125 | Packs less overwhelming |
+| Vajra drop rate | 2% | 1.5% | Slightly rarer screen clear |
+
+**Diligence formula change:**
+```typescript
+// Before: 0.5^3 = 0.125x cooldown = 8x fire rate
+// After:  0.75^3 = 0.422x cooldown = 2.4x fire rate
+const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
+```
+
+---
+
+## Part 13: Next Phase — Cutscenes (Phase 9)
+
+**Goal:** Add intro cutscene and ending cutscenes for narrative.
+
+---
+
+## Part 14: Git Commit History (Recent)
 
 ```
+9b2e45c Update vajra.mp3 sound effect
+c9446aa Add difficulty system with 4 levels
+349b3e1 Balance: nerf Diligence and enemy speeds
+300c125 Reduce Vajra drop rate from 2% to 1.5%
+62a5d8e Silence enemy death sounds on Vajra kill, reduce Vajra volume 40%
+88651ae Play Vajra sound immediately, delay screen clear effect
+39a2e09 Add 1s delay before Vajra effect triggers
+fb8bb77 Add Vajra powerup: rare screen-clear with golden particles
+80a121d Add boss evolution: kalpa-based attacks and rage mode (Phase 8)
+8464a70 Add SPAGHETTI.md architecture report, update SESSION_HANDOFF
 1595657 Refactor: split large files and centralize magic numbers
 9f54f53 Simplify boss music mapping for kalpas 3-4
 1408773 Add paduma powerup sound effect
-014a864 Fix health desync between Kaplay component and display
 0ead5cb Add Paṭighāta push ability and kalpa-based boss music
 eb5cd97 Add visual feedback for Manussa parami/klesha changes
-5c3b1da Skip capped paramis/kleshas in rebirth selection
-334c5ca Add missing Ahirika and Sacca to rebirth pools
-8002405 Fix healing above max health
-ab6933f Fix Manussa karma calculation bug
-bc3a559 Change Manussa death text to 'bruh, why?'
-edc026a Update Manussa: 7 HP, 'Ouch!' on hit, death message
-6b46aab Make Nerayika pursue player at half speed after missed charge
-3c4cf52 Fix particle lifespan requiring opacity component
-ad7f7da Add Ahirika klesha and update Pali terminology
-3a1bc46 Add hit particles and improve bestiary display
-51f2426 Add Nerayika, Tiracchana, and Manussa enemies (Phase 7)
 ```
 
 ---
