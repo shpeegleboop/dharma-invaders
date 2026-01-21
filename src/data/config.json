@@ -92,7 +92,7 @@
     "vajra": {
       "size": { "width": 28, "height": 28 },
       "color": "#FFD700",
-      "dropChance": 0.02,
+      "dropChance": 0.015,
       "karmaGrant": 500,
       "particleCount": { "idle": 3, "burst": 20 },
       "particleSize": { "idle": 2, "burst": 5 },
