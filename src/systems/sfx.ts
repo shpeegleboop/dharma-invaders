@@ -51,7 +51,7 @@ export function initSFX(volume: number): void {
   sfx.boss_death = new Howl({ src: ['/audio/sfx/boss_death.mp3'], volume: sfxVolume });
   sfx.wave_complete = new Howl({ src: ['/audio/sfx/wave_complete.mp3'], volume: sfxVolume });
   sfx.patighata = new Howl({ src: ['/audio/sfx/patighata.mp3'], volume: sfxVolume });
-  sfx.vajra = new Howl({ src: ['/audio/sfx/vajra.mp3'], volume: sfxVolume });
+  sfx.vajra = new Howl({ src: ['/audio/sfx/vajra.mp3'], volume: sfxVolume * 0.6 });
 }
 
 export function playSFX(sound: SFXSound): void {
@@ -66,6 +66,7 @@ export function setSFXVolumeInternal(vol: number): void {
       let multiplier = 1;
       if (key === 'shoot') multiplier = 0.3;
       else if (key === 'powerup_paduma') multiplier = 0.5;
+      else if (key === 'vajra') multiplier = 0.6;
       sound.volume(sfxVolume * multiplier);
     }
   });

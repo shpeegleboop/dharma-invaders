@@ -4,7 +4,7 @@
 type GameEvents = {
   // Combat
   'enemy:spawned': { id: string; type: string; position: { x: number; y: number } };
-  'enemy:killed': { id: string; type: string; position: { x: number; y: number }; karmaValue: number };
+  'enemy:killed': { id: string; type: string; position: { x: number; y: number }; karmaValue: number; silent?: boolean };
   'enemy:escaped': { id: string };
   'projectile:fired': { type: string; position: { x: number; y: number } };
 

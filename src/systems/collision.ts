@@ -148,6 +148,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
           type: enemy.type,
           position: { x: enemy.pos.x, y: enemy.pos.y },
           karmaValue: 0,
+          silent: true,
         });
 
         spawnHitParticles(enemy.pos.x, enemy.pos.y);

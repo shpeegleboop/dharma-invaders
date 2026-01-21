@@ -9,8 +9,8 @@ export function setupGameAudio(): void {
     playSFX('shoot');
   });
 
-  events.on('enemy:killed', () => {
-    playSFX('enemy_death');
+  events.on('enemy:killed', (data) => {
+    if (!data.silent) playSFX('enemy_death');
   });
 
   // Player sounds
