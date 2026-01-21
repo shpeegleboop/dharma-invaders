@@ -160,10 +160,10 @@ export function hasPowerup(type: VirtueType): boolean {
   return false;
 }
 
-// Diligence: (0.5)^stacks cooldown multiplier, combined with rebirth
+// Diligence: (0.75)^stacks cooldown multiplier, combined with rebirth
 export function getShootCooldownMultiplier(): number {
   const stacks = getStacks('diligence');
-  const powerupMultiplier = stacks > 0 ? Math.pow(0.5, stacks) : 1;
+  const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
   return powerupMultiplier * getRebirthFireRate();
 }
 

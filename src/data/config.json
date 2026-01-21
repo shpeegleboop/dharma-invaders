@@ -47,7 +47,7 @@
       "color": "#FF4444"
     },
     "asura": {
-      "speed": 150,
+      "speed": 125,
       "health": 2,
       "karmaValue": 25,
       "size": { "width": 28, "height": 28 },
@@ -229,7 +229,7 @@
       "size": { "width": 20, "height": 20 },
       "color": "#4169E1",
       "health": 1,
-      "speed": 150,
+      "speed": 125,
       "wobbleIntensity": 2.0,
       "karmaValue": 20,
       "damage": 1,
