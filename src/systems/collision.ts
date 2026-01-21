@@ -2,12 +2,17 @@
 import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma } from '../entities/powerup';
+import {
+  createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma,
+  createVajra, shouldDropVajra
+} from '../entities/powerup';
 import { isPiercingActive, isShieldActive } from './powerupEffects';
 import { bounceAndStunEnemy } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
 import { getProjectileDamageModifier, getMaxHealthModifier } from './rebirthEffects';
-import { spawnHitParticles } from './particles';
+import { spawnHitParticles, spawnVajraPickupBurst, flashScreen } from './particles';
+import { addKarma } from '../stores/gameStore';
+import { playSFX } from './audio';
 import {
   handleNerayikaCollision,
   handleTiracchanaCollision,
@@ -82,12 +87,16 @@ export function setupCollisions(k: KAPLAYCtx): void {
         karmaValue: enemy.karmaValue,
       });
 
-      // Chance to drop powerup (regular and Paduma checked independently)
+      // Chance to drop powerup (Vajra replaces normal roll, Paduma independent)
       // Manussa doesn't drop powerups
       if (!enemy.isManussa) {
-        if (shouldDropPowerup(k)) {
+        // Vajra: 2% chance, replaces normal powerup if it hits
+        if (shouldDropVajra(k)) {
+          createVajra(k, pos.x, pos.y);
+        } else if (shouldDropPowerup(k)) {
           createPowerup(k, pos.x, pos.y);
         }
+        // Paduma checked independently
         if (shouldDropPaduma(k)) {
           createPaduma(k, pos.x, pos.y);
         }
@@ -111,6 +120,44 @@ export function setupCollisions(k: KAPLAYCtx): void {
       events.emit('player:powerup', { type: powerup.virtueType });
     }
     powerup.destroy();
+  });
+
+  // Player collects Vajra (clears all enemies)
+  k.onCollide('player', 'vajra', (_player, vajra) => {
+    const cfg = config.powerups.vajra;
+
+    // Play sound
+    playSFX('vajra');
+
+    // Particle burst at pickup location
+    spawnVajraPickupBurst(vajra.pos.x, vajra.pos.y);
+
+    // Screen flash
+    flashScreen(cfg.color, cfg.flashDuration);
+
+    // Kill all eligible enemies (not Manussa, not boss)
+    k.get('enemy').forEach((enemy: any) => {
+      if (enemy.isManussa) return;
+      if (enemy.is('boss')) return;
+
+      // Emit killed event with 0 karma (flat karma instead) and no drops
+      events.emit('enemy:killed', {
+        id: enemy.enemyId,
+        type: enemy.type,
+        position: { x: enemy.pos.x, y: enemy.pos.y },
+        karmaValue: 0, // No individual karma
+      });
+
+      // Spawn hit particles for visual feedback
+      spawnHitParticles(enemy.pos.x, enemy.pos.y);
+      enemy.destroy();
+    });
+
+    // Grant flat karma
+    addKarma(cfg.karmaGrant);
+
+    // Destroy vajra
+    vajra.destroy();
   });
 
   // Enemy touches player

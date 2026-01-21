@@ -7,6 +7,7 @@ import { addParami, addKlesha, getGameState } from '../stores/gameStore';
 import { createNerayika } from '../entities/enemies/nerayika';
 import { createTiracchana } from '../entities/enemies/tiracchana';
 import { createManussa } from '../entities/enemies/manussa';
+import { createVajra } from '../entities/powerup';
 
 // Paduma not included - it's an instant heal, not a timed powerup
 const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
@@ -146,6 +147,15 @@ export function setupDebug(k: KAPLAYCtx): void {
     const centerX = config.screen.width / 2;
     const centerY = config.arena.offsetY + config.arena.height / 2;
     createManussa(k, centerX, centerY);
+    updateIndicator();
+  });
+
+  // N: Spawn Vajra (for testing)
+  k.onKeyPress('n', () => {
+    const player = k.get('player')[0];
+    if (player) {
+      createVajra(k, player.pos.x, player.pos.y - 100);
+    }
     updateIndicator();
   });
 

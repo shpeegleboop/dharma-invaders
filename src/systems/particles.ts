@@ -1,5 +1,6 @@
 // Particle effects for visual feedback
 import type { KAPLAYCtx } from 'kaplay';
+import config from '../data/config.json';
 
 let kCtx: KAPLAYCtx | null = null;
 
@@ -62,4 +63,75 @@ export function spawnPushRing(x: number, y: number, color: string): void {
       particle.pos.y += Math.sin(angle) * expandSpeed * k.dt();
     });
   }
+}
+
+// Vajra idle sparkle - small gold particles radiating slowly
+export function spawnVajraIdleParticle(x: number, y: number): void {
+  if (!kCtx) return;
+  const k = kCtx;
+  const cfg = config.powerups.vajra;
+
+  const angle = k.rand(0, Math.PI * 2);
+  const speed = k.rand(20, 40);
+  const size = cfg.particleSize.idle;
+
+  const particle = k.add([
+    k.rect(size, size),
+    k.pos(x + k.rand(-8, 8), y + k.rand(-8, 8)),
+    k.anchor('center'),
+    k.color(k.Color.fromHex(cfg.color)),
+    k.opacity(1),
+    k.lifespan(0.5, { fade: 0.3 }),
+    k.z(45),
+  ]);
+
+  particle.onUpdate(() => {
+    particle.pos.x += Math.cos(angle) * speed * k.dt();
+    particle.pos.y += Math.sin(angle) * speed * k.dt();
+  });
+}
+
+// Vajra pickup burst - large gold burst on collection
+export function spawnVajraPickupBurst(x: number, y: number): void {
+  if (!kCtx) return;
+  const k = kCtx;
+  const cfg = config.powerups.vajra;
+
+  for (let i = 0; i < cfg.particleCount.burst; i++) {
+    const angle = k.rand(0, Math.PI * 2);
+    const speed = k.rand(150, 300);
+    const size = cfg.particleSize.burst;
+
+    const particle = k.add([
+      k.rect(size, size),
+      k.pos(x, y),
+      k.anchor('center'),
+      k.color(k.Color.fromHex(cfg.color)),
+      k.opacity(1),
+      k.lifespan(0.3, { fade: 0.2 }),
+      k.z(55),
+    ]);
+
+    particle.onUpdate(() => {
+      particle.pos.x += Math.cos(angle) * speed * k.dt();
+      particle.pos.y += Math.sin(angle) * speed * k.dt();
+    });
+  }
+}
+
+// Screen flash effect (for Vajra pickup and other dramatic moments)
+export function flashScreen(color: string, durationMs: number): void {
+  if (!kCtx) return;
+  const k = kCtx;
+
+  const flash = k.add([
+    k.rect(k.width(), k.height()),
+    k.pos(0, 0),
+    k.color(k.Color.fromHex(color)),
+    k.opacity(0.3),
+    k.fixed(),
+    k.z(999),
+  ]);
+
+  k.wait(durationMs / 1000, () => flash.destroy());
 }

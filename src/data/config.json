@@ -89,6 +89,15 @@
       "healAmount": 1,
       "swayAmplitude": 30
     },
+    "vajra": {
+      "size": { "width": 28, "height": 28 },
+      "color": "#FFD700",
+      "dropChance": 0.02,
+      "karmaGrant": 500,
+      "particleCount": { "idle": 3, "burst": 20 },
+      "particleSize": { "idle": 2, "burst": 5 },
+      "flashDuration": 100
+    },
     "offscreenMargin": 50,
     "stacking": {
       "baseDuration": 8000,
