@@ -127,6 +127,24 @@
     "healthBar": {
       "width": 300,
       "height": 16
+    },
+    "evolution": {
+      "spreadShot": {
+        "minKalpa": 2,
+        "projectileCount": 5,
+        "arcAngle": 1.57,
+        "cooldown": 4000
+      },
+      "sweepBeam": {
+        "minKalpa": 3,
+        "projectileCount": 10,
+        "width": 600,
+        "cooldown": 5000
+      },
+      "rageMode": {
+        "minKalpa": 4,
+        "useAsuraMinions": true
+      }
     }
   },
   "collision": {

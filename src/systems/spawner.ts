@@ -79,7 +79,11 @@ export function setupSpawner(k: KAPLAYCtx): void {
 
   // Boss minion spawns (decoupled from maraCombat via event)
   events.on('boss:spawnMinion', (data) => {
-    createHungryGhost(k, data.x, data.y);
+    if (data.type === 'asura') {
+      createAsura(k, data.x, data.y);
+    } else {
+      createHungryGhost(k, data.x, data.y);
+    }
   });
 }
 

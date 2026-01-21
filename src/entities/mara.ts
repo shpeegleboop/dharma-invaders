@@ -2,27 +2,31 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
-import { fireAtPlayer, spawnMinion } from './maraCombat';
+import { updateMaraAttacks, resetAttackTimers } from './maraCombat';
 import { getIsPaused } from '../ui/pauseMenu';
 import { getBossHPScaling } from '../systems/cycleScaling';
+import { getCycle } from '../stores/gameStore';
 
 type MaraPhase = 'entering' | 'phase1' | 'phase2' | 'phase3' | 'defeated';
 
 let mara: GameObj | null = null;
 let currentPhase: MaraPhase = 'entering';
-let shootTimer = 0;
-let minionTimer = 0;
 let deathAnimTimer = 0;
 let movementTimer = 0;
 let scaledMaxHealth = 0;
+let isRageMode = false;
 
 export function spawnMara(k: KAPLAYCtx): void {
   const cfg = config.boss;
+  const kalpa = getCycle();
+
   currentPhase = 'entering';
-  shootTimer = 0;
-  minionTimer = 0;
   movementTimer = 0;
+  resetAttackTimers();
   scaledMaxHealth = Math.round(cfg.health * getBossHPScaling());
+
+  // Kalpa 4+: Rage mode - starts with phase 3 behavior
+  isRageMode = kalpa >= cfg.evolution.rageMode.minKalpa;
 
   mara = k.add([
     k.rect(cfg.size.width, cfg.size.height),
@@ -88,8 +92,10 @@ function updateCombat(k: KAPLAYCtx): void {
   if (healthPercent <= cfg.phase3Threshold && currentPhase !== 'phase3') {
     currentPhase = 'phase3';
     mara.phase = 'phase3';
-    // Adjust timer so position stays continuous when speed changes
-    movementTimer = movementTimer * (1.0 / cfg.movement.phase3SpeedMultiplier);
+    // Adjust timer so position stays continuous when speed changes (skip if rage mode)
+    if (!isRageMode) {
+      movementTimer = movementTimer * (1.0 / cfg.movement.phase3SpeedMultiplier);
+    }
     events.emit('boss:phaseChange', { phase: 3 });
   } else if (healthPercent <= cfg.phase2Threshold && currentPhase === 'phase1') {
     currentPhase = 'phase2';
@@ -98,31 +104,22 @@ function updateCombat(k: KAPLAYCtx): void {
   }
 
   // Figure-8 movement pattern (stays in upper half of screen)
+  // Rage mode: always use phase 3 speed
   movementTimer += k.dt();
   const baseX = config.screen.width / 2;
   const baseY = cfg.targetY + cfg.movement.offsetY;
-  const speed = currentPhase === 'phase3' ? cfg.movement.phase3SpeedMultiplier : 1.0;
+  const usePhase3Speed = currentPhase === 'phase3' || isRageMode;
+  const speed = usePhase3Speed ? cfg.movement.phase3SpeedMultiplier : 1.0;
   mara.pos.x = baseX + Math.sin(movementTimer * speed) * cfg.movement.amplitudeX;
   mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * cfg.movement.amplitudeY;
 
-  // Shooting logic
-  shootTimer += k.dt() * 1000;
-  if (shootTimer >= cfg.projectile.cooldown) {
-    shootTimer = 0;
-    fireAtPlayer(k, mara, currentPhase === 'phase3');
-  }
+  // Delegate attacks to maraCombat (handles kalpa-based evolution)
+  const usePhase3Projectiles = currentPhase === 'phase3' || isRageMode;
+  const spawnMinions = currentPhase === 'phase2' || currentPhase === 'phase3' || isRageMode;
+  updateMaraAttacks(k, mara, usePhase3Projectiles, spawnMinions);
 
-  // Minion spawns in phase2+
-  if (currentPhase === 'phase2' || currentPhase === 'phase3') {
-    minionTimer += k.dt() * 1000;
-    if (minionTimer >= cfg.minionSpawnInterval) {
-      minionTimer = 0;
-      spawnMinion(k);
-    }
-  }
-
-  // Phase 3 flash effect
-  if (currentPhase === 'phase3') {
+  // Phase 3 / Rage mode flash effect
+  if (currentPhase === 'phase3' || isRageMode) {
     const flash = Math.sin(k.time() * 10) > 0;
     mara.opacity = flash ? 1 : cfg.phase3Opacity;
   }

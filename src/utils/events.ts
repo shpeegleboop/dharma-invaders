@@ -26,7 +26,7 @@ type GameEvents = {
   'wave:complete': { waveNumber: number };
   'boss:started': Record<string, never>;
   'boss:phaseChange': { phase: number };
-  'boss:spawnMinion': { x: number; y: number };
+  'boss:spawnMinion': { x: number; y: number; type?: 'hungryGhost' | 'asura' };
   'boss:defeated': Record<string, never>;
   'game:victory': Record<string, never>;
   'game:over': Record<string, never>;
