@@ -122,42 +122,46 @@ export function setupCollisions(k: KAPLAYCtx): void {
     powerup.destroy();
   });
 
-  // Player collects Vajra (clears all enemies)
+  // Player collects Vajra (clears all enemies after 1s delay)
   k.onCollide('player', 'vajra', (_player, vajra) => {
     const cfg = config.powerups.vajra;
+    const pickupPos = { x: vajra.pos.x, y: vajra.pos.y };
 
-    // Play sound
-    playSFX('vajra');
+    // Destroy vajra immediately on pickup
+    vajra.destroy();
 
-    // Particle burst at pickup location
-    spawnVajraPickupBurst(vajra.pos.x, vajra.pos.y);
+    // Delay before the effect triggers (builds anticipation)
+    k.wait(1.0, () => {
+      // Play sound
+      playSFX('vajra');
 
-    // Screen flash
-    flashScreen(cfg.color, cfg.flashDuration);
+      // Particle burst at original pickup location
+      spawnVajraPickupBurst(pickupPos.x, pickupPos.y);
 
-    // Kill all eligible enemies (not Manussa, not boss)
-    k.get('enemy').forEach((enemy: any) => {
-      if (enemy.isManussa) return;
-      if (enemy.is('boss')) return;
+      // Screen flash
+      flashScreen(cfg.color, cfg.flashDuration);
 
-      // Emit killed event with 0 karma (flat karma instead) and no drops
-      events.emit('enemy:killed', {
-        id: enemy.enemyId,
-        type: enemy.type,
-        position: { x: enemy.pos.x, y: enemy.pos.y },
-        karmaValue: 0, // No individual karma
+      // Kill all eligible enemies (not Manussa, not boss)
+      k.get('enemy').forEach((enemy: any) => {
+        if (enemy.isManussa) return;
+        if (enemy.is('boss')) return;
+
+        // Emit killed event with 0 karma (flat karma instead) and no drops
+        events.emit('enemy:killed', {
+          id: enemy.enemyId,
+          type: enemy.type,
+          position: { x: enemy.pos.x, y: enemy.pos.y },
+          karmaValue: 0, // No individual karma
+        });
+
+        // Spawn hit particles for visual feedback
+        spawnHitParticles(enemy.pos.x, enemy.pos.y);
+        enemy.destroy();
       });
 
-      // Spawn hit particles for visual feedback
-      spawnHitParticles(enemy.pos.x, enemy.pos.y);
-      enemy.destroy();
+      // Grant flat karma
+      addKarma(cfg.karmaGrant);
     });
-
-    // Grant flat karma
-    addKarma(cfg.karmaGrant);
-
-    // Destroy vajra
-    vajra.destroy();
   });
 
   // Enemy touches player
