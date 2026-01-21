@@ -125,18 +125,15 @@ export function setupCollisions(k: KAPLAYCtx): void {
   // Player collects Vajra (clears all enemies after 1s delay)
   k.onCollide('player', 'vajra', (_player, vajra) => {
     const cfg = config.powerups.vajra;
-    const pickupPos = { x: vajra.pos.x, y: vajra.pos.y };
 
-    // Destroy vajra immediately on pickup
+    // Immediate: sound + destroy vajra
+    playSFX('vajra');
     vajra.destroy();
 
-    // Delay before the effect triggers (builds anticipation)
+    // Delayed: screen clear effect
     k.wait(1.0, () => {
-      // Play sound
-      playSFX('vajra');
-
-      // Particle burst at original pickup location
-      spawnVajraPickupBurst(pickupPos.x, pickupPos.y);
+      // Particle burst centered on screen
+      spawnVajraPickupBurst(config.screen.width / 2, config.screen.height / 2);
 
       // Screen flash
       flashScreen(cfg.color, cfg.flashDuration);
@@ -146,15 +143,13 @@ export function setupCollisions(k: KAPLAYCtx): void {
         if (enemy.isManussa) return;
         if (enemy.is('boss')) return;
 
-        // Emit killed event with 0 karma (flat karma instead) and no drops
         events.emit('enemy:killed', {
           id: enemy.enemyId,
           type: enemy.type,
           position: { x: enemy.pos.x, y: enemy.pos.y },
-          karmaValue: 0, // No individual karma
+          karmaValue: 0,
         });
 
-        // Spawn hit particles for visual feedback
         spawnHitParticles(enemy.pos.x, enemy.pos.y);
         enemy.destroy();
       });
