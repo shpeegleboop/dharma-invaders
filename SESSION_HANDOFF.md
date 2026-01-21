@@ -299,7 +299,7 @@ src/
 │       ├── deva.ts            # Devā (3 HP)
 │       ├── nerayika.ts        # Nerayikā (4 HP, Kalpa 2+)
 │       ├── tiracchana.ts      # Tiracchānā (1 HP, Kalpa 3+)
-│       └── manussa.ts         # Manussā (3 HP, Kalpa 4+)
+│       └── manussa.ts         # Manussā (7 HP, Kalpa 4+)
 ├── systems/
 │   ├── collision.ts           # Main collision orchestration (155 lines)
 │   ├── specialEnemyCollisions.ts  # Nerayikā/Tiracchānā/Manussā handlers
@@ -314,6 +314,7 @@ src/
 │   ├── particles.ts           # Hit particle effects + push ring
 │   ├── cycleScaling.ts        # Kalpa + difficulty scaling
 │   ├── difficulty.ts          # Difficulty multiplier helpers
+│   ├── persistence.ts         # Unified localStorage wrapper (SaveData)
 │   ├── rebirthEffects.ts
 │   └── audio.ts
 ├── stores/
@@ -617,11 +618,18 @@ export function getEnemySpeedScaling(): number {
   return getScalingMultiplier(caps.enemySpeed) * getDifficultyMultiplier('enemySpeedMultiplier');
 }
 
-// src/stores/gameStore.ts — Persistence
-export function setDifficulty(d: Difficulty): void {
-  difficulty = d;
-  localStorage.setItem('dharmaInvaders_difficulty', d);
+// src/systems/persistence.ts — Unified localStorage wrapper
+interface SaveData {
+  difficulty: string;
+  cutsceneFlags: { hasSeenIntro: boolean; /* ... */ };
+  musicUnlocks: string[];
 }
+export function getPersistedDifficulty(): string { return loadSave().difficulty; }
+export function setPersistedDifficulty(d: string): void { updateSave({ difficulty: d }); }
+
+// src/stores/gameStore.ts — Delegates to persistence
+export function getDifficulty(): Difficulty { return getPersistedDifficulty() as Difficulty; }
+export function setDifficulty(d: Difficulty): void { setPersistedDifficulty(d); }
 ```
 
 ### UI
@@ -634,11 +642,12 @@ export function setDifficulty(d: Difficulty): void {
 
 **New:**
 - `src/systems/difficulty.ts` — Multiplier helpers
+- `src/systems/persistence.ts` — Unified localStorage wrapper for SaveData (difficulty, cutscene flags, music unlocks)
 
 **Modified:**
 - `config.json` — Added `difficulty` section
-- `gameStore.ts` — Difficulty state + localStorage
-- `main.ts` — `loadDifficulty()` on startup
+- `gameStore.ts` — Difficulty delegates to persistence.ts
+- `main.ts` — Imports gameStore to trigger persistence init
 - `cycleScaling.ts` — Apply difficulty to spawn/speed/bossHP
 - `powerup.ts` — Apply difficulty to drop rates
 - `menu.ts` — Difficulty selector UI
@@ -672,6 +681,7 @@ const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
 ## Part 14: Git Commit History (Recent)
 
 ```
+19da941 Add unified persistence layer for localStorage
 9b2e45c Update vajra.mp3 sound effect
 c9446aa Add difficulty system with 4 levels
 349b3e1 Balance: nerf Diligence and enemy speeds
