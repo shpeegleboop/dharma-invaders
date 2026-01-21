@@ -288,7 +288,7 @@
     "noah": {
       "displayName": "NOAH",
       "subtitle": "Suffering awaits",
-      "spawnMultiplier": 1.5,
+      "spawnMultiplier": 2,
       "enemySpeedMultiplier": 1.2,
       "bossHealthMultiplier": 1.5,
       "dropRateMultiplier": 0.75
