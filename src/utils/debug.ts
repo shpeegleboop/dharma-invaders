@@ -1,9 +1,10 @@
-// Debug tools - F1-F4, F6 hotkeys for testing
+// Debug tools - F1-F4, F6-F7 hotkeys for testing
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from './events';
 import { spawnMara } from '../entities/mara';
-import { addParami, addKlesha, getGameState } from '../stores/gameStore';
+import { addParami, addKlesha, getGameState, getDifficulty, setDifficulty, getDifficulties } from '../stores/gameStore';
+import { getDifficultyDisplayName } from '../systems/difficulty';
 import { createNerayika } from '../entities/enemies/nerayika';
 import { createTiracchana } from '../entities/enemies/tiracchana';
 import { createManussa } from '../entities/enemies/manussa';
@@ -80,6 +81,16 @@ export function setupDebug(k: KAPLAYCtx): void {
     if (player) {
       player.invincible = state.invincible;
     }
+    updateIndicator();
+  });
+
+  // F7: Cycle difficulty (for testing, bypasses menu-only restriction)
+  k.onKeyPress('f7', () => {
+    const difficulties = getDifficulties();
+    const currentIndex = difficulties.indexOf(getDifficulty());
+    const nextIndex = (currentIndex + 1) % difficulties.length;
+    setDifficulty(difficulties[nextIndex]);
+    console.log(`Difficulty: ${getDifficultyDisplayName()}`);
     updateIndicator();
   });
 

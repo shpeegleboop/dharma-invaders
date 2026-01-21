@@ -212,3 +212,28 @@ export function getKleshaTypes(): string[] {
 export function hasKlesha(klesha: string): boolean {
   return state.kleshas.includes(klesha);
 }
+
+// Difficulty system
+export type Difficulty = 'sotapanna' | 'sakadagami' | 'anagami' | 'noah';
+const DIFFICULTIES: Difficulty[] = ['sotapanna', 'sakadagami', 'anagami', 'noah'];
+let difficulty: Difficulty = 'sakadagami';
+
+export function getDifficulty(): Difficulty {
+  return difficulty;
+}
+
+export function setDifficulty(d: Difficulty): void {
+  difficulty = d;
+  localStorage.setItem('dharmaInvaders_difficulty', d);
+}
+
+export function loadDifficulty(): void {
+  const saved = localStorage.getItem('dharmaInvaders_difficulty') as Difficulty | null;
+  if (saved && DIFFICULTIES.includes(saved)) {
+    difficulty = saved;
+  }
+}
+
+export function getDifficulties(): Difficulty[] {
+  return DIFFICULTIES;
+}

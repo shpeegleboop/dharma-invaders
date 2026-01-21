@@ -208,9 +208,14 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
     y += 29;
   });
 
+  // Vajra section (centered below both columns)
+  pageContent.push(k.add([k.rect(18, 18), k.pos(w / 2 - 80, 530), k.anchor('center'), k.color(255, 215, 0)]));
+  pageContent.push(k.add([k.text('Vajra', { size: 18 }), k.pos(w / 2 - 55, 530), k.anchor('left'), k.color(255, 215, 0)]));
+  pageContent.push(k.add([k.text('1.5% drop, clears all enemies, +500 karma', { size: 15 }), k.pos(w / 2 + 5, 530), k.anchor('left'), k.color(180, 180, 200)]));
+
   // Footer
   pageContent.push(k.add([
     k.text('Karma at death determines buffs/debuffs. Effects stack per rebirth.', { size: 14 }),
-    k.pos(w / 2, 540), k.anchor('center'), k.color(100, 100, 120),
+    k.pos(w / 2, 565), k.anchor('center'), k.color(100, 100, 120),
   ]));
 }

@@ -26,8 +26,10 @@ import {
   consumeSavedHealth,
   saveShieldCharges,
   consumeSavedShieldCharges,
+  getDifficulty,
 } from '../stores/gameStore';
 import { getMaxHealthModifier } from '../systems/rebirthEffects';
+import { getDifficultyDisplayName } from '../systems/difficulty';
 import config from '../data/config.json';
 
 export function createGameScene(k: KAPLAYCtx): void {
@@ -75,13 +77,29 @@ export function createGameScene(k: KAPLAYCtx): void {
   ]);
 
   // Title in HUD (center)
+  const diff = getDifficulty();
+  const titleY = diff !== 'sakadagami' ? config.hud.height / 2 - 6 : config.hud.height / 2;
   k.add([
     k.text('Dharma Invaders', { size: 24 }),
-    k.pos(config.screen.width / 2, config.hud.height / 2),
+    k.pos(config.screen.width / 2, titleY),
     k.anchor('center'),
     k.color(255, 255, 255),
     k.fixed(),
   ]);
+
+  // Difficulty indicator (tiny text under title, only for non-default)
+  if (diff !== 'sakadagami') {
+    const diffColor = diff === 'sotapanna' ? [100, 220, 100]
+      : diff === 'anagami' ? [255, 100, 100]
+      : [180, 40, 40]; // noah
+    k.add([
+      k.text(getDifficultyDisplayName(), { size: 10 }),
+      k.pos(config.screen.width / 2, titleY + 18),
+      k.anchor('center'),
+      k.color(diffColor[0], diffColor[1], diffColor[2]),
+      k.fixed(),
+    ]);
+  }
 
   // Kalpa indicator (only shown after first kalpa)
   const cycle = getCycle();

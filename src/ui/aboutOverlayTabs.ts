@@ -157,4 +157,9 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
     tabContent.push(k.add([k.text(`${kl.max}`, { size: 14 }), k.pos(770, y), k.color(150, 100, 100), k.fixed(), k.z(101)]));
     y += 26;
   });
+
+  // Vajra section (centered below both columns)
+  tabContent.push(k.add([k.rect(16, 16), k.pos(w / 2 - 70, 492), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Vajra', { size: 16 }), k.pos(w / 2 - 45, 492), k.anchor('left'), k.color(255, 215, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('1.5% drop, clears all enemies, +500 karma', { size: 14 }), k.pos(w / 2 + 10, 492), k.anchor('left'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
 }

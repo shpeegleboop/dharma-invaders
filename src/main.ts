@@ -9,9 +9,11 @@ import { createCreditsScene } from './scenes/credits';
 import { createAboutScene } from './scenes/about';
 import { createTitleScreen } from './scenes/titleScreen';
 import { initAudio } from './systems/audio';
+import { loadDifficulty } from './stores/gameStore';
 
-// Initialize audio system
+// Initialize systems
 initAudio();
+loadDifficulty();
 
 // Initialize Kaplay with game config
 const k = kaplay({

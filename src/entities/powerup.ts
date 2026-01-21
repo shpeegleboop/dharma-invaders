@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getIsPaused } from '../ui/pauseMenu';
 import { getDropRateMultiplier, getPadumaDropRateBonus } from '../systems/rebirthEffects';
+import { getDifficultyMultiplier } from '../systems/difficulty';
 import { getCycle } from '../stores/gameStore';
 import { spawnVajraIdleParticle } from '../systems/particles';
 
@@ -51,15 +52,15 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
 
 export function shouldDropPowerup(k: KAPLAYCtx): boolean {
   const baseChance = config.powerups.dropChance;
-  const modifiedChance = baseChance * getDropRateMultiplier();
+  const modifiedChance = baseChance * getDropRateMultiplier() * getDifficultyMultiplier('dropRateMultiplier');
   return k.rand(0, 1) < modifiedChance;
 }
 
-// Paduma: separate drop chance, only in Kalpa 2+, boosted by Sacca
+// Paduma: separate drop chance, only in Kalpa 2+, boosted by Sacca and difficulty
 export function shouldDropPaduma(k: KAPLAYCtx): boolean {
   if (getCycle() < config.powerups.paduma.minKalpa) return false;
   const baseChance = config.powerups.paduma.dropChance;
-  const modifiedChance = baseChance + getPadumaDropRateBonus();
+  const modifiedChance = (baseChance + getPadumaDropRateBonus()) * getDifficultyMultiplier('dropRateMultiplier');
   return k.rand(0, 1) < modifiedChance;
 }
 

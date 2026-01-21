@@ -1,6 +1,7 @@
 // Cycle (kalpa) difficulty scaling - logarithmic with caps
 import config from '../data/config.json';
 import { getCycle } from '../stores/gameStore';
+import { getDifficultyMultiplier } from './difficulty';
 
 const caps = config.roguelike.scaling;
 
@@ -14,14 +15,14 @@ function getScalingMultiplier(cap: number): number {
   return Math.min(rawMultiplier, cap);
 }
 
-// Enemy speed multiplier (max 1.875x, combined with wave scaling = 2.25x max)
+// Enemy speed multiplier (kalpa scaling × difficulty)
 export function getEnemySpeedScaling(): number {
-  return getScalingMultiplier(caps.enemySpeed);
+  return getScalingMultiplier(caps.enemySpeed) * getDifficultyMultiplier('enemySpeedMultiplier');
 }
 
-// Enemy count per wave multiplier (max 1.3x)
+// Enemy count per wave multiplier (kalpa scaling × difficulty)
 export function getEnemyCountScaling(): number {
-  return getScalingMultiplier(caps.enemyCount);
+  return getScalingMultiplier(caps.enemyCount) * getDifficultyMultiplier('spawnMultiplier');
 }
 
 // Spawn rate multiplier - lower = faster spawns (max 1.4x, inverted)
@@ -30,9 +31,9 @@ export function getSpawnRateScaling(): number {
   return 1 / getScalingMultiplier(caps.spawnRate);
 }
 
-// Boss HP multiplier (max 2.0x)
+// Boss HP multiplier (kalpa scaling × difficulty)
 export function getBossHPScaling(): number {
-  return getScalingMultiplier(caps.bossHP);
+  return getScalingMultiplier(caps.bossHP) * getDifficultyMultiplier('bossHealthMultiplier');
 }
 
 // Debug: get current scaling summary
