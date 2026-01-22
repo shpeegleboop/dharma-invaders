@@ -3,31 +3,31 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getGameState } from '../stores/gameStore';
 
-// Display names for paramis (internal name -> Pali with diacritics)
+// Display names for paramis (internal name -> "Pali: effect")
 const PARAMI_DISPLAY: Record<string, string> = {
-  Dana: 'Dāna',
-  Viriya: 'Viriya',
-  Metta: 'Mettā',
-  Upekkha: 'Upekkhā',
-  Sila: 'Sīla',
-  Khanti: 'Khantī',
-  Panna: 'Paññā',
-  Adhitthana: 'Adhiṭṭhāna',
-  Nekkhamma: 'Nekkhamma',
-  Sacca: 'Sacca',
+  Dana: 'Dāna: +25% drops',
+  Viriya: 'Viriya: +10% fire rate',
+  Metta: 'Mettā: +1 max HP',
+  Upekkha: 'Upekkhā: -10% enemy speed',
+  Sila: 'Sīla: auto-shield',
+  Khanti: 'Khantī: +20% powerup duration',
+  Panna: 'Paññā: +1 damage',
+  Adhitthana: 'Adhiṭṭhāna: +1 shield charge',
+  Nekkhamma: 'Nekkhamma: +50% karma',
+  Sacca: 'Sacca: +5% Paduma drops',
 };
 
 // Display names for kleshas
 const KLESHA_DISPLAY: Record<string, string> = {
-  Lobha: 'Lobha',
-  Dosa: 'Dosa',
-  Mana: 'Māna',
-  Vicikiccha: 'Vicikicchā',
-  Moha: 'Moha',
-  Thina: 'Thīna',
-  Anottappa: 'Anottappa',
-  Micchaditthi: 'Micchādiṭṭhi',
-  Ahirika: 'Ahirika',
+  Lobha: 'Lobha: -25% drops',
+  Dosa: 'Dosa: +10% enemy speed',
+  Mana: 'Māna: -1 max HP',
+  Vicikiccha: 'Vicikicchā: -10% fire rate',
+  Moha: 'Moha: -20% powerup duration',
+  Thina: 'Thīna: -10% player speed',
+  Anottappa: 'Anottappa: -1 damage',
+  Micchaditthi: 'Micchādiṭṭhi: -25% karma',
+  Ahirika: 'Ahirika: flips Manussā karma',
 };
 
 function countEffects(effects: string[]): Map<string, number> {
