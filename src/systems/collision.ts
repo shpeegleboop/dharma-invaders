@@ -11,7 +11,7 @@ import { bounceAndStunEnemy } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
 import { getProjectileDamageModifier, getMaxHealthModifier } from './rebirthEffects';
 import { spawnHitParticles, spawnVajraPickupBurst, flashScreen } from './particles';
-import { addKarma } from '../stores/gameStore';
+import { addKarma, getDifficulty } from '../stores/gameStore';
 import { playSFX } from './audio';
 import {
   handleNerayikaCollision,
@@ -89,17 +89,23 @@ export function setupCollisions(k: KAPLAYCtx): void {
 
       // Chance to drop powerup (Vajra replaces normal roll, Paduma independent)
       // Manussa doesn't drop powerups
+      // NOAH: Only one unclaimed powerup allowed on screen (prevents farming)
       if (!enemy.isManussa) {
-        // Vajra: 1.5% chance, replaces normal powerup if it hits
-        if (shouldDropVajra(k)) {
-          createVajra(k, pos.x, pos.y);
-          markVajraSpawned();
-        } else if (shouldDropPowerup(k)) {
-          createPowerup(k, pos.x, pos.y);
-        }
-        // Paduma checked independently
-        if (shouldDropPaduma(k)) {
-          createPaduma(k, pos.x, pos.y);
+        const noahBlocked = getDifficulty() === 'noah' &&
+          (k.get('powerup').length > 0 || k.get('vajra').length > 0);
+
+        if (!noahBlocked) {
+          // Vajra: 1.5% chance, replaces normal powerup if it hits
+          if (shouldDropVajra(k)) {
+            createVajra(k, pos.x, pos.y);
+            markVajraSpawned();
+          } else if (shouldDropPowerup(k)) {
+            createPowerup(k, pos.x, pos.y);
+          }
+          // Paduma checked independently
+          if (shouldDropPaduma(k)) {
+            createPaduma(k, pos.x, pos.y);
+          }
         }
       }
 
