@@ -1,6 +1,6 @@
 # Dharma Invaders — Session Handoff
 
-**Last Updated:** 2026-01-21 (Session 7)
+**Last Updated:** 2026-01-22 (Session 7)
 **Status:** Phase 9.5 COMPLETE — Playtester feedback fixes
 **Codebase Audit:** A (2026-01-17) — Split large files, centralized magic numbers
 
@@ -682,10 +682,13 @@ const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
 |-----|-------------|
 | **Death screen powerup freeze** | Powerups pause during death/rebirth overlay, resume on respawn |
 | **Shield indicator** | Purple pulsing ring around player when Meditation shield has charges |
-| **Push cooldown indicator** | Gold ring around player (dims when Paṭighāta on cooldown) |
-| **NOAH difficulty buff** | 1.35x enemy speed, 1.75x boss HP, 0.6x drops |
+| **Push cooldown indicator** | Gold circle around player, dims when Paṭighāta on cooldown |
+| **NOAH difficulty buff** | 1.35x enemy speed, 1.75x boss HP, 0.6x drops (spawn already 2x) |
 | **Vajra wave cooldown** | 2-wave cooldown between Vajra spawns |
-| **Pause menu status** | Shows active Pāramīs (green) and Kleshas (red) with stack counts |
+| **Pause menu status** | Shows active Pāramīs/Kleshas with effect descriptions in two columns |
+| **NOAH powerup farming prevention** | Only 1 unclaimed powerup allowed on screen at a time |
+| **No movement on death screen** | Player frozen during rebirth overlay |
+| **Stuck WASD keys fix** | Custom key tracking that clears all keys on window blur |
 
 ### Files Created/Modified
 
@@ -694,11 +697,11 @@ const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
 
 **Modified:**
 - `config.json` — NOAH buffs, Vajra waveCooldown
-- `player.ts` — Death freeze flag, indicator integration
+- `player.ts` — Death freeze, custom key tracking, indicator integration
 - `powerup.ts` — Death freeze check, Vajra wave tracking
 - `game.ts` — Reset Vajra cooldown on scene start
-- `collision.ts` — Mark Vajra spawned
-- `pauseMenuUI.ts` — Active effects status section
+- `collision.ts` — Mark Vajra spawned, NOAH powerup limit
+- `pauseMenuUI.ts` — Two-column effects with descriptions
 
 ---
 
@@ -711,6 +714,14 @@ const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
 ## Part 14: Git Commit History (Recent)
 
 ```
+4374e56 Update vajra.mp3 sound effect
+6f0ab6f Fix stuck keys with custom key tracking that clears on blur
+1920a90 Fix push indicator visibility and canvas focus detection
+573f884 Disable movement on death screen, fix pause menu layout
+5f680aa Fix WASD stuck keys when clicking outside game window
+e29cff9 Show effect descriptions in pause menu status
+c28b308 Add NOAH powerup farming prevention
+0d245ed Update SESSION_HANDOFF.md for Phase 9.5 completion
 b53e3e7 Add playtester feedback fixes (Phase 9.5)
 238989f Balance: increase NOAH spawn multiplier to 2x
 19da941 Add unified persistence layer for localStorage
