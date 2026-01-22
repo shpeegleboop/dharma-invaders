@@ -50,6 +50,16 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   const maxHealth = getEffectiveMaxHealth();
   const pushCfg = config.player.pushAbility;
 
+  // Track focus state to prevent stuck keys when clicking outside game
+  let hasFocus = true;
+  const onBlur = () => { hasFocus = false; };
+  const onFocus = () => { hasFocus = true; };
+  window.addEventListener('blur', onBlur);
+  window.addEventListener('focus', onFocus);
+  document.addEventListener('visibilitychange', () => {
+    hasFocus = document.visibilityState === 'visible';
+  });
+
   const player = k.add([
     k.rect(config.player.size.width, config.player.size.height),
     k.pos(config.arena.width / 2, config.arena.offsetY + config.arena.height / 2),
@@ -210,11 +220,13 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     let dx = 0;
     let dy = 0;
 
-    // WASD + Arrow keys
-    if (k.isKeyDown('left') || k.isKeyDown('a')) dx -= 1;
-    if (k.isKeyDown('right') || k.isKeyDown('d')) dx += 1;
-    if (k.isKeyDown('up') || k.isKeyDown('w')) dy -= 1;
-    if (k.isKeyDown('down') || k.isKeyDown('s')) dy += 1;
+    // WASD + Arrow keys (only when window has focus to prevent stuck keys)
+    if (hasFocus) {
+      if (k.isKeyDown('left') || k.isKeyDown('a')) dx -= 1;
+      if (k.isKeyDown('right') || k.isKeyDown('d')) dx += 1;
+      if (k.isKeyDown('up') || k.isKeyDown('w')) dy -= 1;
+      if (k.isKeyDown('down') || k.isKeyDown('s')) dy += 1;
+    }
 
     // Normalize diagonal movement
     if (dx !== 0 && dy !== 0) {
@@ -239,9 +251,11 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     updatePlayerIndicators(player);
   });
 
-  // Cleanup indicators when player is destroyed
+  // Cleanup indicators and event listeners when player is destroyed
   player.onDestroy(() => {
     cleanupPlayerIndicators();
+    window.removeEventListener('blur', onBlur);
+    window.removeEventListener('focus', onFocus);
   });
 
   return player;
