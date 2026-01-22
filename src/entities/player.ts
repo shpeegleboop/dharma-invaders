@@ -51,14 +51,20 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   const pushCfg = config.player.pushAbility;
 
   // Track focus state to prevent stuck keys when clicking outside game
-  let hasFocus = true;
+  // Listen to canvas focus (more reliable than window focus)
+  const canvas = k.canvas;
+  let hasFocus = document.activeElement === canvas;
   const onBlur = () => { hasFocus = false; };
   const onFocus = () => { hasFocus = true; };
+  canvas.addEventListener('blur', onBlur);
+  canvas.addEventListener('focus', onFocus);
+  // Also track window blur for tab switching
   window.addEventListener('blur', onBlur);
-  window.addEventListener('focus', onFocus);
   document.addEventListener('visibilitychange', () => {
-    hasFocus = document.visibilityState === 'visible';
+    if (document.visibilityState !== 'visible') hasFocus = false;
   });
+  // Make canvas focusable
+  canvas.tabIndex = 0;
 
   const player = k.add([
     k.rect(config.player.size.width, config.player.size.height),
@@ -255,8 +261,9 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   // Cleanup indicators and event listeners when player is destroyed
   player.onDestroy(() => {
     cleanupPlayerIndicators();
+    canvas.removeEventListener('blur', onBlur);
+    canvas.removeEventListener('focus', onFocus);
     window.removeEventListener('blur', onBlur);
-    window.removeEventListener('focus', onFocus);
   });
 
   return player;

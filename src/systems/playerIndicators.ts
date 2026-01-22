@@ -34,28 +34,29 @@ export function updatePlayerIndicators(player: GameObj): void {
 
   // Push ring (always visible, bright when ready, dim when on cooldown)
   if (!pushRing) {
+    // Use a filled circle with the ring color, pulsing opacity
     pushRing = k.add([
       k.circle(PUSH_RING_RADIUS),
       k.pos(player.pos),
       k.anchor('center'),
+      k.color(k.Color.fromHex(PUSH_COLOR)),
+      k.opacity(0.4),
       k.outline(2, k.Color.fromHex(PUSH_COLOR)),
-      k.opacity(0),
       k.z(player.z ? player.z - 2 : -2),
       'pushRing',
     ]);
-    // Make it hollow (no fill)
-    pushRing.use(k.color(0, 0, 0));
-    pushRing.opacity = 0;
   }
 
-  // Update push ring position and outline color
+  // Update push ring position and opacity based on cooldown
   pushRing.pos = player.pos;
-  // Access outline through the object (Kaplay stores it as a component)
+  pushRing.opacity = pushOnCooldown ? 0.1 : 0.4;
+  pushRing.color = pushOnCooldown
+    ? k.Color.fromHex('#665500')
+    : k.Color.fromHex(PUSH_COLOR);
   if (pushRing.outline) {
-    pushRing.outline.color = k.Color.fromHex(PUSH_COLOR).lerp(
-      k.Color.fromHex('#666666'),
-      pushOnCooldown ? 0.7 : 0
-    );
+    pushRing.outline.color = pushOnCooldown
+      ? k.Color.fromHex('#665500')
+      : k.Color.fromHex(PUSH_COLOR);
   }
 
   // Shield ring (only when shield has charges)
