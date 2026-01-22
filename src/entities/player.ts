@@ -50,21 +50,22 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   const maxHealth = getEffectiveMaxHealth();
   const pushCfg = config.player.pushAbility;
 
-  // Track focus state to prevent stuck keys when clicking outside game
-  // Listen to canvas focus (more reliable than window focus)
-  const canvas = k.canvas;
-  let hasFocus = document.activeElement === canvas;
-  const onBlur = () => { hasFocus = false; };
-  const onFocus = () => { hasFocus = true; };
-  canvas.addEventListener('blur', onBlur);
-  canvas.addEventListener('focus', onFocus);
-  // Also track window blur for tab switching
-  window.addEventListener('blur', onBlur);
+  // Track our own key state to prevent stuck keys when clicking outside game
+  // Kaplay's isKeyDown gets stuck because keyup doesn't fire when canvas loses focus
+  const keys: Record<string, boolean> = {};
+  const onKeyDown = (e: KeyboardEvent) => { keys[e.key.toLowerCase()] = true; };
+  const onKeyUp = (e: KeyboardEvent) => { keys[e.key.toLowerCase()] = false; };
+  const clearKeys = () => { Object.keys(keys).forEach(k => keys[k] = false); };
+
+  window.addEventListener('keydown', onKeyDown);
+  window.addEventListener('keyup', onKeyUp);
+  window.addEventListener('blur', clearKeys);
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') hasFocus = false;
+    if (document.visibilityState !== 'visible') clearKeys();
   });
-  // Make canvas focusable
-  canvas.tabIndex = 0;
+
+  // Helper to check key state
+  const isKeyHeld = (key: string) => keys[key] === true;
 
   const player = k.add([
     k.rect(config.player.size.width, config.player.size.height),
@@ -227,13 +228,11 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     let dx = 0;
     let dy = 0;
 
-    // WASD + Arrow keys (only when window has focus to prevent stuck keys)
-    if (hasFocus) {
-      if (k.isKeyDown('left') || k.isKeyDown('a')) dx -= 1;
-      if (k.isKeyDown('right') || k.isKeyDown('d')) dx += 1;
-      if (k.isKeyDown('up') || k.isKeyDown('w')) dy -= 1;
-      if (k.isKeyDown('down') || k.isKeyDown('s')) dy += 1;
-    }
+    // WASD + Arrow keys (using our own key tracking to prevent stuck keys)
+    if (isKeyHeld('arrowleft') || isKeyHeld('a')) dx -= 1;
+    if (isKeyHeld('arrowright') || isKeyHeld('d')) dx += 1;
+    if (isKeyHeld('arrowup') || isKeyHeld('w')) dy -= 1;
+    if (isKeyHeld('arrowdown') || isKeyHeld('s')) dy += 1;
 
     // Normalize diagonal movement
     if (dx !== 0 && dy !== 0) {
@@ -261,9 +260,9 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   // Cleanup indicators and event listeners when player is destroyed
   player.onDestroy(() => {
     cleanupPlayerIndicators();
-    canvas.removeEventListener('blur', onBlur);
-    canvas.removeEventListener('focus', onFocus);
-    window.removeEventListener('blur', onBlur);
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('keyup', onKeyUp);
+    window.removeEventListener('blur', clearKeys);
   });
 
   return player;
