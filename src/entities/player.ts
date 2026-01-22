@@ -12,6 +12,13 @@ import { spawnPushRing } from '../systems/particles';
 import { playSFX } from '../systems/audio';
 import { showRebirthOverlay, isRebirthOverlayActive } from '../ui/rebirthOverlay';
 import { getGameState, resetLife } from '../stores/gameStore';
+
+// Track player death state for powerup freeze
+let isPlayerDead = false;
+
+export function getIsPlayerDead(): boolean {
+  return isPlayerDead;
+}
 import { updateKarmaDisplay } from '../systems/karma';
 import { setHealthDisplay } from '../systems/health';
 import {
@@ -19,6 +26,12 @@ import {
   getPlayerSpeedMultiplier,
   hasSila,
 } from '../systems/rebirthEffects';
+import {
+  initPlayerIndicators,
+  updatePlayerIndicators,
+  setPushCooldown,
+  cleanupPlayerIndicators,
+} from '../systems/playerIndicators';
 
 // Calculate effective max health with rebirth modifiers
 function getEffectiveMaxHealth(): number {
@@ -26,6 +39,12 @@ function getEffectiveMaxHealth(): number {
 }
 
 export function createPlayer(k: KAPLAYCtx): GameObj {
+  // Reset death state on new player creation
+  isPlayerDead = false;
+
+  // Initialize player indicators (shield + push rings)
+  initPlayerIndicators(k);
+
   let canShoot = true;
   let canPush = true;
   const maxHealth = getEffectiveMaxHealth();
@@ -95,6 +114,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     if (isRebirthOverlayActive()) return;
     if (!canPush) return;
     canPush = false;
+    setPushCooldown(true);
 
     // Visual and audio effect
     spawnPushRing(player.pos.x, player.pos.y, pushCfg.ringColor);
@@ -106,6 +126,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     // Cooldown
     k.wait(pushCfg.cooldown / 1000, () => {
       canPush = true;
+      setPushCooldown(false);
     });
   }
 
@@ -116,17 +137,22 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   events.on('player:died', () => {
     // Set invincibility IMMEDIATELY (synchronous, before any callbacks)
     player.invincible = true;
+    isPlayerDead = true; // Freeze powerups during death screen
     const state = getGameState();
 
     k.wait(config.player.deathDelay, () => {
       // Don't respawn if mercy rule triggered game over
       if (isGameOver()) {
         player.invincible = false;
+        isPlayerDead = false; // Reset on game over
         return;
       }
 
       // Show rebirth overlay with current karma
       showRebirthOverlay(k, state.karmaThisLife, () => {
+        // Unfreeze powerups on respawn
+        isPlayerDead = false;
+
         // Reset karma for next life
         resetLife();
         updateKarmaDisplay();
@@ -208,6 +234,14 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     const maxY = config.arena.offsetY + config.arena.height - halfH;
     player.pos.x = k.clamp(player.pos.x, halfW, config.arena.width - halfW);
     player.pos.y = k.clamp(player.pos.y, minY, maxY);
+
+    // Update shield and push indicators
+    updatePlayerIndicators(player);
+  });
+
+  // Cleanup indicators when player is destroyed
+  player.onDestroy(() => {
+    cleanupPlayerIndicators();
   });
 
   return player;

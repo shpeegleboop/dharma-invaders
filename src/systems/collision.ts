@@ -4,7 +4,7 @@ import config from '../data/config.json';
 import { events } from '../utils/events';
 import {
   createPowerup, shouldDropPowerup, createPaduma, shouldDropPaduma,
-  createVajra, shouldDropVajra
+  createVajra, shouldDropVajra, markVajraSpawned
 } from '../entities/powerup';
 import { isPiercingActive, isShieldActive } from './powerupEffects';
 import { bounceAndStunEnemy } from './collisionHelpers';
@@ -90,9 +90,10 @@ export function setupCollisions(k: KAPLAYCtx): void {
       // Chance to drop powerup (Vajra replaces normal roll, Paduma independent)
       // Manussa doesn't drop powerups
       if (!enemy.isManussa) {
-        // Vajra: 2% chance, replaces normal powerup if it hits
+        // Vajra: 1.5% chance, replaces normal powerup if it hits
         if (shouldDropVajra(k)) {
           createVajra(k, pos.x, pos.y);
+          markVajraSpawned();
         } else if (shouldDropPowerup(k)) {
           createPowerup(k, pos.x, pos.y);
         }

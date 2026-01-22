@@ -96,7 +96,8 @@
       "karmaGrant": 500,
       "particleCount": { "idle": 3, "burst": 20 },
       "particleSize": { "idle": 2, "burst": 5 },
-      "flashDuration": 100
+      "flashDuration": 100,
+      "waveCooldown": 2
     },
     "offscreenMargin": 50,
     "stacking": {
@@ -289,9 +290,9 @@
       "displayName": "NOAH",
       "subtitle": "Suffering awaits",
       "spawnMultiplier": 2,
-      "enemySpeedMultiplier": 1.2,
-      "bossHealthMultiplier": 1.5,
-      "dropRateMultiplier": 0.75
+      "enemySpeedMultiplier": 1.35,
+      "bossHealthMultiplier": 1.75,
+      "dropRateMultiplier": 0.6
     }
   }
 }

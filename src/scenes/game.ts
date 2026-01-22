@@ -31,6 +31,7 @@ import {
 import { getMaxHealthModifier } from '../systems/rebirthEffects';
 import { getDifficultyDisplayName } from '../systems/difficulty';
 import config from '../data/config.json';
+import { resetVajraCooldown } from '../entities/powerup';
 
 export function createGameScene(k: KAPLAYCtx): void {
   // Clear all event listeners from previous scene
@@ -38,6 +39,9 @@ export function createGameScene(k: KAPLAYCtx): void {
 
   // Reset rebirth overlay UI (not game state - that's handled by menu/titleScreen)
   resetRebirthOverlay();
+
+  // Reset Vajra wave cooldown for new game
+  resetVajraCooldown();
 
   // Play gameplay music
   playMusic('gameplay');

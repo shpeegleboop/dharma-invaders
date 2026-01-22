@@ -2,10 +2,15 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getIsPaused } from '../ui/pauseMenu';
+import { getIsPlayerDead } from './player';
 import { getDropRateMultiplier, getPadumaDropRateBonus } from '../systems/rebirthEffects';
 import { getDifficultyMultiplier } from '../systems/difficulty';
 import { getCycle } from '../stores/gameStore';
 import { spawnVajraIdleParticle } from '../systems/particles';
+import { getCurrentWaveNumber } from '../systems/waveManager';
+
+// Track last wave when Vajra dropped (for wave cooldown)
+let lastVajraWave = -999;
 
 export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'meditation' | 'paduma';
 
@@ -32,7 +37,7 @@ export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
   let pulsePhase = 0;
 
   powerup.onUpdate(() => {
-    if (getIsPaused()) return;
+    if (getIsPaused() || getIsPlayerDead()) return;
 
     // Drift downward
     powerup.pos.y += config.powerups.fallSpeed * k.dt();
@@ -83,7 +88,7 @@ export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
   let phase = 0;
 
   powerup.onUpdate(() => {
-    if (getIsPaused()) return;
+    if (getIsPaused() || getIsPlayerDead()) return;
     phase += 2 * k.dt();
     // Float upward with sinusoidal sway
     powerup.pos.y -= config.powerups.fallSpeed * 0.5 * k.dt();
@@ -98,8 +103,26 @@ export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
   return powerup;
 }
 
-// Vajra: rare 2% drop, replaces normal powerup roll
+// Check if Vajra can spawn (respects wave cooldown)
+function canSpawnVajra(): boolean {
+  const currentWave = getCurrentWaveNumber();
+  const cooldown = config.powerups.vajra.waveCooldown;
+  return currentWave - lastVajraWave >= cooldown;
+}
+
+// Mark Vajra as spawned this wave
+export function markVajraSpawned(): void {
+  lastVajraWave = getCurrentWaveNumber();
+}
+
+// Reset Vajra cooldown (call on scene start)
+export function resetVajraCooldown(): void {
+  lastVajraWave = -999;
+}
+
+// Vajra: rare 1.5% drop, replaces normal powerup roll, with wave cooldown
 export function shouldDropVajra(k: KAPLAYCtx): boolean {
+  if (!canSpawnVajra()) return false;
   return k.rand(0, 1) < config.powerups.vajra.dropChance;
 }
 
@@ -121,7 +144,7 @@ export function createVajra(k: KAPLAYCtx, x: number, y: number): GameObj {
   ]);
 
   vajra.onUpdate(() => {
-    if (getIsPaused()) return;
+    if (getIsPaused() || getIsPlayerDead()) return;
 
     // Drift downward (same as normal powerups)
     vajra.pos.y += config.powerups.fallSpeed * k.dt();
