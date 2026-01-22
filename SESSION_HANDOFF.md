@@ -1,7 +1,7 @@
 # Dharma Invaders — Session Handoff
 
-**Last Updated:** 2026-01-20 (Session 6)
-**Status:** Phase 8.5 COMPLETE — Difficulty system + balance tuning
+**Last Updated:** 2026-01-21 (Session 7)
+**Status:** Phase 9.5 COMPLETE — Playtester feedback fixes
 **Codebase Audit:** A (2026-01-17) — Split large files, centralized magic numbers
 
 ---
@@ -12,7 +12,7 @@
 READ THIS FILE FIRST. It supersedes conflicting information in other docs.
 
 Current task: Phase 9 — Cutscenes (NEXT)
-Completed: Phase 8 — Boss Evolution
+Completed: Phase 9.5 — Playtester feedback fixes
 
 Source of truth hierarchy:
 1. SESSION_HANDOFF.md (this file) — Implementation details
@@ -672,6 +672,36 @@ const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
 
 ---
 
+## Part 12.7: Session 7 — Playtester Feedback Fixes (Phase 9.5) ✅
+
+**Goal:** Address playtester feedback before moving to cutscenes.
+
+### Fixes Implemented
+
+| Fix | Description |
+|-----|-------------|
+| **Death screen powerup freeze** | Powerups pause during death/rebirth overlay, resume on respawn |
+| **Shield indicator** | Purple pulsing ring around player when Meditation shield has charges |
+| **Push cooldown indicator** | Gold ring around player (dims when Paṭighāta on cooldown) |
+| **NOAH difficulty buff** | 1.35x enemy speed, 1.75x boss HP, 0.6x drops |
+| **Vajra wave cooldown** | 2-wave cooldown between Vajra spawns |
+| **Pause menu status** | Shows active Pāramīs (green) and Kleshas (red) with stack counts |
+
+### Files Created/Modified
+
+**New:**
+- `src/systems/playerIndicators.ts` — Shield and push cooldown visual rings
+
+**Modified:**
+- `config.json` — NOAH buffs, Vajra waveCooldown
+- `player.ts` — Death freeze flag, indicator integration
+- `powerup.ts` — Death freeze check, Vajra wave tracking
+- `game.ts` — Reset Vajra cooldown on scene start
+- `collision.ts` — Mark Vajra spawned
+- `pauseMenuUI.ts` — Active effects status section
+
+---
+
 ## Part 13: Next Phase — Cutscenes (Phase 9)
 
 **Goal:** Add intro cutscene and ending cutscenes for narrative.
@@ -681,6 +711,8 @@ const powerupMultiplier = stacks > 0 ? Math.pow(0.75, stacks) : 1;
 ## Part 14: Git Commit History (Recent)
 
 ```
+b53e3e7 Add playtester feedback fixes (Phase 9.5)
+238989f Balance: increase NOAH spawn multiplier to 2x
 19da941 Add unified persistence layer for localStorage
 9b2e45c Update vajra.mp3 sound effect
 c9446aa Add difficulty system with 4 levels
