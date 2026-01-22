@@ -211,6 +211,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   // Movement with delta time
   player.onUpdate(() => {
     if (getIsPaused()) return;
+    if (isRebirthOverlayActive()) return; // No movement during death screen
 
     // Rotate to face mouse
     player.angle = k.rad2deg(getAngleToMouse());

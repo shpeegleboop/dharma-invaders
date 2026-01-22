@@ -101,64 +101,74 @@ export function createPauseUI(k: KAPLAYCtx): { overlay: GameObj; items: GameObj[
     'pauseUI',
   ]));
 
-  // Add status section showing active effects
+  // Add status section showing active effects (two columns: paramis left, kleshas right)
   const state = getGameState();
   const paramiCounts = countEffects(state.paramis);
   const kleshaCounts = countEffects(state.kleshas);
   const hasEffects = paramiCounts.size > 0 || kleshaCounts.size > 0;
 
   if (hasEffects) {
-    let statusY = config.screen.height - 120;
+    const baseY = config.screen.height - 140;
+    const leftX = 30;
+    const rightX = config.screen.width / 2 + 30;
+    const lineHeight = 14;
 
-    items.push(k.add([
-      k.text('Active Effects', { size: 16 }),
-      k.pos(config.screen.width / 2, statusY),
-      k.anchor('center'),
-      k.color(180, 180, 180),
-      k.fixed(),
-      k.z(101),
-      'pauseUI',
-    ]));
-    statusY += 24;
-
-    // Build compact effect strings
-    const paramiStrs: string[] = [];
-    for (const [name, count] of paramiCounts) {
-      const display = PARAMI_DISPLAY[name] || name;
-      paramiStrs.push(count > 1 ? `${display} x${count}` : display);
-    }
-
-    const kleshaStrs: string[] = [];
-    for (const [name, count] of kleshaCounts) {
-      const display = KLESHA_DISPLAY[name] || name;
-      kleshaStrs.push(count > 1 ? `${display} x${count}` : display);
-    }
-
-    // Show paramis (green)
-    if (paramiStrs.length > 0) {
+    // Paramis column (green, left side)
+    if (paramiCounts.size > 0) {
       items.push(k.add([
-        k.text(paramiStrs.join(', '), { size: 12 }),
-        k.pos(config.screen.width / 2, statusY),
-        k.anchor('center'),
+        k.text('Virtues', { size: 14 }),
+        k.pos(leftX, baseY),
+        k.anchor('left'),
         k.color(100, 220, 100),
         k.fixed(),
         k.z(101),
         'pauseUI',
       ]));
-      statusY += 18;
+
+      let y = baseY + 18;
+      for (const [name, count] of paramiCounts) {
+        const display = PARAMI_DISPLAY[name] || name;
+        const text = count > 1 ? `${display} x${count}` : display;
+        items.push(k.add([
+          k.text(text, { size: 11 }),
+          k.pos(leftX, y),
+          k.anchor('left'),
+          k.color(150, 255, 150),
+          k.fixed(),
+          k.z(101),
+          'pauseUI',
+        ]));
+        y += lineHeight;
+      }
     }
 
-    // Show kleshas (red)
-    if (kleshaStrs.length > 0) {
+    // Kleshas column (red, right side)
+    if (kleshaCounts.size > 0) {
       items.push(k.add([
-        k.text(kleshaStrs.join(', '), { size: 12 }),
-        k.pos(config.screen.width / 2, statusY),
-        k.anchor('center'),
+        k.text('Afflictions', { size: 14 }),
+        k.pos(rightX, baseY),
+        k.anchor('left'),
         k.color(255, 100, 100),
         k.fixed(),
         k.z(101),
         'pauseUI',
       ]));
+
+      let y = baseY + 18;
+      for (const [name, count] of kleshaCounts) {
+        const display = KLESHA_DISPLAY[name] || name;
+        const text = count > 1 ? `${display} x${count}` : display;
+        items.push(k.add([
+          k.text(text, { size: 11 }),
+          k.pos(rightX, y),
+          k.anchor('left'),
+          k.color(255, 150, 150),
+          k.fixed(),
+          k.z(101),
+          'pauseUI',
+        ]));
+        y += lineHeight;
+      }
     }
   }
 
