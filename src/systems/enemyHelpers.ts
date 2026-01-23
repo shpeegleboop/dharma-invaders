@@ -48,18 +48,24 @@ export function pushAllEnemies(k: KAPLAYCtx): void {
   });
 }
 
-// Push all enemies away from a specific position by a fixed distance
+// Push enemies within radius away from a specific position
 export function pushEnemiesFromPoint(
   k: KAPLAYCtx,
   x: number,
   y: number,
-  pushDistance: number
+  pushDistance: number,
+  radius?: number
 ): void {
+  const effectRadius = radius ?? pushDistance * 1.5; // Default radius slightly larger than push
   const enemies = k.get('enemy');
+
   enemies.forEach((enemy) => {
     const dx = enemy.pos.x - x;
     const dy = enemy.pos.y - y;
     const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    // Only push enemies within radius
+    if (dist > effectRadius) return;
 
     // Push away from point
     enemy.pos.x += (dx / dist) * pushDistance;

@@ -71,6 +71,11 @@ export function setupGameAudio(): void {
   });
 
   events.on('boss:defeated', () => {
-    playSFX('boss_death');
+    const kalpa = getCycle();
+    if (kalpa === 4) {
+      playSFX('boss_death_k4');
+    } else {
+      playSFX('boss_death');
+    }
   });
 }

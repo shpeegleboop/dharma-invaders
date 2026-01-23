@@ -1,25 +1,26 @@
-// Player indicators - visual rings for shield and push ability status
+// Player indicators - sparkle particles for push, ring for shield
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import { getShieldCharges } from './powerupEffects';
 
-// Module state for indicator objects
-let pushRing: GameObj | null = null;
 let shieldRing: GameObj | null = null;
+let pushParticles: GameObj[] = [];
 let kRef: KAPLAYCtx | null = null;
-
-// Cooldown state (set externally from player.ts)
 let pushOnCooldown = false;
 
-const PUSH_RING_RADIUS = 24;
 const SHIELD_RING_RADIUS = 20;
-const PUSH_COLOR = '#FFD700';
 const SHIELD_COLOR = '#9966FF';
 const PULSE_SPEED = 4;
 
+// Push sparkle config
+const PARTICLE_COUNT = 6;
+const ORBIT_RADIUS = 28;
+const ORBIT_SPEED = 2.5;
+const SPARKLE_COLORS = ['#FFD700', '#FFEC80', '#FFF4B0'];
+
 export function initPlayerIndicators(k: KAPLAYCtx): void {
   kRef = k;
-  pushRing = null;
   shieldRing = null;
+  pushParticles = [];
   pushOnCooldown = false;
 }
 
@@ -32,31 +33,43 @@ export function updatePlayerIndicators(player: GameObj): void {
   const k = kRef;
   const shieldCharges = getShieldCharges();
 
-  // Push ring (always visible, bright when ready, dim when on cooldown)
-  if (!pushRing) {
-    // Use a filled circle with the ring color, pulsing opacity
-    pushRing = k.add([
-      k.circle(PUSH_RING_RADIUS),
-      k.pos(player.pos),
-      k.anchor('center'),
-      k.color(k.Color.fromHex(PUSH_COLOR)),
-      k.opacity(0.4),
-      k.outline(2, k.Color.fromHex(PUSH_COLOR)),
-      k.z(player.z ? player.z - 2 : -2),
-      'pushRing',
-    ]);
-  }
+  // Push sparkles - only visible when ability is ready
+  if (!pushOnCooldown) {
+    // Create particles if needed
+    if (pushParticles.length === 0) {
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const particle = k.add([
+          k.rect(4, 4),
+          k.pos(player.pos),
+          k.anchor('center'),
+          k.color(k.Color.fromHex(SPARKLE_COLORS[i % SPARKLE_COLORS.length])),
+          k.opacity(0.8),
+          k.z(player.z ? player.z - 2 : -2),
+          'pushSparkle',
+          { angle: (Math.PI * 2 / PARTICLE_COUNT) * i, sparkleOffset: i * 0.5 },
+        ]);
+        pushParticles.push(particle);
+      }
+    }
 
-  // Update push ring position and opacity based on cooldown
-  pushRing.pos = player.pos;
-  pushRing.opacity = pushOnCooldown ? 0.1 : 0.4;
-  pushRing.color = pushOnCooldown
-    ? k.Color.fromHex('#665500')
-    : k.Color.fromHex(PUSH_COLOR);
-  if (pushRing.outline) {
-    pushRing.outline.color = pushOnCooldown
-      ? k.Color.fromHex('#665500')
-      : k.Color.fromHex(PUSH_COLOR);
+    // Update particle positions - orbit around player with sparkle
+    const time = k.time();
+    pushParticles.forEach((p, i) => {
+      const baseAngle = p.angle + time * ORBIT_SPEED;
+      const wobble = Math.sin(time * 8 + p.sparkleOffset) * 3;
+      const radius = ORBIT_RADIUS + wobble;
+      p.pos.x = player.pos.x + Math.cos(baseAngle) * radius;
+      p.pos.y = player.pos.y + Math.sin(baseAngle) * radius;
+      // Sparkle opacity
+      p.opacity = 0.5 + Math.sin(time * 10 + p.sparkleOffset) * 0.4;
+      // Cycle colors for extra sparkle
+      const colorIdx = Math.floor((time * 3 + i) % SPARKLE_COLORS.length);
+      p.color = k.Color.fromHex(SPARKLE_COLORS[colorIdx]);
+    });
+  } else {
+    // On cooldown - destroy particles
+    pushParticles.forEach((p) => p.destroy());
+    pushParticles = [];
   }
 
   // Shield ring (only when shield has charges)
@@ -73,9 +86,7 @@ export function updatePlayerIndicators(player: GameObj): void {
         'shieldRing',
       ]);
     }
-    // Update shield ring
     shieldRing.pos = player.pos;
-    // Pulse effect
     shieldRing.opacity = 0.2 + Math.sin(k.time() * PULSE_SPEED) * 0.15;
   } else if (shieldRing) {
     shieldRing.destroy();
@@ -84,10 +95,8 @@ export function updatePlayerIndicators(player: GameObj): void {
 }
 
 export function cleanupPlayerIndicators(): void {
-  if (pushRing) {
-    pushRing.destroy();
-    pushRing = null;
-  }
+  pushParticles.forEach((p) => p.destroy());
+  pushParticles = [];
   if (shieldRing) {
     shieldRing.destroy();
     shieldRing = null;

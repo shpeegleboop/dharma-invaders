@@ -10,7 +10,7 @@
       {
         "background": "#1a0a2e",
         "character": "player",
-        "text": "You are a seeker of truth, armed only with virtue.",
+        "text": "You will battle against hungry spirits, jealous demigods, and deities.",
         "textColor": "#e0d0ff"
       },
       {
@@ -86,13 +86,13 @@
       {
         "background": "#0a2a0a",
         "character": "player",
-        "text": "You could end it here. Parinirvana awaits.",
+        "text": "You could end the cycle of rebirth here. Parinirvana, final liberation, awaits you.",
         "textColor": "#88ff88"
       },
       {
         "background": "#0a2a0a",
         "character": null,
-        "text": "But you choose to return—for the sake of all beings.",
+        "text": "But you choose to return — for the sake of all beings.",
         "textColor": "#88ff88"
       },
       {
@@ -130,7 +130,7 @@
       {
         "background": "#2a0a0a",
         "character": null,
-        "text": "Nerayika—beings from the hell realm—now walk among the demons.",
+        "text": "Nerayika — beings from the hell realm — now walk among the demons.",
         "textColor": "#ff6644"
       },
       {
@@ -158,7 +158,7 @@
       {
         "background": "#0a1a2a",
         "character": null,
-        "text": "Tiracchana—animal realm beings—hunt in packs.",
+        "text": "Tiracchana — animal beings — hunt in packs.",
         "textColor": "#4488ff"
       },
       {
@@ -186,7 +186,7 @@
       {
         "background": "#0a2a1a",
         "character": null,
-        "text": "Manussa—human realm beings—wander the battlefield.",
+        "text": "Manussa — humans — wander the battlefield.",
         "textColor": "#44dd77"
       },
       {
@@ -198,7 +198,7 @@
       {
         "background": "#2a0a0a",
         "character": null,
-        "text": "But strike them down? Ahirika—shamelessness—shall mark your soul.",
+        "text": "But strike them down? Only one afflicted with Ahirika — shamelessness — would do such a thing.",
         "textColor": "#ff4444"
       }
     ]

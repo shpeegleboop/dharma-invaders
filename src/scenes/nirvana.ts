@@ -18,8 +18,8 @@ export async function createNirvanaScene(k: KAPLAYCtx, karma: number): Promise<v
   // Play victory cutscene (first time only)
   await tryPlayCutscene(k, 'victory');
 
-  // Play rafLinens easter egg after kalpa 4+ boss
-  if (cycle >= 4) {
+  // Play rafLinens easter egg after kalpa 4 boss only
+  if (cycle === 4) {
     await playCutscene(k, 'rafLinens');
   }
 

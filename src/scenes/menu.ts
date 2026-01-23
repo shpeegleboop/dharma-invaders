@@ -91,7 +91,11 @@ export function createMenuScene(k: KAPLAYCtx): void {
     else diffLabel.color = k.rgb(180, 40, 40);
   };
 
+  // Flag to prevent starting game when clicking arrows
+  let arrowClicked = false;
+
   const cycleDifficulty = (direction: number) => {
+    arrowClicked = true;
     diffIndex = (diffIndex + direction + difficulties.length) % difficulties.length;
     setDifficulty(difficulties[diffIndex]);
     updateDifficultyDisplay();
@@ -114,6 +118,9 @@ export function createMenuScene(k: KAPLAYCtx): void {
     k.area(),
   ]).onClick(() => cycleDifficulty(1));
 
+  // Reset arrow flag each frame
+  k.onUpdate(() => { arrowClicked = false; });
+
   // Menu hints
   k.add([
     k.text('(A) Audio   (B) About   (D) Difficulty', { size: 14 }),
@@ -128,6 +135,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
   // Go to title screen on input
   const startGame = () => {
     if (isAudioSettingsVisible()) return;
+    if (arrowClicked) return;
     k.go('titleScreen');
   };
 
