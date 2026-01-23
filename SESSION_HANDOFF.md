@@ -261,6 +261,12 @@ Split 288-line `player.ts` into three modules under 150 lines each:
   - Example: `+ Metta (Loving-kindness (+1 HP))`
   - Example: `- Lobha (Greed (-25% drops))`
 
+### Deployment Fixes
+
+- **Removed unused audio:** `boss3.wav` (kalpa 3 uses `boss.wav`), `wave_complete.mp3`
+- **Added missing asset:** `raflinens.jpg` to git
+- **Fixed audio autoplay:** Added "Click to Begin" screen that initializes audio after user interaction (browser autoplay policy)
+
 ---
 
 ## Part 5: Debug Tools
@@ -321,12 +327,12 @@ Screenshake, particles, juice.
 ## Part 7: Git Commit History (Recent)
 
 ```
+9544104 Fix audio not playing on Netlify (autoplay policy)
+0704b43 Fix missing assets for Netlify deployment
+db16cc0 Rebirth screen polish: effects, wrapped text, Manussa HP
+833a6a3 Boss overhaul: fixed HP per kalpa, rose curve, nerayika swarm
 ea8ae57 Polish: push particles, radius limit, menu fix, k4 boss sound
 d0e9c23 Add cutscene system with 10 narrative moments
-64215c1 Fix stuck keys with canvas focus + multiple blur handlers
-062532b Update SESSION_HANDOFF.md with all Session 7 fixes
-4374e56 Update vajra.mp3 sound effect
-6f0ab6f Fix stuck keys with custom key tracking that clears on blur
 ```
 
 ---
