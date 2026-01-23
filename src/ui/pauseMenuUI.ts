@@ -108,7 +108,7 @@ export function createPauseUI(k: KAPLAYCtx): { overlay: GameObj; items: GameObj[
   const hasEffects = paramiCounts.size > 0 || kleshaCounts.size > 0;
 
   if (hasEffects) {
-    const baseY = config.screen.height - 140;
+    const baseY = config.screen.height - 168;
     const leftX = 30;
     const rightX = config.screen.width / 2 + 30;
     const lineHeight = 14;

@@ -138,7 +138,7 @@ export function setupCollisions(k: KAPLAYCtx): void {
     vajra.destroy();
 
     // Delayed: screen clear effect
-    k.wait(1.0, () => {
+    k.wait(cfg.clearDelay / 1000, () => {
       // Particle burst centered on screen
       spawnVajraPickupBurst(config.screen.width / 2, config.screen.height / 2);
 

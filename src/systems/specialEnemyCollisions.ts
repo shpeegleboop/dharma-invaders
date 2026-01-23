@@ -61,7 +61,7 @@ export function handleManussaCollision(_k: KAPLAYCtx, player: any, enemy: any): 
   const dist = Math.sqrt(dx * dx + dy * dy);
 
   if (dist > 0) {
-    const pushDist = 30;
+    const pushDist = config.collision.manussaPushDistance;
     enemy.pos.x += (dx / dist) * pushDist;
     enemy.pos.y += (dy / dist) * pushDist;
   }

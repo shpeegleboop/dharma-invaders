@@ -4,7 +4,7 @@ import config from '../data/config.json';
 import { events } from '../utils/events';
 import { updateMaraAttacks, resetAttackTimers } from './maraCombat';
 import { getIsPaused } from '../ui/pauseMenu';
-import { getBossHPScaling } from '../systems/cycleScaling';
+import { getBossBaseHP, getBossHPScaling } from '../systems/cycleScaling';
 import { getCycle } from '../stores/gameStore';
 
 type MaraPhase = 'entering' | 'phase1' | 'phase2' | 'phase3' | 'defeated';
@@ -23,7 +23,7 @@ export function spawnMara(k: KAPLAYCtx): void {
   currentPhase = 'entering';
   movementTimer = 0;
   resetAttackTimers();
-  scaledMaxHealth = Math.round(cfg.health * getBossHPScaling());
+  scaledMaxHealth = Math.round(getBossBaseHP() * getBossHPScaling());
 
   // Kalpa 4+: Rage mode - starts with phase 3 behavior
   isRageMode = kalpa >= cfg.evolution.rageMode.minKalpa;

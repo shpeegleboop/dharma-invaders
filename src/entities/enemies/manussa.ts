@@ -59,7 +59,7 @@ export function createManussa(k: KAPLAYCtx, x: number, y: number): GameObj {
     k.outline(2, k.rgb(0, 0, 0)),
     k.z(100),
   ]);
-  k.wait(2, () => {
+  k.wait(cfg.chatBubbleDuration / 1000, () => {
     if (spawnBubble.exists()) spawnBubble.destroy();
   });
 

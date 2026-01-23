@@ -1,6 +1,6 @@
 // Cycle (kalpa) difficulty scaling - logarithmic with caps
 import config from '../data/config.json';
-import { getCycle } from '../stores/gameStore';
+import { getCycle, getGameState, getDifficulty } from '../stores/gameStore';
 import { getDifficultyMultiplier } from './difficulty';
 
 const caps = config.roguelike.scaling;
@@ -31,13 +31,36 @@ export function getSpawnRateScaling(): number {
   return 1 / getScalingMultiplier(caps.spawnRate);
 }
 
-// Boss HP multiplier (kalpa scaling × difficulty)
+// Get base boss HP for current kalpa (fixed values per kalpa)
+export function getBossBaseHP(): number {
+  const cycle = getCycle();
+  const hpByKalpa = config.boss.healthByKalpa as number[];
+  // Kalpa 1-4 use fixed values, kalpa 5+ use kalpa 4 value with scaling
+  if (cycle <= hpByKalpa.length) {
+    return hpByKalpa[cycle - 1];
+  }
+  // Kalpa 5+: use kalpa 4 base + 10% per extra kalpa
+  const extraKalpas = cycle - hpByKalpa.length;
+  return Math.round(hpByKalpa[hpByKalpa.length - 1] * (1 + extraKalpas * 0.1));
+}
+
+// Boss HP multiplier (difficulty × Paññā bonus on NOAH)
 export function getBossHPScaling(): number {
-  return getScalingMultiplier(caps.bossHP) * getDifficultyMultiplier('bossHealthMultiplier');
+  let multiplier = getDifficultyMultiplier('bossHealthMultiplier');
+
+  // NOAH only: Paññā stacks increase boss HP by 85% per stack
+  if (getDifficulty() === 'noah') {
+    const pannaStacks = getGameState().paramis.filter(p => p === 'Paññā').length;
+    const pannaBonus = pannaStacks * 0.85;
+    multiplier *= (1 + pannaBonus);
+  }
+
+  return multiplier;
 }
 
 // Debug: get current scaling summary
 export function getScalingSummary(): string {
   const cycle = getCycle();
-  return `Kalpa ${cycle} | Speed: ${getEnemySpeedScaling().toFixed(2)}x | Count: ${getEnemyCountScaling().toFixed(2)}x | Spawn: ${getSpawnRateScaling().toFixed(2)}x | Boss: ${getBossHPScaling().toFixed(2)}x`;
+  const bossHP = Math.round(getBossBaseHP() * getBossHPScaling());
+  return `Kalpa ${cycle} | Speed: ${getEnemySpeedScaling().toFixed(2)}x | Count: ${getEnemyCountScaling().toFixed(2)}x | Spawn: ${getSpawnRateScaling().toFixed(2)}x | Boss HP: ${bossHP}`;
 }

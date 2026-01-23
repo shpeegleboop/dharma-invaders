@@ -97,7 +97,8 @@
       "particleCount": { "idle": 3, "burst": 20 },
       "particleSize": { "idle": 2, "burst": 5 },
       "flashDuration": 100,
-      "waveCooldown": 2
+      "waveCooldown": 2,
+      "clearDelay": 1000
     },
     "offscreenMargin": 50,
     "stacking": {
@@ -110,7 +111,8 @@
     }
   },
   "boss": {
-    "health": 50,
+    "health": 80,
+    "healthByKalpa": [80, 120, 180, 250],
     "phase2Threshold": 70,
     "phase3Threshold": 30,
     "size": { "width": 64, "height": 64 },
@@ -160,7 +162,8 @@
   "collision": {
     "bounceDistance": 80,
     "pushDistance": 100,
-    "stunDuration": 0.5
+    "stunDuration": 0.5,
+    "manussaPushDistance": 30
   },
   "spawner": {
     "deathPauseDuration": 3.5
