@@ -1,7 +1,7 @@
 # Dharma Invaders — Session Handoff
 
-**Last Updated:** 2026-01-23 (Session 9 continued)
-**Status:** Phase 10 IN PROGRESS — Boss tweaks & polish
+**Last Updated:** 2026-01-23 (Session 10)
+**Status:** Phase 22 IN PROGRESS — Art replacement (sprites complete)
 **Codebase Audit:** A (2026-01-23) — player.ts split, hardcoded timers fixed
 
 ---
@@ -11,8 +11,8 @@
 ```
 READ THIS FILE FIRST. It supersedes conflicting information in other docs.
 
-Current task: Phase 10 — Boss Tweaks & Polish (IN PROGRESS)
-Completed: Boss HP overhaul, Kalpa 4 enhancements, rebirth screen polish
+Current task: Phase 22 — Art Replacement (sprites complete)
+Completed: All SVG sprites implemented for game entities
 
 Source of truth hierarchy:
 1. SESSION_HANDOFF.md (this file) — Implementation details
@@ -119,7 +119,8 @@ Commit after every working feature with a descriptive message.
 | **1-8** | Core roguelike systems | ✅ Complete |
 | **9** | Cutscenes | ✅ Complete |
 | **9.5** | Architecture audit fixes | ✅ Complete |
-| **10** | Boss tweaks & polish | 🔄 In Progress |
+| **10** | Boss tweaks & polish | ✅ Complete |
+| **22** | Art replacement (sprites) | ✅ Complete |
 
 ---
 
@@ -296,37 +297,61 @@ Split 288-line `player.ts` into three modules under 150 lines each:
 
 ---
 
-## Part 6: Next Session — Phase 10 Remaining
+## Part 6: Session 10 — SVG Sprites ✅ COMPLETE
 
-### ✅ DONE: Boss HP Scales with Paññā (NOAH only)
+### All Sprites Implemented
 
-Implemented in `cycleScaling.ts` — +85% per Panna stack.
+| Category | Sprites |
+|----------|---------|
+| **Player** | `player.svg` |
+| **Base Enemies** | `peta.svg`, `asura.svg`, `deva.svg` |
+| **Kalpa Enemies** | `nerayika.svg`, `tiracchana.svg`, `manussa.svg` |
+| **Boss** | `mara.svg` |
+| **Projectiles** | `projectile.svg`, `boss_projectile.svg` |
+| **Powerups** | `powerup_compassion.svg`, `powerup_wisdom.svg`, `powerup_patience.svg`, `powerup_diligence.svg`, `powerup_meditation.svg` |
+| **Special** | `paduma.svg`, `vajra.svg` |
 
-### ✅ DONE: Boss HP Per Kalpa
+### Files Modified
 
-Fixed values: 80/120/180/250 for K1-4, +10% per kalpa beyond.
+- `main.ts` — Load all 17 new sprites
+- `player.ts` — Use sprite with white color tint for hit flash
+- `hungryGhost.ts`, `asura.ts`, `deva.ts` — Sprites for base enemies
+- `nerayika.ts`, `tiracchana.ts`, `manussa.ts` — Sprites for kalpa enemies
+- `mara.ts` — Sprite for boss
+- `projectile.ts` — Sprite for player projectile
+- `bossProjectile.ts` — Sprite for boss projectile
+- `powerup.ts` — Sprites for 5 virtue powerups (compassion, wisdom, patience, diligence, meditation)
+- `playerDamage.ts` — White base color for sprite tinting
+- `aboutTabs.ts`, `aboutOverlayTabs.ts` — Bestiary uses sprites (5x larger)
 
-### ✅ DONE: Kalpa 4 Boss Enhancements
+### Technical Notes
 
-Rose curve movement, nerayika swarm attack.
-
-### Priority 1: Mine Scatter Attack (Kalpa 5+) — OPTIONAL
-
-Lower priority, implement if time allows.
-
-### Priority 2: Save System
-
-Persist game progress across sessions.
-
-### Priority 3: Polish
-
-Screenshake, particles, juice.
+- All entities use explicit `k.area({ shape: new k.Rect(...) })` for collision
+- White color component allows tinting for hit effects
+- Sprites located in `public/sprites/`
 
 ---
 
-## Part 7: Git Commit History (Recent)
+## Part 7: Next Session Priorities
+
+### Priority 1: Save System
+
+Persist game progress across sessions.
+
+### Priority 2: Polish
+
+Screenshake, particles, juice.
+
+### Priority 3: Audio Replacement
+
+Replace placeholder audio with final assets.
+
+---
+
+## Part 8: Git Commit History (Recent)
 
 ```
+9e1cc31 Add SVG sprites for all game entities
 9544104 Fix audio not playing on Netlify (autoplay policy)
 0704b43 Fix missing assets for Netlify deployment
 db16cc0 Rebirth screen polish: effects, wrapped text, Manussa HP
