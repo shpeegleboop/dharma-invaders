@@ -9,16 +9,6 @@ type NerayikaState = 'hesitating' | 'charging' | 'pursuing' | 'exiting';
 
 let nerayikaIdCounter = 0;
 
-// Generate hexagon vertices for Kaplay polygon
-function getHexagonVertices(k: KAPLAYCtx, size: number) {
-  const vertices = [];
-  for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i - Math.PI / 2; // Start from top
-    vertices.push(k.vec2(Math.cos(angle) * size / 2, Math.sin(angle) * size / 2));
-  }
-  return vertices;
-}
-
 export function createNerayika(k: KAPLAYCtx, x: number, y: number): GameObj {
   const cfg = config.newEnemies.nerayika;
   const enemyId = `nerayika_${++nerayikaIdCounter}`;

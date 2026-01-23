@@ -10,15 +10,6 @@ import { getEnemySpeedScaling } from '../../systems/cycleScaling';
 
 let tiracchanaIdCounter = 0;
 
-// Generate triangle vertices for Kaplay polygon
-function getTriangleVertices(k: KAPLAYCtx, size: number) {
-  return [
-    k.vec2(0, -size / 2),      // Top
-    k.vec2(-size / 2, size / 2), // Bottom left
-    k.vec2(size / 2, size / 2),  // Bottom right
-  ];
-}
-
 export function createTiracchana(k: KAPLAYCtx, x: number, y: number): GameObj {
   const cfg = config.newEnemies.tiracchana;
   const enemyId = `tiracchana_${++tiracchanaIdCounter}`;
