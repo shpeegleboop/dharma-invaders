@@ -123,7 +123,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
   // Fullscreen toggle
   const fsLabel = k.add([
-    k.text(k.isFullscreen() ? '[F] Windowed' : '[F] Fullscreen', { size: 14 }),
+    k.text(k.isFullscreen() ? 'F - Windowed' : 'F - Fullscreen', { size: 14 }),
     k.pos(config.screen.width - 20, 20),
     k.anchor('topright'),
     k.color(120, 120, 140),
@@ -131,7 +131,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
   const toggleFullscreen = () => {
     k.setFullscreen(!k.isFullscreen());
-    fsLabel.text = k.isFullscreen() ? '[F] Windowed' : '[F] Fullscreen';
+    fsLabel.text = k.isFullscreen() ? 'F - Windowed' : 'F - Fullscreen';
   };
 
   k.onKeyPress('f', () => {
