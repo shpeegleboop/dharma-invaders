@@ -11,12 +11,12 @@ export function createProjectile(
   angle: number
 ): GameObj {
   const projectile = k.add([
-    k.rect(config.projectile.size.width, config.projectile.size.height),
+    k.sprite('projectile'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), config.projectile.size.width, config.projectile.size.height) }),
     k.rotate(k.rad2deg(angle)),
-    k.color(255, 255, 0), // Yellow rectangle
+    k.color(255, 255, 255),
     'projectile',
   ]);
 

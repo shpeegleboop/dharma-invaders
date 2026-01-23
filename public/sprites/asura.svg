@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="28" height="28">
+  <!-- Asurā (Demon) - fierce, aggressive, scary but cozy - ORANGE -->
+  <defs>
+    <radialGradient id="demonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFB366;stop-opacity:0.7"/>
+      <stop offset="60%" style="stop-color:#E07020;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#CC5500;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="demonBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8C42"/>
+      <stop offset="100%" style="stop-color:#D96B20"/>
+    </linearGradient>
+    <linearGradient id="hornGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#2C2C2C"/>
+      <stop offset="100%" style="stop-color:#4A4A4A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Angry aura -->
+  <ellipse cx="14" cy="14" rx="13" ry="13" fill="url(#demonGlow)"/>
+  
+  <!-- Horns -->
+  <path d="M6 8 Q4 2 7 4 Q9 6 9 10" fill="url(#hornGrad)"/>
+  <path d="M22 8 Q24 2 21 4 Q19 6 19 10" fill="url(#hornGrad)"/>
+  
+  <!-- Main head/body - round but menacing -->
+  <ellipse cx="14" cy="15" rx="9" ry="10" fill="url(#demonBody)"/>
+  
+  <!-- Furrowed brow -->
+  <path d="M7 11 L11 13" fill="none" stroke="#8B4513" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M21 11 L17 13" fill="none" stroke="#8B4513" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Angry eyes - glowing yellow -->
+  <ellipse cx="10" cy="14" rx="2" ry="2.5" fill="#1A1A1A"/>
+  <ellipse cx="18" cy="14" rx="2" ry="2.5" fill="#1A1A1A"/>
+  
+  <!-- Glowing pupils -->
+  <circle cx="10" cy="14" r="1.2" fill="#FFDD00"/>
+  <circle cx="18" cy="14" r="1.2" fill="#FFDD00"/>
+  
+  <!-- Tiny angry highlights -->
+  <circle cx="10.5" cy="13.5" r="0.4" fill="#FFFFFF"/>
+  <circle cx="18.5" cy="13.5" r="0.4" fill="#FFFFFF"/>
+  
+  <!-- Scary mouth with fangs -->
+  <path d="M9 20 Q14 23 19 20" fill="#1A1A1A"/>
+  
+  <!-- Upper fangs -->
+  <path d="M10 20 L11 22.5 L12 20" fill="#EEEEEE"/>
+  <path d="M16 20 L17 22.5 L18 20" fill="#EEEEEE"/>
+  
+  <!-- Lower fangs peeking up -->
+  <path d="M12 21.5 L12.5 20 L13 21.5" fill="#DDDDDD"/>
+  <path d="M15 21.5 L15.5 20 L16 21.5" fill="#DDDDDD"/>
+  
+  <!-- Nostril slits -->
+  <ellipse cx="12.5" cy="17" rx="0.6" ry="1" fill="#8B4513"/>
+  <ellipse cx="15.5" cy="17" rx="0.6" ry="1" fill="#8B4513"/>
+</svg>

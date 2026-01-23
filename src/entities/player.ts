@@ -3,7 +3,6 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { events } from '../utils/events';
 import { isGameOver } from '../systems/mercyRule';
-import { PLAYER_BASE_COLOR } from '../systems/playerDamage';
 import { pushAllEnemies } from '../systems/enemyHelpers';
 import { showRebirthOverlay } from '../ui/rebirthOverlay';
 import { getGameState, resetLife } from '../stores/gameStore';
@@ -49,14 +48,14 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   const maxHealth = getEffectiveMaxHealth();
 
   const player = k.add([
-    k.rect(config.player.size.width, config.player.size.height),
+    k.sprite('player'),
     k.pos(config.arena.width / 2, config.arena.offsetY + config.arena.height / 2),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), config.player.size.width, config.player.size.height) }),
     k.rotate(0),
     k.health(maxHealth),
     k.opacity(1),
-    k.color(PLAYER_BASE_COLOR.r, PLAYER_BASE_COLOR.g, PLAYER_BASE_COLOR.b),
+    k.color(255, 255, 255),
     'player',
     { invincible: false },
   ]);

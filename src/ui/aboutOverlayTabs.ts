@@ -28,58 +28,49 @@ export function renderControls(k: KAPLAYCtx, tabContent: GameObj[]): void {
 }
 
 export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
-  // Helper to create hexagon vertices
-  const hexVerts = (size: number) => {
-    const verts = [];
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i - Math.PI / 2;
-      verts.push(k.vec2(Math.cos(angle) * size, Math.sin(angle) * size));
-    }
-    return verts;
-  };
-
-  // Base enemies (left column)
-  const baseEnemies = [
-    { name: 'Petā', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
-    { name: 'Asurā', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma' },
-    { name: 'Devā', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma' },
-    { name: 'Māra', color: [139, 0, 0], desc: 'Lord of Illusion - Boss' },
+  // Base enemies with sprites (left column)
+  const spriteEnemies = [
+    { name: 'Petā', sprite: 'peta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma' },
+    { name: 'Asurā', sprite: 'asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma' },
+    { name: 'Devā', sprite: 'deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma' },
   ];
-  let y = 130;
-  baseEnemies.forEach(e => {
+  let y = 150;
+  spriteEnemies.forEach(e => {
     const [r, g, b] = e.color;
-    tabContent.push(k.add([k.rect(22, 22), k.pos(55, y), k.anchor('center'), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.name, { size: 20 }), k.pos(85, y - 8), k.color(r, g, b), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(e.desc, { size: 16 }), k.pos(85, y + 14), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-    y += 60;
+    tabContent.push(k.add([k.sprite(e.sprite), k.pos(70, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.name, { size: 22 }), k.pos(140, y - 20), k.color(r, g, b), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(e.desc, { size: 16 }), k.pos(140, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+    y += 100;
   });
+
+  // Mara
+  y += 20;
+  tabContent.push(k.add([k.sprite('mara'), k.pos(70, y), k.anchor('center'), k.scale(2), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Māra', { size: 22 }), k.pos(140, y - 20), k.color(139, 0, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Lord of Illusion - Boss', { size: 16 }), k.pos(140, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 
   // New enemies (right column) - unlock in later kalpas
   tabContent.push(k.add([
-    k.text('Unlocked in Later Kalpas', { size: 18 }), k.pos(420, 112), k.color(100, 100, 120), k.fixed(), k.z(101),
+    k.text('Unlocked in Later Kalpas', { size: 18 }), k.pos(570, 110), k.anchor('center'), k.color(100, 100, 120), k.fixed(), k.z(101),
   ]));
 
-  // Nerayikā - hexagon
-  y = 150;
-  tabContent.push(k.add([k.polygon(hexVerts(12)), k.pos(432, y), k.anchor('center'), k.color(255, 69, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Nerayikā', { size: 20 }), k.pos(460, y - 10), k.color(255, 69, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Charger, 4 HP, +Klesha', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('K2+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
+  // Nerayikā
+  y = 170;
+  tabContent.push(k.add([k.sprite('nerayika'), k.pos(470, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Nerayikā', { size: 22 }), k.pos(540, y - 20), k.color(255, 69, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('4 HP, +Klesha (K2+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 
-  // Tiracchānā - triangle
-  y += 60;
-  const triVerts = [k.vec2(0, -12), k.vec2(12, 10), k.vec2(-12, 10)];
-  tabContent.push(k.add([k.polygon(triVerts), k.pos(432, y), k.anchor('center'), k.color(65, 105, 225), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Tiracchānā', { size: 20 }), k.pos(460, y - 10), k.color(65, 105, 225), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Pack of 6, 1 HP, -Pāramī', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('K3+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
+  // Tiracchānā
+  y += 100;
+  tabContent.push(k.add([k.sprite('tiracchana'), k.pos(470, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Tiracchānā', { size: 22 }), k.pos(540, y - 20), k.color(65, 105, 225), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Pack, -Pāramī (K3+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 
-  // Manussā - rectangle
-  y += 60;
-  tabContent.push(k.add([k.rect(22, 22), k.pos(432, y), k.anchor('center'), k.color(0, 255, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Manussā', { size: 20 }), k.pos(460, y - 10), k.color(0, 255, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('Non-hostile, karma test', { size: 16 }), k.pos(460, y + 12), k.color(150, 150, 170), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('K4+', { size: 14 }), k.pos(740, y), k.color(100, 100, 120), k.fixed(), k.z(101)]));
+  // Manussā
+  y += 100;
+  tabContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Manussā', { size: 22 }), k.pos(540, y - 20), k.color(0, 255, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('+1000 karma (K4+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 }
 
 export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
@@ -159,7 +150,7 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
   });
 
   // Vajra section (centered below both columns)
-  tabContent.push(k.add([k.rect(16, 16), k.pos(w / 2 - 70, 492), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.sprite('vajra'), k.pos(w / 2 - 70, 492), k.anchor('center'), k.scale(0.5), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Vajra', { size: 16 }), k.pos(w / 2 - 45, 492), k.anchor('left'), k.color(255, 215, 0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('1.5% drop, clears all enemies, +500 karma', { size: 14 }), k.pos(w / 2 + 10, 492), k.anchor('left'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
 }

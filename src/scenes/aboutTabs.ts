@@ -39,59 +39,54 @@ export function showControls(k: KAPLAYCtx, pageContent: GameObj[]): void {
 }
 
 export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
-  // Helper to create hexagon vertices
-  const hexVerts = (size: number) => {
-    const verts = [];
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i - Math.PI / 2;
-      verts.push(k.vec2(Math.cos(angle) * size, Math.sin(angle) * size));
-    }
-    return verts;
-  };
-
-  // Base enemies (left column)
-  const baseEnemies = [
-    { name: 'Petā', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Realm of hungry spirits' },
-    { name: 'Asurā', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma', realm: 'Realm of jealous demigods' },
-    { name: 'Devā', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm' },
-    { name: 'Māra', color: [139, 0, 0], desc: 'Lord of Illusion - Boss', realm: 'Master of Samsara' },
+  // Base enemies with sprites (left column)
+  const spriteEnemies = [
+    { name: 'Petā', sprite: 'peta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Hungry spirits' },
+    { name: 'Asurā', sprite: 'asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma', realm: 'Jealous demigods' },
+    { name: 'Devā', sprite: 'deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm' },
   ];
-  let y = 125;
-  baseEnemies.forEach(e => {
+  let y = 150;
+  spriteEnemies.forEach(e => {
     const [r, g, b] = e.color;
-    pageContent.push(k.add([k.rect(24, 24), k.pos(50, y), k.anchor('center'), k.color(r, g, b)]));
-    pageContent.push(k.add([k.text(e.name, { size: 20 }), k.pos(80, y - 12), k.color(r, g, b)]));
-    pageContent.push(k.add([k.text(e.desc, { size: 16 }), k.pos(80, y + 10), k.color(150, 150, 170)]));
-    pageContent.push(k.add([k.text(e.realm, { size: 14 }), k.pos(80, y + 30), k.color(100, 100, 120)]));
-    y += 70;
+    pageContent.push(k.add([k.sprite(e.sprite), k.pos(70, y), k.anchor('center'), k.scale(4)]));
+    pageContent.push(k.add([k.text(e.name, { size: 22 }), k.pos(140, y - 25), k.color(r, g, b)]));
+    pageContent.push(k.add([k.text(e.desc, { size: 16 }), k.pos(140, y), k.color(150, 150, 170)]));
+    pageContent.push(k.add([k.text(e.realm, { size: 14 }), k.pos(140, y + 22), k.color(100, 100, 120)]));
+    y += 120;
   });
+
+  // Mara
+  y += 20;
+  pageContent.push(k.add([k.sprite('mara'), k.pos(70, y), k.anchor('center'), k.scale(2.5)]));
+  pageContent.push(k.add([k.text('Māra', { size: 22 }), k.pos(140, y - 25), k.color(139, 0, 0)]));
+  pageContent.push(k.add([k.text('Lord of Illusion - Boss', { size: 16 }), k.pos(140, y), k.color(150, 150, 170)]));
+  pageContent.push(k.add([k.text('Master of Samsara', { size: 14 }), k.pos(140, y + 22), k.color(100, 100, 120)]));
 
   // New enemies (right column) - unlock in later kalpas
   pageContent.push(k.add([
-    k.text('Unlocked in Later Kalpas', { size: 20 }), k.pos(420, 105), k.color(100, 100, 120),
+    k.text('Unlocked in Later Kalpas', { size: 20 }), k.pos(570, 105), k.anchor('center'), k.color(100, 100, 120),
   ]));
 
-  // Nerayikā - hexagon
-  y = 150;
-  pageContent.push(k.add([k.polygon(hexVerts(14)), k.pos(432, y), k.anchor('center'), k.color(255, 69, 0)]));
-  pageContent.push(k.add([k.text('Nerayikā', { size: 20 }), k.pos(465, y - 14), k.color(255, 69, 0)]));
-  pageContent.push(k.add([k.text('Charger, 4 HP, applies Klesha', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
-  pageContent.push(k.add([k.text('Hell realm (Kalpa 2+)', { size: 14 }), k.pos(465, y + 28), k.color(100, 100, 120)]));
+  // Nerayikā
+  y = 170;
+  pageContent.push(k.add([k.sprite('nerayika'), k.pos(470, y), k.anchor('center'), k.scale(4)]));
+  pageContent.push(k.add([k.text('Nerayikā', { size: 22 }), k.pos(540, y - 25), k.color(255, 69, 0)]));
+  pageContent.push(k.add([k.text('4 HP, +Klesha (K2+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
+  pageContent.push(k.add([k.text('Hell realm', { size: 14 }), k.pos(540, y + 22), k.color(100, 100, 120)]));
 
-  // Tiracchānā - triangle
-  y += 70;
-  const triVerts = [k.vec2(0, -14), k.vec2(14, 12), k.vec2(-14, 12)];
-  pageContent.push(k.add([k.polygon(triVerts), k.pos(432, y), k.anchor('center'), k.color(65, 105, 225)]));
-  pageContent.push(k.add([k.text('Tiracchānā', { size: 20 }), k.pos(465, y - 14), k.color(65, 105, 225)]));
-  pageContent.push(k.add([k.text('Pack of 6, removes Pāramī', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
-  pageContent.push(k.add([k.text('Animal realm (Kalpa 3+)', { size: 14 }), k.pos(465, y + 28), k.color(100, 100, 120)]));
+  // Tiracchānā
+  y += 120;
+  pageContent.push(k.add([k.sprite('tiracchana'), k.pos(470, y), k.anchor('center'), k.scale(4)]));
+  pageContent.push(k.add([k.text('Tiracchānā', { size: 22 }), k.pos(540, y - 25), k.color(65, 105, 225)]));
+  pageContent.push(k.add([k.text('Pack of 6, -Pāramī (K3+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
+  pageContent.push(k.add([k.text('Animal realm', { size: 14 }), k.pos(540, y + 22), k.color(100, 100, 120)]));
 
-  // Manussā - rectangle
-  y += 70;
-  pageContent.push(k.add([k.rect(24, 24), k.pos(432, y), k.anchor('center'), k.color(0, 255, 0)]));
-  pageContent.push(k.add([k.text('Manussā', { size: 20 }), k.pos(465, y - 14), k.color(0, 255, 0)]));
-  pageContent.push(k.add([k.text('Non-hostile, +1000 if spared', { size: 16 }), k.pos(465, y + 8), k.color(150, 150, 170)]));
-  pageContent.push(k.add([k.text('Human realm (Kalpa 4+)', { size: 14 }), k.pos(465, y + 28), k.color(100, 100, 120)]));
+  // Manussā
+  y += 120;
+  pageContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(4)]));
+  pageContent.push(k.add([k.text('Manussā', { size: 22 }), k.pos(540, y - 25), k.color(0, 255, 0)]));
+  pageContent.push(k.add([k.text('+1000 if spared (K4+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
+  pageContent.push(k.add([k.text('Human realm', { size: 14 }), k.pos(540, y + 22), k.color(100, 100, 120)]));
 }
 
 export function showLore(k: KAPLAYCtx, pageContent: GameObj[]): void {
@@ -209,7 +204,7 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
   });
 
   // Vajra section (centered below both columns)
-  pageContent.push(k.add([k.rect(18, 18), k.pos(w / 2 - 80, 530), k.anchor('center'), k.color(255, 215, 0)]));
+  pageContent.push(k.add([k.sprite('vajra'), k.pos(w / 2 - 80, 530), k.anchor('center'), k.scale(0.6)]));
   pageContent.push(k.add([k.text('Vajra', { size: 18 }), k.pos(w / 2 - 55, 530), k.anchor('left'), k.color(255, 215, 0)]));
   pageContent.push(k.add([k.text('1.5% drop, clears all enemies, +500 karma', { size: 15 }), k.pos(w / 2 + 5, 530), k.anchor('left'), k.color(180, 180, 200)]));
 

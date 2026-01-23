@@ -23,6 +23,23 @@ const k = kaplay({
 // Load sprites
 k.loadSprite('sufferScreen', '/sprites/suffer_sharp.jpg');
 k.loadSprite('raflinens', '/sprites/raflinens.jpg');
+k.loadSprite('player', '/sprites/player.svg');
+k.loadSprite('peta', '/sprites/peta.svg');
+k.loadSprite('asura', '/sprites/asura.svg');
+k.loadSprite('deva', '/sprites/deva.svg');
+k.loadSprite('nerayika', '/sprites/nerayika.svg');
+k.loadSprite('tiracchana', '/sprites/tiracchana.svg');
+k.loadSprite('manussa', '/sprites/manussa.svg');
+k.loadSprite('mara', '/sprites/mara.svg');
+k.loadSprite('paduma', '/sprites/paduma.svg');
+k.loadSprite('vajra', '/sprites/vajra.svg');
+k.loadSprite('projectile', '/sprites/projectile.svg');
+k.loadSprite('boss_projectile', '/sprites/boss_projectile.svg');
+k.loadSprite('powerup_compassion', '/sprites/powerup_compassion.svg');
+k.loadSprite('powerup_wisdom', '/sprites/powerup_wisdom.svg');
+k.loadSprite('powerup_patience', '/sprites/powerup_patience.svg');
+k.loadSprite('powerup_diligence', '/sprites/powerup_diligence.svg');
+k.loadSprite('powerup_meditation', '/sprites/powerup_meditation.svg');
 
 // Register scenes
 k.scene('menu', () => createMenuScene(k));

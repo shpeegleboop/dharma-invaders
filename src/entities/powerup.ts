@@ -16,19 +16,27 @@ export type VirtueType = 'compassion' | 'wisdom' | 'patience' | 'diligence' | 'm
 
 const BASE_VIRTUE_TYPES: VirtueType[] = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
 
+// Map virtue types to sprite names
+const VIRTUE_SPRITES: Record<string, string> = {
+  compassion: 'powerup_compassion',
+  wisdom: 'powerup_wisdom',
+  patience: 'powerup_patience',
+  diligence: 'powerup_diligence',
+  meditation: 'powerup_meditation',
+};
+
 export function createPowerup(k: KAPLAYCtx, x: number, y: number): GameObj {
   // Random virtue type (Paduma handled separately via createPaduma)
   const virtueType = BASE_VIRTUE_TYPES[Math.floor(k.rand(0, BASE_VIRTUE_TYPES.length))];
-  const virtueConfig = config.powerups.virtues[virtueType];
+  const spriteName = VIRTUE_SPRITES[virtueType];
 
   const powerup = k.add([
-    k.circle(config.powerups.size.width / 2),
+    k.sprite(spriteName),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
-    k.color(k.Color.fromHex(virtueConfig.color)),
+    k.area({ shape: new k.Rect(k.vec2(0), config.powerups.size.width, config.powerups.size.width) }),
+    k.color(255, 255, 255),
     k.opacity(0.9),
-    k.outline(2, k.Color.fromHex('#FFFFFF')),
     'powerup',
     { virtueType },
   ]);
@@ -70,17 +78,15 @@ export function shouldDropPaduma(k: KAPLAYCtx): boolean {
 }
 
 export function createPaduma(k: KAPLAYCtx, x: number, y: number): GameObj {
-  const virtueConfig = config.powerups.virtues.paduma;
   const startX = x;
 
   const powerup = k.add([
-    k.circle(config.powerups.size.width / 2),
+    k.sprite('paduma'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
-    k.color(k.Color.fromHex(virtueConfig.color)),
+    k.area({ shape: new k.Rect(k.vec2(0), config.powerups.size.width, config.powerups.size.width) }),
+    k.color(255, 255, 255),
     k.opacity(0.9),
-    k.outline(2, k.Color.fromHex('#FFFFFF')),
     'powerup',
     { virtueType: 'paduma' as VirtueType },
   ]);
@@ -132,14 +138,13 @@ export function createVajra(k: KAPLAYCtx, x: number, y: number): GameObj {
   let particleTimer = 0;
 
   const vajra = k.add([
-    k.rect(cfg.size.width, cfg.size.height),
+    k.sprite('vajra'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
+    k.color(255, 255, 255),
     k.opacity(0.95),
-    k.outline(3, k.Color.fromHex('#FFFFFF')),
-    k.rotate(45),
+    k.rotate(0),
     'vajra',
   ]);
 

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Nerayikā (Hell Being) - terrifying red skeleton demon, dark red bones -->
+  <defs>
+    <radialGradient id="hellGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FF4444;stop-opacity:0.6"/>
+      <stop offset="60%" style="stop-color:#AA0000;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#440000;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="boneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B2020"/>
+      <stop offset="50%" style="stop-color:#6B1515"/>
+      <stop offset="100%" style="stop-color:#4A0E0E"/>
+    </linearGradient>
+    <linearGradient id="skullGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#A02828"/>
+      <stop offset="100%" style="stop-color:#701818"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Hell fire aura -->
+  <ellipse cx="12" cy="12" rx="11" ry="11" fill="url(#hellGlow)"/>
+  
+  <!-- Flame wisps around body -->
+  <path d="M4 16 Q2 12 4 8 Q3 10 4 12" fill="#FF6633" opacity="0.7"/>
+  <path d="M20 16 Q22 12 20 8 Q21 10 20 12" fill="#FF6633" opacity="0.7"/>
+  <path d="M8 4 Q10 1 12 4" fill="#FF4422" opacity="0.6"/>
+  <path d="M16 4 Q14 1 12 4" fill="#FF4422" opacity="0.6"/>
+  
+  <!-- Skull head -->
+  <ellipse cx="12" cy="8" rx="5" ry="5" fill="url(#skullGrad)" stroke="#1A0A0A" stroke-width="0.8"/>
+  
+  <!-- Skull cracks -->
+  <path d="M10 4 L11 6 L9 7" fill="none" stroke="#1A0A0A" stroke-width="0.5" opacity="0.8"/>
+  <path d="M15 5 L14 7" fill="none" stroke="#1A0A0A" stroke-width="0.5" opacity="0.8"/>
+  
+  <!-- Eye sockets (deep, black, terrifying) -->
+  <ellipse cx="9.5" cy="7.5" rx="2" ry="2.2" fill="#0A0505"/>
+  <ellipse cx="14.5" cy="7.5" rx="2" ry="2.2" fill="#0A0505"/>
+  
+  <!-- Glowing red eyes inside sockets -->
+  <circle cx="9.5" cy="7.5" r="1" fill="#FF0000"/>
+  <circle cx="14.5" cy="7.5" r="1" fill="#FF0000"/>
+  
+  <!-- Tiny evil pupil -->
+  <circle cx="9.5" cy="7.5" r="0.4" fill="#FFFF00"/>
+  <circle cx="14.5" cy="7.5" r="0.4" fill="#FFFF00"/>
+  
+  <!-- Nose hole (triangle) -->
+  <path d="M11 10 L12 9 L13 10 Z" fill="#0A0505"/>
+  
+  <!-- Terrifying grin -->
+  <path d="M8 12 Q12 14 16 12" fill="#0A0505"/>
+  
+  <!-- Individual teeth - dark red with black outline -->
+  <path d="M8.5 12 L9 13.5 L9.5 12" fill="#8B2020" stroke="#1A0A0A" stroke-width="0.3"/>
+  <path d="M10 12 L10.5 13 L11 12" fill="#8B2020" stroke="#1A0A0A" stroke-width="0.3"/>
+  <path d="M11.5 12 L12 13.5 L12.5 12" fill="#8B2020" stroke="#1A0A0A" stroke-width="0.3"/>
+  <path d="M13 12 L13.5 13 L14 12" fill="#8B2020" stroke="#1A0A0A" stroke-width="0.3"/>
+  <path d="M14.5 12 L15 13.5 L15.5 12" fill="#8B2020" stroke="#1A0A0A" stroke-width="0.3"/>
+  
+  <!-- Ribcage body -->
+  <path d="M8 14 L8 20 Q12 22 16 20 L16 14 Q12 15 8 14" fill="url(#boneGrad)" stroke="#1A0A0A" stroke-width="0.8"/>
+  
+  <!-- Rib lines -->
+  <path d="M9 15 Q12 16 15 15" fill="none" stroke="#1A0A0A" stroke-width="0.7"/>
+  <path d="M9 17 Q12 18 15 17" fill="none" stroke="#1A0A0A" stroke-width="0.7"/>
+  <path d="M9.5 19 Q12 20 14.5 19" fill="none" stroke="#1A0A0A" stroke-width="0.7"/>
+  
+  <!-- Bony arms reaching out -->
+  <path d="M7 15 L4 13 L3 14" fill="none" stroke="url(#boneGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M7 15 L4 13 L3 14" fill="none" stroke="#1A0A0A" stroke-width="0.6" stroke-linecap="round"/>
+  <path d="M17 15 L20 13 L21 14" fill="none" stroke="url(#boneGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M17 15 L20 13 L21 14" fill="none" stroke="#1A0A0A" stroke-width="0.6" stroke-linecap="round"/>
+  
+  <!-- Claw fingers -->
+  <path d="M3 14 L1.5 13" fill="none" stroke="#6B1515" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M3 14 L2 15" fill="none" stroke="#6B1515" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M3 14 L1.5 13" fill="none" stroke="#1A0A0A" stroke-width="0.4" stroke-linecap="round"/>
+  <path d="M3 14 L2 15" fill="none" stroke="#1A0A0A" stroke-width="0.4" stroke-linecap="round"/>
+  <path d="M21 14 L22.5 13" fill="none" stroke="#6B1515" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M21 14 L22 15" fill="none" stroke="#6B1515" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M21 14 L22.5 13" fill="none" stroke="#1A0A0A" stroke-width="0.4" stroke-linecap="round"/>
+  <path d="M21 14 L22 15" fill="none" stroke="#1A0A0A" stroke-width="0.4" stroke-linecap="round"/>
+</svg>

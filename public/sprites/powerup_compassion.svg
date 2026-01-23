@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Compassion - 3-way spread shot, radiating love/care -->
+  <defs>
+    <linearGradient id="heartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB6C1"/>
+      <stop offset="50%" style="stop-color:#FF69B4"/>
+      <stop offset="100%" style="stop-color:#DB7093"/>
+    </linearGradient>
+    <radialGradient id="compassionGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FF69B4;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="0.6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g filter="url(#softGlow)">
+    <!-- Outer glow -->
+    <circle cx="12" cy="12" r="11" fill="url(#compassionGlow)"/>
+    
+    <!-- Three spreading rays (representing 3-way shot) -->
+    <path d="M12 8 L12 1" stroke="#FFB6C1" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M12 8 L6 3" stroke="#FFB6C1" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M12 8 L18 3" stroke="#FFB6C1" stroke-width="1.5" stroke-linecap="round"/>
+    
+    <!-- Ray arrow tips -->
+    <circle cx="12" cy="1" r="1.2" fill="#FF69B4"/>
+    <circle cx="6" cy="3" r="1.2" fill="#FF69B4"/>
+    <circle cx="18" cy="3" r="1.2" fill="#FF69B4"/>
+    
+    <!-- Main heart -->
+    <path d="M12 20 
+             C12 20 4 14 4 9 
+             C4 6 6 4 9 4 
+             C10.5 4 12 5.5 12 7 
+             C12 5.5 13.5 4 15 4 
+             C18 4 20 6 20 9 
+             C20 14 12 20 12 20Z" 
+          fill="url(#heartGrad)" stroke="#C71585" stroke-width="0.5"/>
+    
+    <!-- Heart highlight -->
+    <ellipse cx="8" cy="8" rx="2" ry="2.5" fill="#FFFFFF" opacity="0.4"/>
+    <ellipse cx="15" cy="8" rx="1.5" ry="2" fill="#FFFFFF" opacity="0.3"/>
+    
+    <!-- Small hearts radiating -->
+    <path d="M3 10 C3 9 3.5 8.5 4 9 C4.5 8.5 5 9 5 10 C5 11 4 12 4 12 C4 12 3 11 3 10Z" fill="#FFB6C1"/>
+    <path d="M19 10 C19 9 19.5 8.5 20 9 C20.5 8.5 21 9 21 10 C21 11 20 12 20 12 C20 12 19 11 19 10Z" fill="#FFB6C1"/>
+  </g>
+</svg>

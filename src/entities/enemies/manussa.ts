@@ -24,11 +24,11 @@ export function createManussa(k: KAPLAYCtx, x: number, y: number): GameObj {
   const wanderInterval = cfg.wanderInterval;
 
   const manussa = k.add([
-    k.rect(cfg.size.width, cfg.size.height),
+    k.sprite('manussa'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
+    k.color(255, 255, 255),
     k.health(cfg.health),
     'enemy',
     'manussa',

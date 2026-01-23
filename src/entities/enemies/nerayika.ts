@@ -38,12 +38,12 @@ export function createNerayika(k: KAPLAYCtx, x: number, y: number): GameObj {
   let hesitateTimer = 0;
 
   const nerayika = k.add([
-    k.polygon(getHexagonVertices(k, cfg.size.width)),
+    k.sprite('nerayika'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
     k.rotate(k.rad2deg(Math.atan2(chargeDir.y, chargeDir.x)) + 90),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.color(255, 255, 255),
     k.health(cfg.health),
     k.opacity(0.6), // Start semi-transparent during hesitate
     'enemy',

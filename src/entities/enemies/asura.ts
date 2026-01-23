@@ -15,12 +15,12 @@ export function createAsura(k: KAPLAYCtx, x: number, y: number): GameObj {
   const enemyId = `asura_${++asuraIdCounter}`;
 
   const asura = k.add([
-    k.rect(cfg.size.width, cfg.size.height),
+    k.sprite('asura'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
     k.rotate(0),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.color(255, 255, 255),
     k.health(cfg.health),
     'enemy',
     'asura',

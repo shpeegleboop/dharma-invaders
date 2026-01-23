@@ -14,12 +14,12 @@ export function createBossProjectile(
   const projectileSpeed = speed ?? cfg.speed;
 
   const projectile = k.add([
-    k.rect(cfg.size.width, cfg.size.height),
+    k.sprite('boss_projectile'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
     k.rotate(k.rad2deg(angle)),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.color(255, 255, 255),
     k.opacity(0.9),
     'bossProjectile',
     { moveAngle: angle, speed: projectileSpeed },

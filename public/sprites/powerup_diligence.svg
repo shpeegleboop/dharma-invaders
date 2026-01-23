@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Diligence - rapid fire, lightning speed action -->
+  <defs>
+    <linearGradient id="boltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFACD"/>
+      <stop offset="30%" style="stop-color:#FFD700"/>
+      <stop offset="70%" style="stop-color:#FFA500"/>
+      <stop offset="100%" style="stop-color:#FF8C00"/>
+    </linearGradient>
+    <linearGradient id="boltShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#FFD700"/>
+    </linearGradient>
+    <radialGradient id="diligenceGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="diligenceBlur">
+      <feGaussianBlur stdDeviation="0.6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g filter="url(#diligenceBlur)">
+    <!-- Outer glow -->
+    <circle cx="12" cy="12" r="11" fill="url(#diligenceGlow)"/>
+    
+    <!-- Speed lines radiating -->
+    <path d="M2 8 L6 10" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+    <path d="M2 12 L5 12" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+    <path d="M2 16 L6 14" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+    <path d="M22 8 L18 10" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+    <path d="M22 12 L19 12" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+    <path d="M22 16 L18 14" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+    
+    <!-- Main lightning bolt -->
+    <path d="M14 1 L10 10 L13 10 L9 23 L15 12 L12 12 L16 1 Z" 
+          fill="url(#boltGrad)" stroke="#B8860B" stroke-width="0.5"/>
+    
+    <!-- Inner highlight -->
+    <path d="M13.5 3 L11 9 L13 9 L10.5 18" 
+          fill="none" stroke="url(#boltShine)" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+    
+    <!-- Small rapid fire arrows/bolts on sides -->
+    <path d="M4 6 L7 8 L5 8 L8 10" fill="none" stroke="#FFA500" stroke-width="1" stroke-linecap="round"/>
+    <path d="M20 6 L17 8 L19 8 L16 10" fill="none" stroke="#FFA500" stroke-width="1" stroke-linecap="round"/>
+    <path d="M4 18 L7 16 L5 16 L8 14" fill="none" stroke="#FFA500" stroke-width="1" stroke-linecap="round"/>
+    <path d="M20 18 L17 16 L19 16 L16 14" fill="none" stroke="#FFA500" stroke-width="1" stroke-linecap="round"/>
+    
+    <!-- Sparkle accents -->
+    <circle cx="6" cy="5" r="0.8" fill="#FFFFFF"/>
+    <circle cx="18" cy="5" r="0.8" fill="#FFFFFF"/>
+    <circle cx="6" cy="19" r="0.8" fill="#FFFFFF"/>
+    <circle cx="18" cy="19" r="0.8" fill="#FFFFFF"/>
+  </g>
+</svg>

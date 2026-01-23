@@ -28,12 +28,12 @@ export function createTiracchana(k: KAPLAYCtx, x: number, y: number): GameObj {
   let time = 0;
 
   const tiracchana = k.add([
-    k.polygon(getTriangleVertices(k, cfg.size.width)),
+    k.sprite('tiracchana'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
     k.rotate(0),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.color(255, 255, 255),
     k.health(cfg.health),
     'enemy',
     'tiracchana',

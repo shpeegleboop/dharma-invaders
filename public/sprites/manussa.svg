@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 40" width="20" height="40">
+  <!-- Manussā (Human) - cute innocent monk, full body, green robe -->
+  <defs>
+    <radialGradient id="humanGlow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#90EE90;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#228B22;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="robeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5DB85D"/>
+      <stop offset="100%" style="stop-color:#3D8B3D"/>
+    </linearGradient>
+    <linearGradient id="humanSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFDDCC"/>
+      <stop offset="100%" style="stop-color:#FFCBB3"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Gentle glow -->
+  <ellipse cx="10" cy="18" rx="10" ry="18" fill="url(#humanGlow)"/>
+  
+  <!-- Feet (simple sandals) -->
+  <ellipse cx="7" cy="38" rx="2.5" ry="1.5" fill="#8B7355"/>
+  <ellipse cx="13" cy="38" rx="2.5" ry="1.5" fill="#8B7355"/>
+  
+  <!-- Legs (robe covers most) -->
+  <rect x="6" y="30" width="3" height="8" fill="url(#robeGrad)"/>
+  <rect x="11" y="30" width="3" height="8" fill="url(#robeGrad)"/>
+  
+  <!-- Main robe body -->
+  <path d="M4 14 
+           Q10 12 16 14 
+           L18 32 
+           Q14 34 10 33 
+           Q6 34 2 32 
+           Z" 
+        fill="url(#robeGrad)"/>
+  
+  <!-- Robe fold details -->
+  <path d="M7 16 Q8 24 7 32" fill="none" stroke="#2D6B2D" stroke-width="0.5" opacity="0.6"/>
+  <path d="M13 16 Q12 24 13 32" fill="none" stroke="#2D6B2D" stroke-width="0.6" opacity="0.6"/>
+  <path d="M10 18 L10 30" fill="none" stroke="#2D6B2D" stroke-width="0.4" opacity="0.4"/>
+  
+  <!-- Robe collar/neckline -->
+  <path d="M6 14 Q10 16 14 14" fill="none" stroke="#2D6B2D" stroke-width="0.8"/>
+  
+  <!-- Arms (hands together in greeting/prayer) -->
+  <path d="M4 16 Q2 20 5 24" fill="none" stroke="url(#robeGrad)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M16 16 Q18 20 15 24" fill="none" stroke="url(#robeGrad)" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Hands pressed together (anjali mudra) -->
+  <ellipse cx="10" cy="23" rx="3" ry="2" fill="url(#humanSkin)"/>
+  <path d="M8 21 L10 24 L12 21" fill="none" stroke="#E8B89D" stroke-width="0.5"/>
+  
+  <!-- Head -->
+  <circle cx="10" cy="8" r="5" fill="url(#humanSkin)"/>
+  
+  <!-- Shaved head stubble dots -->
+  <circle cx="7" cy="5" r="0.3" fill="#C0C0C0" opacity="0.5"/>
+  <circle cx="9" cy="4" r="0.3" fill="#C0C0C0" opacity="0.5"/>
+  <circle cx="11" cy="4.5" r="0.3" fill="#C0C0C0" opacity="0.5"/>
+  <circle cx="13" cy="5.5" r="0.3" fill="#C0C0C0" opacity="0.5"/>
+  <circle cx="8" cy="6.5" r="0.3" fill="#C0C0C0" opacity="0.4"/>
+  
+  <!-- Friendly eyes (round, innocent) -->
+  <circle cx="8" cy="8" r="1.2" fill="#3D2314"/>
+  <circle cx="12" cy="8" r="1.2" fill="#3D2314"/>
+  
+  <!-- Eye shine (big, innocent look) -->
+  <circle cx="8.3" cy="7.6" r="0.5" fill="#FFFFFF"/>
+  <circle cx="12.3" cy="7.6" r="0.5" fill="#FFFFFF"/>
+  
+  <!-- Small lower highlight -->
+  <circle cx="7.8" cy="8.5" r="0.25" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="11.8" cy="8.5" r="0.25" fill="#FFFFFF" opacity="0.5"/>
+  
+  <!-- Rosy cheeks -->
+  <circle cx="6" cy="9.5" r="1.2" fill="#FFB8B8" opacity="0.4"/>
+  <circle cx="14" cy="9.5" r="1.2" fill="#FFB8B8" opacity="0.4"/>
+  
+  <!-- Gentle smile -->
+  <path d="M8 11 Q10 12.5 12 11" fill="none" stroke="#8B5A3C" stroke-width="0.6" stroke-linecap="round"/>
+  
+  <!-- Ears -->
+  <ellipse cx="5" cy="8" rx="1" ry="1.5" fill="url(#humanSkin)"/>
+  <ellipse cx="15" cy="8" rx="1" ry="1.5" fill="url(#humanSkin)"/>
+</svg>

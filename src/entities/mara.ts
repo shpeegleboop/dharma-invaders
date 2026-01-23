@@ -29,12 +29,12 @@ export function spawnMara(k: KAPLAYCtx): void {
   isRageMode = kalpa >= cfg.evolution.rageMode.minKalpa;
 
   mara = k.add([
-    k.rect(cfg.size.width, cfg.size.height),
+    k.sprite('mara'),
     k.pos(config.screen.width / 2, -cfg.size.height),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
     k.rotate(0),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.color(255, 255, 255),
     k.health(scaledMaxHealth),
     k.opacity(1),
     'boss',

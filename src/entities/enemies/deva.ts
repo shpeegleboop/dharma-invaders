@@ -26,12 +26,12 @@ export function createDeva(k: KAPLAYCtx, x: number, y: number): GameObj {
     : 0;
 
   const deva = k.add([
-    k.rect(cfg.size.width, cfg.size.height),
+    k.sprite('deva'),
     k.pos(x, y),
     k.anchor('center'),
-    k.area(),
+    k.area({ shape: new k.Rect(k.vec2(0), cfg.size.width, cfg.size.height) }),
     k.rotate(0),
-    k.color(k.Color.fromHex(cfg.color)),
+    k.color(255, 255, 255),
     k.health(cfg.health),
     k.opacity(0.9),
     'enemy',
