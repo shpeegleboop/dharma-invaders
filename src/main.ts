@@ -18,6 +18,7 @@ const k = kaplay({
   height: config.screen.height,
   background: [26, 26, 46], // #1a1a2e
   global: false,
+  letterbox: true, // Maintain aspect ratio in fullscreen
 });
 
 // Load sprites

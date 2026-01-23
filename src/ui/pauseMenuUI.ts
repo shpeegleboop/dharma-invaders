@@ -101,6 +101,19 @@ export function createPauseUI(k: KAPLAYCtx): { overlay: GameObj; items: GameObj[
     'pauseUI',
   ]));
 
+  // Fullscreen toggle
+  const fsText = k.isFullscreen() ? '(F) Windowed' : '(F) Fullscreen';
+  items.push(k.add([
+    k.text(fsText, { size: 24 }),
+    k.pos(config.screen.width / 2, config.screen.height / 2 + 160),
+    k.anchor('center'),
+    k.color(200, 200, 200),
+    k.fixed(),
+    k.z(101),
+    'pauseUI',
+    'fullscreenLabel',
+  ]));
+
   // Add status section showing active effects (two columns: paramis left, kleshas right)
   const state = getGameState();
   const paramiCounts = countEffects(state.paramis);

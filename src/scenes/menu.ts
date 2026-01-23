@@ -121,9 +121,27 @@ export function createMenuScene(k: KAPLAYCtx): void {
   // Reset arrow flag each frame
   k.onUpdate(() => { arrowClicked = false; });
 
+  // Fullscreen toggle
+  const fsLabel = k.add([
+    k.text(k.isFullscreen() ? '[F] Windowed' : '[F] Fullscreen', { size: 14 }),
+    k.pos(config.screen.width - 20, 20),
+    k.anchor('topright'),
+    k.color(120, 120, 140),
+  ]);
+
+  const toggleFullscreen = () => {
+    k.setFullscreen(!k.isFullscreen());
+    fsLabel.text = k.isFullscreen() ? '[F] Windowed' : '[F] Fullscreen';
+  };
+
+  k.onKeyPress('f', () => {
+    if (isAudioSettingsVisible()) return;
+    toggleFullscreen();
+  });
+
   // Menu hints
   k.add([
-    k.text('(A) Audio   (B) About   (D) Difficulty', { size: 14 }),
+    k.text('(A) Audio   (B) About   (D) Difficulty   (F) Fullscreen', { size: 14 }),
     k.pos(config.screen.width / 2, config.screen.height - 50),
     k.anchor('center'),
     k.color(120, 120, 140),
