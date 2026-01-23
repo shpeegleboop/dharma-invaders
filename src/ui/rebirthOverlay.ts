@@ -15,6 +15,31 @@ const KLESHA_POOL = [
   'Moha', 'Thina', 'Anottappa', 'Micchaditthi', 'Ahirika',
 ];
 
+// Brief descriptions with effects
+const PARAMI_DESC: Record<string, string> = {
+  Dana: 'Generosity (+25% drops)',
+  Viriya: 'Energy (+10% fire rate)',
+  Metta: 'Loving-kindness (+1 HP)',
+  Upekkha: 'Equanimity (-10% enemy speed)',
+  Sila: 'Morality (auto-shield)',
+  Khanti: 'Patience (+20% powerup duration)',
+  Panna: 'Wisdom (+1 damage)',
+  Adhitthana: 'Determination (+1 shield)',
+  Nekkhamma: 'Renunciation (+50% karma)',
+  Sacca: 'Truthfulness (+5% Paduma)',
+};
+const KLESHA_DESC: Record<string, string> = {
+  Lobha: 'Greed (-25% drops)',
+  Dosa: 'Hatred (+10% enemy speed)',
+  Mana: 'Pride (-1 HP)',
+  Vicikiccha: 'Doubt (-10% fire rate)',
+  Moha: 'Delusion (-20% powerup duration)',
+  Thina: 'Sloth (-10% player speed)',
+  Anottappa: 'Recklessness (-1 damage)',
+  Micchaditthi: 'Wrong View (-25% karma)',
+  Ahirika: 'Shamelessness (flips Manussā)',
+};
+
 let overlayObjects: GameObj[] = [];
 let isOverlayActive = false;
 
@@ -91,30 +116,39 @@ export async function showRebirthOverlay(
   ]);
   overlayObjects.push(tierLabel);
 
-  // Paramis granted
-  if (grantedParamis.length > 0) {
+  // Paramis granted (one per line)
+  let nextY = 280;
+  const lineHeight = 24;
+
+  for (const p of grantedParamis) {
     const paramiText = k.add([
-      k.text(`+ ${grantedParamis.join(', ')}`, { size: 20 }),
-      k.pos(config.screen.width / 2, 290),
+      k.text(`+ ${p} (${PARAMI_DESC[p]})`, { size: 16 }),
+      k.pos(config.screen.width / 2, nextY),
       k.anchor('center'),
       k.color(144, 238, 144), // Light green
       k.fixed(),
       k.z(101),
     ]);
     overlayObjects.push(paramiText);
+    nextY += lineHeight;
   }
 
-  // Kleshas inflicted
-  if (grantedKleshas.length > 0) {
+  // Kleshas inflicted (one per line)
+  if (grantedParamis.length > 0 && grantedKleshas.length > 0) {
+    nextY += 8; // Extra gap between sections
+  }
+
+  for (const kl of grantedKleshas) {
     const kleshaText = k.add([
-      k.text(`- ${grantedKleshas.join(', ')}`, { size: 20 }),
-      k.pos(config.screen.width / 2, 330),
+      k.text(`- ${kl} (${KLESHA_DESC[kl]})`, { size: 16 }),
+      k.pos(config.screen.width / 2, nextY),
       k.anchor('center'),
       k.color(255, 100, 100), // Light red
       k.fixed(),
       k.z(101),
     ]);
     overlayObjects.push(kleshaText);
+    nextY += lineHeight;
   }
 
   // Continue prompt
