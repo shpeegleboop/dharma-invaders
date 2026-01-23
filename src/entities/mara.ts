@@ -103,20 +103,33 @@ function updateCombat(k: KAPLAYCtx): void {
     events.emit('boss:phaseChange', { phase: 2 });
   }
 
-  // Figure-8 movement pattern (stays in upper half of screen)
-  // Rage mode: always use phase 3 speed
+  // Movement pattern
   movementTimer += k.dt();
-  const baseX = config.screen.width / 2;
-  const baseY = cfg.targetY + cfg.movement.offsetY;
-  const usePhase3Speed = currentPhase === 'phase3' || isRageMode;
-  const speed = usePhase3Speed ? cfg.movement.phase3SpeedMultiplier : 1.0;
-  mara.pos.x = baseX + Math.sin(movementTimer * speed) * cfg.movement.amplitudeX;
-  mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * cfg.movement.amplitudeY;
+  const centerX = config.screen.width / 2;
+  const arenaCenter = config.arena.offsetY + config.arena.height / 2;
+
+  if (isRageMode) {
+    // Kalpa 4+: 4-petal rose pattern covering full arena
+    const rageCfg = cfg.movement.rageMode;
+    const t = movementTimer * rageCfg.speedMultiplier;
+    // Rose curve: r = cos(2θ) creates 4 petals
+    const r = Math.cos(2 * t);
+    mara.pos.x = centerX + r * Math.cos(t) * rageCfg.amplitudeX;
+    mara.pos.y = arenaCenter + r * Math.sin(t) * rageCfg.amplitudeY;
+  } else {
+    // Normal: Figure-8 in upper half
+    const baseY = cfg.targetY + cfg.movement.offsetY;
+    const usePhase3Speed = currentPhase === 'phase3';
+    const speed = usePhase3Speed ? cfg.movement.phase3SpeedMultiplier : 1.0;
+    mara.pos.x = centerX + Math.sin(movementTimer * speed) * cfg.movement.amplitudeX;
+    mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * cfg.movement.amplitudeY;
+  }
 
   // Delegate attacks to maraCombat (handles kalpa-based evolution)
   const usePhase3Projectiles = currentPhase === 'phase3' || isRageMode;
   const spawnMinions = currentPhase === 'phase2' || currentPhase === 'phase3' || isRageMode;
-  updateMaraAttacks(k, mara, usePhase3Projectiles, spawnMinions);
+  const isActualPhase3 = currentPhase === 'phase3'; // For nerayika swarm (HP below 30%)
+  updateMaraAttacks(k, mara, usePhase3Projectiles, spawnMinions, isActualPhase3);
 
   // Phase 3 / Rage mode flash effect
   if (currentPhase === 'phase3' || isRageMode) {

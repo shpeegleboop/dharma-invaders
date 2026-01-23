@@ -123,7 +123,12 @@
       "offsetY": 40,
       "amplitudeX": 200,
       "amplitudeY": 60,
-      "phase3SpeedMultiplier": 1.5
+      "phase3SpeedMultiplier": 1.5,
+      "rageMode": {
+        "amplitudeX": 300,
+        "amplitudeY": 200,
+        "speedMultiplier": 0.8
+      }
     },
     "phase3Opacity": 0.6,
     "deathAnimDuration": 2000,
@@ -156,6 +161,12 @@
       "rageMode": {
         "minKalpa": 4,
         "useAsuraMinions": true
+      },
+      "nerayikaSwarm": {
+        "minKalpa": 4,
+        "minPhase": 3,
+        "count": 6,
+        "cooldown": 15000
       }
     }
   },

@@ -5,6 +5,7 @@ import { events } from '../utils/events';
 import { createHungryGhost } from '../entities/enemies/hungryGhost';
 import { createAsura } from '../entities/enemies/asura';
 import { createDeva } from '../entities/enemies/deva';
+import { createNerayika } from '../entities/enemies/nerayika';
 import { resetManussaState } from '../entities/enemies/manussa';
 import { spawnMara } from '../entities/mara';
 import { getIsPaused } from '../ui/pauseMenu';
@@ -79,7 +80,9 @@ export function setupSpawner(k: KAPLAYCtx): void {
 
   // Boss minion spawns (decoupled from maraCombat via event)
   events.on('boss:spawnMinion', (data) => {
-    if (data.type === 'asura') {
+    if (data.type === 'nerayika') {
+      createNerayika(k, data.x, data.y);
+    } else if (data.type === 'asura') {
       createAsura(k, data.x, data.y);
     } else {
       createHungryGhost(k, data.x, data.y);

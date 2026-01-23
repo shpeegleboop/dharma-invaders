@@ -4,18 +4,21 @@ import config from '../data/config.json';
 import { createBossProjectile } from './bossProjectile';
 import { events } from '../utils/events';
 import { getCycle } from '../stores/gameStore';
+import { isRebirthOverlayActive } from '../ui/rebirthOverlay';
 
 // Attack timers (managed here to keep mara.ts lean)
 let shootTimer = 0;
 let spreadShotTimer = 0;
 let sweepBeamTimer = 0;
 let minionTimer = 0;
+let nerayikaSwarmTimer = 0;
 
 export function resetAttackTimers(): void {
   shootTimer = 0;
   spreadShotTimer = 0;
   sweepBeamTimer = 0;
   minionTimer = 0;
+  nerayikaSwarmTimer = 0;
 }
 
 // Orchestrate all attacks based on kalpa and phase
@@ -23,8 +26,12 @@ export function updateMaraAttacks(
   k: KAPLAYCtx,
   mara: GameObj,
   usePhase3Projectiles: boolean,
-  spawnMinions: boolean
+  spawnMinions: boolean,
+  isActualPhase3: boolean = false
 ): void {
+  // Don't attack during rebirth screen
+  if (isRebirthOverlayActive()) return;
+
   const cfg = config.boss;
   const kalpa = getCycle();
   const evo = cfg.evolution;
@@ -60,6 +67,16 @@ export function updateMaraAttacks(
     if (minionTimer >= cfg.minionSpawnInterval) {
       minionTimer = 0;
       spawnMinion(k);
+    }
+  }
+
+  // Kalpa 4+ Phase 3: Nerayika swarm - 6 converge on player (only actual phase 3, not rage mode)
+  const swarmCfg = evo.nerayikaSwarm;
+  if (kalpa >= swarmCfg.minKalpa && isActualPhase3) {
+    nerayikaSwarmTimer += k.dt() * 1000;
+    if (nerayikaSwarmTimer >= swarmCfg.cooldown) {
+      nerayikaSwarmTimer = 0;
+      spawnNerayikaSwarm(k, swarmCfg.count);
     }
   }
 }
@@ -127,6 +144,43 @@ export function fireSweepBeam(k: KAPLAYCtx, mara: GameObj, isPhase3: boolean): v
   for (let i = 0; i < evo.projectileCount; i++) {
     const x = startX + spacing * i;
     createBossProjectile(k, x, mara.pos.y + cfg.size.height / 2, downAngle, speed);
+  }
+}
+
+// Kalpa 4+ Phase 3: Spawn Nerayikas equidistant around screen edges
+export function spawnNerayikaSwarm(_k: KAPLAYCtx, count: number): void {
+  const w = config.screen.width;
+  const h = config.screen.height;
+  const arenaTop = config.arena.offsetY;
+  const margin = 20;
+
+  // Calculate equidistant points around the perimeter
+  // Perimeter positions: 0 = top-left, going clockwise
+  const perimeter = 2 * w + 2 * (h - arenaTop);
+
+  for (let i = 0; i < count; i++) {
+    const t = (i / count) * perimeter;
+    let x: number, y: number;
+
+    if (t < w) {
+      // Top edge
+      x = t;
+      y = arenaTop - margin;
+    } else if (t < w + (h - arenaTop)) {
+      // Right edge
+      x = w + margin;
+      y = arenaTop + (t - w);
+    } else if (t < 2 * w + (h - arenaTop)) {
+      // Bottom edge
+      x = w - (t - w - (h - arenaTop));
+      y = h + margin;
+    } else {
+      // Left edge
+      x = -margin;
+      y = h - (t - 2 * w - (h - arenaTop));
+    }
+
+    events.emit('boss:spawnMinion', { x, y, type: 'nerayika' });
   }
 }
 

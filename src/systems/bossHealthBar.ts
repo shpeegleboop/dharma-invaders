@@ -7,6 +7,7 @@ import { getMara, getMaraPhase, getMaraMaxHealth } from '../entities/mara';
 let barBackground: GameObj | null = null;
 let barFill: GameObj | null = null;
 let barLabel: GameObj | null = null;
+let barHpText: GameObj | null = null;
 let isVisible = false;
 
 const BAR_WIDTH = config.boss.healthBar.width;
@@ -45,6 +46,17 @@ export function setupBossHealthBar(k: KAPLAYCtx): void {
     'bossBarLabel',
   ]);
 
+  barHpText = k.add([
+    k.text('', { size: 10 }),
+    k.pos(BAR_X, BAR_Y),
+    k.anchor('center'),
+    k.color(255, 255, 255),
+    k.fixed(),
+    k.opacity(0),
+    k.z(10),
+    'bossBarHp',
+  ]);
+
   // Show bar when boss starts
   events.on('boss:started', () => {
     showBar();
@@ -67,6 +79,7 @@ function showBar(): void {
   if (barBackground) barBackground.opacity = 1;
   if (barFill) barFill.opacity = 1;
   if (barLabel) barLabel.opacity = 1;
+  if (barHpText) barHpText.opacity = 1;
 }
 
 function hideBar(): void {
@@ -74,18 +87,27 @@ function hideBar(): void {
   if (barBackground) barBackground.opacity = 0;
   if (barFill) barFill.opacity = 0;
   if (barLabel) barLabel.opacity = 0;
+  if (barHpText) barHpText.opacity = 0;
 }
 
 function updateBar(k: KAPLAYCtx): void {
   const mara = getMara();
   if (!mara || !barFill) return;
 
+  const currentHp = Math.max(0, mara.hp());
+  const maxHp = getMaraMaxHealth();
+
   // Calculate health percentage (use scaled max health)
-  const healthPercent = mara.hp() / getMaraMaxHealth();
+  const healthPercent = currentHp / maxHp;
   const newWidth = Math.max(0, BAR_WIDTH * healthPercent);
 
   // Update bar width
   barFill.width = newWidth;
+
+  // Update HP text
+  if (barHpText) {
+    barHpText.text = `${Math.ceil(currentHp)} / ${maxHp}`;
+  }
 
   // Update color based on phase
   const phase = getMaraPhase();

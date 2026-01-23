@@ -48,9 +48,9 @@ export function getBossBaseHP(): number {
 export function getBossHPScaling(): number {
   let multiplier = getDifficultyMultiplier('bossHealthMultiplier');
 
-  // NOAH only: Paññā stacks increase boss HP by 85% per stack
+  // NOAH only: Panna stacks increase boss HP by 85% per stack
   if (getDifficulty() === 'noah') {
-    const pannaStacks = getGameState().paramis.filter(p => p === 'Paññā').length;
+    const pannaStacks = getGameState().paramis.filter(p => p === 'Panna').length;
     const pannaBonus = pannaStacks * 0.85;
     multiplier *= (1 + pannaBonus);
   }
