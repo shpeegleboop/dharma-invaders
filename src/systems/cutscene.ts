@@ -128,47 +128,48 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
 }
 
 function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
-  // Special case: raflinens uses actual sprite with handle
-  if (character === 'raflinens') {
+  // Characters that use actual sprites
+  const spriteChars: Record<string, { sprite: string; scale: number }> = {
+    player: { sprite: 'player', scale: 4 },
+    mara: { sprite: 'mara', scale: 3 },
+    raflinens: { sprite: 'raflinens', scale: 1 },
+  };
+
+  const charConfig = spriteChars[character];
+  if (charConfig) {
     const spr = k.add([
-      k.sprite('raflinens'), k.pos(k.center().x, k.center().y - 70),
+      k.sprite(charConfig.sprite),
+      k.pos(k.center().x, k.center().y - 70),
       k.anchor('center'),
+      k.scale(charConfig.scale),
       k.fixed(), k.z(1001), 'cutsceneChar',
     ]);
-    // Add handle text below the image
-    k.add([
-      k.text('@raflinens', { size: 16 }),
-      k.pos(k.center().x, k.center().y + 80),
-      k.anchor('center'), k.color(0, 0, 0),
-      k.fixed(), k.z(1002), 'cutsceneHandle',
-    ]);
+
+    // Add handle text below raflinens image
+    if (character === 'raflinens') {
+      k.add([
+        k.text('@raflinens', { size: 16 }),
+        k.pos(k.center().x, k.center().y + 80),
+        k.anchor('center'), k.color(0, 0, 0),
+        k.fixed(), k.z(1002), 'cutsceneHandle',
+      ]);
+    }
+
     return spr;
   }
 
-  const colors: Record<string, string> = {
-    player: '#4488ff', mara: '#aa2222',
-  };
-  const sizes: Record<string, [number, number]> = {
-    player: [64, 64], mara: [96, 96],
-  };
-  // Null character = generic smiley placeholder
-  const color = colors[character] || '#ffff00';
-  const [w, h] = sizes[character] || [64, 64];
-
+  // Fallback: generic smiley placeholder for unknown characters
   const sprite = k.add([
-    k.rect(w, h), k.pos(k.center().x, k.center().y - 50),
-    k.anchor('center'), k.color(k.Color.fromHex(color)),
+    k.rect(64, 64), k.pos(k.center().x, k.center().y - 50),
+    k.anchor('center'), k.color(k.Color.fromHex('#ffff00')),
     k.fixed(), k.z(1001), 'cutsceneChar',
   ]);
 
-  // Draw smiley face for null/unknown characters
-  if (!colors[character]) {
-    k.add([
-      k.text(':)', { size: 32 }), k.pos(k.center().x, k.center().y - 50),
-      k.anchor('center'), k.color(0, 0, 0),
-      k.fixed(), k.z(1002), 'cutscene',
-    ]);
-  }
+  k.add([
+    k.text(':)', { size: 32 }), k.pos(k.center().x, k.center().y - 50),
+    k.anchor('center'), k.color(0, 0, 0),
+    k.fixed(), k.z(1002), 'cutscene',
+  ]);
 
   return sprite;
 }
