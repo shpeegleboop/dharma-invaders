@@ -135,18 +135,18 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
     k.text('Virtue Powerups', { size: 20 }), k.pos(w / 2, 115), k.anchor('center'), k.color(255, 215, 0),
   ]));
   const powerups = [
-    { name: 'Compassion', color: '#FF69B4', effect: 'Spread shot' },
-    { name: 'Wisdom', color: '#4169E1', effect: 'Piercing' },
-    { name: 'Patience', color: '#32CD32', effect: 'Slow enemies' },
-    { name: 'Diligence', color: '#FFD700', effect: 'Rapid fire' },
-    { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
-    { name: 'Paduma(Lotus)', color: '#FFB6C1', effect: '+1 HP (Kalpa 2+)' },
+    { name: 'Compassion', sprite: 'powerup_compassion', effect: 'Spread shot' },
+    { name: 'Wisdom', sprite: 'powerup_wisdom', effect: 'Piercing' },
+    { name: 'Patience', sprite: 'powerup_patience', effect: 'Slow enemies' },
+    { name: 'Diligence', sprite: 'powerup_diligence', effect: 'Rapid fire' },
+    { name: 'Meditation', sprite: 'powerup_meditation', effect: 'Shield' },
+    { name: 'Paduma(Lotus)', sprite: 'paduma', effect: '+1 HP (Kalpa 2+)' },
   ];
   let px = 70;
   powerups.forEach(p => {
-    pageContent.push(k.add([k.circle(10), k.pos(px, 145), k.color(k.Color.fromHex(p.color)), k.anchor('center')]));
-    pageContent.push(k.add([k.text(p.name, { size: 14 }), k.pos(px, 162), k.anchor('center'), k.color(200, 200, 220)]));
-    pageContent.push(k.add([k.text(p.effect, { size: 12 }), k.pos(px, 180), k.anchor('center'), k.color(140, 140, 160)]));
+    pageContent.push(k.add([k.sprite(p.sprite), k.pos(px, 145), k.anchor('center'), k.scale(1.5)]));
+    pageContent.push(k.add([k.text(p.name, { size: 14 }), k.pos(px, 165), k.anchor('center'), k.color(200, 200, 220)]));
+    pageContent.push(k.add([k.text(p.effect, { size: 12 }), k.pos(px, 183), k.anchor('center'), k.color(140, 140, 160)]));
     px += 122;
   });
 
@@ -204,7 +204,7 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
   });
 
   // Vajra section (centered below both columns)
-  pageContent.push(k.add([k.sprite('vajra'), k.pos(w / 2 - 80, 530), k.anchor('center'), k.scale(0.6)]));
+  pageContent.push(k.add([k.sprite('vajra'), k.pos(w / 2 - 90, 530), k.anchor('center'), k.scale(1.2)]));
   pageContent.push(k.add([k.text('Vajra', { size: 18 }), k.pos(w / 2 - 55, 530), k.anchor('left'), k.color(255, 215, 0)]));
   pageContent.push(k.add([k.text('1.5% drop, clears all enemies, +500 karma', { size: 15 }), k.pos(w / 2 + 5, 530), k.anchor('left'), k.color(180, 180, 200)]));
 

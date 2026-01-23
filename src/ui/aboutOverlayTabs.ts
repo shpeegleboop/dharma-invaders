@@ -81,18 +81,18 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
     k.text('Powerups', { size: 18 }), k.pos(w / 2, 118), k.anchor('center'), k.color(255, 215, 0), k.fixed(), k.z(101),
   ]));
   const powerups = [
-    { name: 'Compassion', color: '#FF69B4', effect: 'Spread' },
-    { name: 'Wisdom', color: '#4169E1', effect: 'Pierce' },
-    { name: 'Patience', color: '#32CD32', effect: 'Slow' },
-    { name: 'Diligence', color: '#FFD700', effect: 'Rapid' },
-    { name: 'Meditation', color: '#9370DB', effect: 'Shield' },
-    { name: 'Paduma', color: '#FFB6C1', effect: 'Heal' },
+    { name: 'Compassion', sprite: 'powerup_compassion', effect: 'Spread' },
+    { name: 'Wisdom', sprite: 'powerup_wisdom', effect: 'Pierce' },
+    { name: 'Patience', sprite: 'powerup_patience', effect: 'Slow' },
+    { name: 'Diligence', sprite: 'powerup_diligence', effect: 'Rapid' },
+    { name: 'Meditation', sprite: 'powerup_meditation', effect: 'Shield' },
+    { name: 'Paduma', sprite: 'paduma', effect: 'Heal' },
   ];
   let px = 70;
   powerups.forEach(p => {
-    tabContent.push(k.add([k.circle(8), k.pos(px, 145), k.color(k.Color.fromHex(p.color)), k.anchor('center'), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(p.name, { size: 12 }), k.pos(px, 160), k.anchor('center'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
-    tabContent.push(k.add([k.text(p.effect, { size: 11 }), k.pos(px, 175), k.anchor('center'), k.color(120, 120, 140), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.sprite(p.sprite), k.pos(px, 145), k.anchor('center'), k.scale(1.5), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.name, { size: 12 }), k.pos(px, 165), k.anchor('center'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
+    tabContent.push(k.add([k.text(p.effect, { size: 11 }), k.pos(px, 180), k.anchor('center'), k.color(120, 120, 140), k.fixed(), k.z(101)]));
     px += 115;
   });
 
@@ -150,7 +150,7 @@ export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
   });
 
   // Vajra section (centered below both columns)
-  tabContent.push(k.add([k.sprite('vajra'), k.pos(w / 2 - 70, 492), k.anchor('center'), k.scale(0.5), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.sprite('vajra'), k.pos(w / 2 - 80, 492), k.anchor('center'), k.scale(1.0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Vajra', { size: 16 }), k.pos(w / 2 - 45, 492), k.anchor('left'), k.color(255, 215, 0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('1.5% drop, clears all enemies, +500 karma', { size: 14 }), k.pos(w / 2 + 10, 492), k.anchor('left'), k.color(180, 180, 200), k.fixed(), k.z(101)]));
 }
