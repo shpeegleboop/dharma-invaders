@@ -26,6 +26,7 @@ export function createTitleScreen(k: KAPLAYCtx): void {
     k.pos(ts.buttons.join.x, ts.buttons.join.y),
     k.area(),
     k.opacity(0),
+    k.fixed(),
     'joinButton',
   ]);
 
@@ -40,6 +41,7 @@ export function createTitleScreen(k: KAPLAYCtx): void {
     k.pos(ts.buttons.close.x, ts.buttons.close.y),
     k.area(),
     k.opacity(0),
+    k.fixed(),
     'closeButton',
   ]);
 

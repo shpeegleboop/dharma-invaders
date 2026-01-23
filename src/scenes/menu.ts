@@ -108,6 +108,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
     k.anchor('center'),
     k.color(150, 150, 170),
     k.area(),
+    k.fixed(),
   ]).onClick(() => cycleDifficulty(-1));
 
   k.add([
@@ -116,6 +117,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
     k.anchor('center'),
     k.color(150, 150, 170),
     k.area(),
+    k.fixed(),
   ]).onClick(() => cycleDifficulty(1));
 
   // Reset arrow flag each frame
