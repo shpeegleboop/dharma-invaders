@@ -12,9 +12,6 @@ import { initAudio } from './systems/audio';
 // gameStore imports persistence and calls loadSave() on module init
 import './stores/gameStore';
 
-// Initialize systems
-initAudio();
-
 // Initialize Kaplay with game config
 const k = kaplay({
   width: config.screen.width,
@@ -36,5 +33,34 @@ k.scene('credits', () => createCreditsScene(k));
 k.scene('about', (data) => createAboutScene(k, data));
 k.scene('titleScreen', () => createTitleScreen(k));
 
-// Start at menu
-k.go('menu');
+// Click-to-start scene (unlocks audio on user interaction)
+k.scene('start', () => {
+  k.add([
+    k.rect(config.screen.width, config.screen.height),
+    k.pos(0, 0),
+    k.color(15, 15, 30),
+  ]);
+
+  const prompt = k.add([
+    k.text('Click to Begin', { size: 32 }),
+    k.pos(config.screen.width / 2, config.screen.height / 2),
+    k.anchor('center'),
+    k.color(255, 215, 0),
+    k.opacity(1),
+  ]);
+
+  prompt.onUpdate(() => {
+    prompt.opacity = 0.5 + Math.sin(k.time() * 2) * 0.5;
+  });
+
+  const startGame = () => {
+    initAudio(); // Initialize audio AFTER user interaction
+    k.go('menu');
+  };
+
+  k.onMousePress(startGame);
+  k.onKeyPress(startGame);
+});
+
+// Start at click-to-start screen
+k.go('start');
