@@ -4,7 +4,7 @@ import config from '../data/config.json';
 import { initSFX, playSFX as playSFXInternal, setSFXVolumeInternal } from './sfx';
 import type { SFXSound } from './sfx';
 
-type MusicTrack = 'menu' | 'gameplay' | 'boss' | 'boss2' | 'boss3' | 'boss4' | 'nirvana' | 'gameover';
+type MusicTrack = 'menu' | 'gameplay' | 'boss' | 'boss2' | 'boss4' | 'nirvana' | 'gameover';
 
 // localStorage keys
 const MUSIC_VOLUME_KEY = 'dharma_musicVolume';
@@ -12,7 +12,7 @@ const SFX_VOLUME_KEY = 'dharma_sfxVolume';
 
 // Music storage
 const music: Record<MusicTrack, Howl | null> = {
-  menu: null, gameplay: null, boss: null, boss2: null, boss3: null, boss4: null, nirvana: null, gameover: null,
+  menu: null, gameplay: null, boss: null, boss2: null, boss4: null, nirvana: null, gameover: null,
 };
 
 let currentMusic: Howl | null = null;
@@ -67,7 +67,6 @@ export function initAudio(): void {
   music.gameplay = createMusicHowl('gameplay', '/audio/music/gameplay.wav');
   music.boss = createMusicHowl('boss', '/audio/music/boss.wav');
   music.boss2 = createMusicHowl('boss2', '/audio/music/boss2.wav');
-  music.boss3 = createMusicHowl('boss3', '/audio/music/boss3.wav');
   music.boss4 = createMusicHowl('boss4', '/audio/music/boss4.wav');
   music.nirvana = createMusicHowl('nirvana', '/audio/music/nirvana.wav');
   music.gameover = createMusicHowl('gameover', '/audio/music/gameover.wav');

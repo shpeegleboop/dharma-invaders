@@ -51,9 +51,9 @@ export function setupGameAudio(): void {
     playSFX('shield_break');
   });
 
-  // Wave sounds
+  // Wave sounds - placeholder for future SFX
   events.on('wave:complete', () => {
-    playSFX('wave_complete');
+    // No SFX yet
   });
 
   // Boss sounds - different music per kalpa

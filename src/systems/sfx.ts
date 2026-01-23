@@ -18,7 +18,6 @@ export type SFXSound =
   | 'boss_phase'
   | 'boss_death'
   | 'boss_death_k4'
-  | 'wave_complete'
   | 'patighata'
   | 'vajra';
 
@@ -27,7 +26,7 @@ const sfx: Record<SFXSound, Howl | null> = {
   player_death: null, powerup_compassion: null, powerup_wisdom: null,
   powerup_patience: null, powerup_diligence: null, powerup_meditation: null,
   powerup_paduma: null, shield_break: null, boss_enter: null, boss_phase: null,
-  boss_death: null, boss_death_k4: null, wave_complete: null, patighata: null, vajra: null,
+  boss_death: null, boss_death_k4: null, patighata: null, vajra: null,
 };
 
 let sfxVolume = 0.7;
@@ -51,7 +50,6 @@ export function initSFX(volume: number): void {
   sfx.boss_phase = new Howl({ src: ['/audio/sfx/boss_phase.mp3'], volume: sfxVolume });
   sfx.boss_death = new Howl({ src: ['/audio/sfx/boss_death.mp3'], volume: sfxVolume });
   sfx.boss_death_k4 = new Howl({ src: ['/audio/sfx/4thbossdeath.mp3'], volume: sfxVolume });
-  sfx.wave_complete = new Howl({ src: ['/audio/sfx/wave_complete.mp3'], volume: sfxVolume });
   sfx.patighata = new Howl({ src: ['/audio/sfx/patighata.mp3'], volume: sfxVolume });
   sfx.vajra = new Howl({ src: ['/audio/sfx/vajra.mp3'], volume: sfxVolume * 0.6 });
 }
