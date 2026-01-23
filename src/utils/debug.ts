@@ -9,20 +9,29 @@ import { createNerayika } from '../entities/enemies/nerayika';
 import { createTiracchana } from '../entities/enemies/tiracchana';
 import { createManussa } from '../entities/enemies/manussa';
 import { createVajra } from '../entities/powerup';
+import { playCutscene } from '../systems/cutscene';
+import { resetAllCutsceneFlags } from '../systems/persistence';
 
 // Paduma not included - it's an instant heal, not a timed powerup
 const VIRTUES = ['compassion', 'wisdom', 'patience', 'diligence', 'meditation'];
+
+const CUTSCENE_IDS = [
+  'intro', 'firstDeath', 'bossIntro', 'victory', 'bodhisattva',
+  'maraReturns', 'kalpa2', 'kalpa3', 'kalpa4', 'rafLinens',
+] as const;
 
 type DebugState = {
   hitboxes: boolean;
   invincible: boolean;
   powerupIndex: number;
+  cutsceneIndex: number;
 };
 
 const state: DebugState = {
   hitboxes: false,
   invincible: false,
   powerupIndex: 0,
+  cutsceneIndex: 0,
 };
 
 let debugIndicator: GameObj | null = null;
@@ -168,6 +177,20 @@ export function setupDebug(k: KAPLAYCtx): void {
       createVajra(k, player.pos.x, player.pos.y - 100);
     }
     updateIndicator();
+  });
+
+  // R: Reset all cutscene flags
+  k.onKeyPress('r', () => {
+    resetAllCutsceneFlags();
+    console.log('Cutscene flags reset');
+  });
+
+  // P: Play next cutscene (cycles through all)
+  k.onKeyPress('p', () => {
+    const id = CUTSCENE_IDS[state.cutsceneIndex];
+    console.log(`Playing cutscene: ${id}`);
+    playCutscene(k, id);
+    state.cutsceneIndex = (state.cutsceneIndex + 1) % CUTSCENE_IDS.length;
   });
 
   // Keep player invincible if debug invincibility is on

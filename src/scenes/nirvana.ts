@@ -3,6 +3,7 @@ import type { KAPLAYCtx } from 'kaplay';
 import config from '../data/config.json';
 import { playMusic } from '../systems/audio';
 import { getCycle, getDeaths, getGameState, incrementCycle } from '../stores/gameStore';
+import { tryPlayCutscene, playCutscene } from '../systems/cutscene';
 
 const FOUR_NOBLE_TRUTHS = [
   'Life is suffering. You have witnessed this truth.',
@@ -11,9 +12,18 @@ const FOUR_NOBLE_TRUTHS = [
   'The path exists. You have walked it.',
 ];
 
-export function createNirvanaScene(k: KAPLAYCtx, karma: number): void {
-  playMusic('nirvana');
+export async function createNirvanaScene(k: KAPLAYCtx, karma: number): Promise<void> {
   const cycle = getCycle();
+
+  // Play victory cutscene (first time only)
+  await tryPlayCutscene(k, 'victory');
+
+  // Play rafLinens easter egg after kalpa 4+ boss
+  if (cycle >= 4) {
+    await playCutscene(k, 'rafLinens');
+  }
+
+  playMusic('nirvana');
   const deaths = getDeaths();
   const state = getGameState();
   const truth = FOUR_NOBLE_TRUTHS[(cycle - 1) % 4];
@@ -126,7 +136,8 @@ export function createNirvanaScene(k: KAPLAYCtx, karma: number): void {
     k.go('credits');
   });
 
-  k.onKeyPress('c', () => {
+  k.onKeyPress('c', async () => {
+    await tryPlayCutscene(k, 'bodhisattva');
     incrementCycle();
     k.go('game');
   });

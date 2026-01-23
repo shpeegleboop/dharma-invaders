@@ -1,0 +1,223 @@
+{
+  "intro": {
+    "beats": [
+      {
+        "background": "#1a0a2e",
+        "character": null,
+        "text": "The wheel of samsara turns endlessly...",
+        "textColor": "#e0d0ff"
+      },
+      {
+        "background": "#1a0a2e",
+        "character": "player",
+        "text": "You are a seeker of truth, armed only with virtue.",
+        "textColor": "#e0d0ff"
+      },
+      {
+        "background": "#1a0a2e",
+        "character": "player",
+        "text": "Face the demons of illusion. Break the cycle.",
+        "textColor": "#e0d0ff"
+      }
+    ]
+  },
+  "firstDeath": {
+    "beats": [
+      {
+        "background": "#0a0a1a",
+        "character": null,
+        "text": "Death is not the end—it is transformation.",
+        "textColor": "#aaaaaa"
+      },
+      {
+        "background": "#0a0a1a",
+        "character": null,
+        "text": "Your karma follows you. High karma grants virtue. Low karma invites affliction.",
+        "textColor": "#aaaaaa"
+      },
+      {
+        "background": "#0a0a1a",
+        "character": null,
+        "text": "Rise again, seeker. The wheel turns...",
+        "textColor": "#aaaaaa"
+      }
+    ]
+  },
+  "bossIntro": {
+    "beats": [
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "Mara, demon of illusion, blocks your path.",
+        "textColor": "#ff6666"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "\"You think you can escape? I am your doubt. Your fear. Your attachment.\"",
+        "textColor": "#ff6666"
+      }
+    ]
+  },
+  "victory": {
+    "beats": [
+      {
+        "background": "#1a1a0a",
+        "character": "player",
+        "text": "Mara is defeated... for now.",
+        "textColor": "#ffdd88"
+      },
+      {
+        "background": "#1a1a0a",
+        "character": null,
+        "text": "The demon of illusion will return. He always does.",
+        "textColor": "#ffdd88"
+      },
+      {
+        "background": "#1a1a0a",
+        "character": null,
+        "text": "But so will you.",
+        "textColor": "#ffdd88"
+      }
+    ]
+  },
+  "bodhisattva": {
+    "beats": [
+      {
+        "background": "#0a2a0a",
+        "character": "player",
+        "text": "You could end it here. Parinirvana awaits.",
+        "textColor": "#88ff88"
+      },
+      {
+        "background": "#0a2a0a",
+        "character": null,
+        "text": "But you choose to return—for the sake of all beings.",
+        "textColor": "#88ff88"
+      },
+      {
+        "background": "#0a2a0a",
+        "character": null,
+        "text": "This is the Bodhisattva path.",
+        "textColor": "#88ff88"
+      }
+    ]
+  },
+  "maraReturns": {
+    "beats": [
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "\"You cannot destroy me. I am eternal.\"",
+        "textColor": "#ff4444"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "Mara returns, stronger than before.",
+        "textColor": "#ff4444"
+      }
+    ]
+  },
+  "kalpa2": {
+    "beats": [
+      {
+        "background": "#1a0a1a",
+        "character": null,
+        "text": "The second kalpa begins. The realms grow restless.",
+        "textColor": "#ff9966"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": null,
+        "text": "Nerayika—beings from the hell realm—now walk among the demons.",
+        "textColor": "#ff6644"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": null,
+        "text": "They charge with fury and inflict mental afflictions. Beware their touch.",
+        "textColor": "#ff6644"
+      },
+      {
+        "background": "#1a1a2a",
+        "character": null,
+        "text": "But hope blooms as well. The Paduma lotus may appear, offering healing.",
+        "textColor": "#ffaacc"
+      }
+    ]
+  },
+  "kalpa3": {
+    "beats": [
+      {
+        "background": "#0a1a2a",
+        "character": null,
+        "text": "The third kalpa. Samsara's grip tightens.",
+        "textColor": "#66aaff"
+      },
+      {
+        "background": "#0a1a2a",
+        "character": null,
+        "text": "Tiracchana—animal realm beings—hunt in packs.",
+        "textColor": "#4488ff"
+      },
+      {
+        "background": "#0a1a2a",
+        "character": null,
+        "text": "Small and swift, they strip away your virtues on contact.",
+        "textColor": "#4488ff"
+      },
+      {
+        "background": "#0a1a2a",
+        "character": null,
+        "text": "Guard your paramis carefully.",
+        "textColor": "#66aaff"
+      }
+    ]
+  },
+  "kalpa4": {
+    "beats": [
+      {
+        "background": "#0a2a1a",
+        "character": null,
+        "text": "The fourth kalpa. A test of wisdom approaches.",
+        "textColor": "#66ff99"
+      },
+      {
+        "background": "#0a2a1a",
+        "character": null,
+        "text": "Manussa—human realm beings—wander the battlefield.",
+        "textColor": "#44dd77"
+      },
+      {
+        "background": "#0a2a1a",
+        "character": null,
+        "text": "They seek not conflict. Let them pass and earn great karma.",
+        "textColor": "#44dd77"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": null,
+        "text": "But strike them down? Ahirika—shamelessness—shall mark your soul.",
+        "textColor": "#ff4444"
+      }
+    ]
+  },
+  "rafLinens": {
+    "beats": [
+      {
+        "background": "#2a1a0a",
+        "character": "raflinens",
+        "image": "/sprites/raflinens.jpg",
+        "text": "cheeky parinirvana lofi Dubai chocolate labubu samsara",
+        "textColor": "#ffcc88"
+      },
+      {
+        "background": "#1a1a2e",
+        "character": "player",
+        "text": "what?",
+        "textColor": "#aaaaff"
+      }
+    ]
+  }
+}

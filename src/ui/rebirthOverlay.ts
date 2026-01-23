@@ -3,6 +3,7 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getRebirthTier, getTierColor } from '../systems/rebirthTiers';
 import { addParami, addKlesha, isParamiCapped, isKleshaCapped } from '../stores/gameStore';
+import { tryPlayCutscene } from '../systems/cutscene';
 
 // Available paramis and kleshas for random selection
 const PARAMI_POOL = [
@@ -22,13 +23,16 @@ function pickRandom<T>(arr: T[], count: number): T[] {
   return shuffled.slice(0, count);
 }
 
-export function showRebirthOverlay(
+export async function showRebirthOverlay(
   k: KAPLAYCtx,
   karmaThisLife: number,
   onContinue: () => void
-): void {
+): Promise<void> {
   if (isOverlayActive) return;
   isOverlayActive = true;
+
+  // Play first death cutscene (only plays once ever)
+  await tryPlayCutscene(k, 'firstDeath');
 
   const tier = getRebirthTier(karmaThisLife);
   const tierColor = getTierColor(tier.name);

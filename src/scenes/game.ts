@@ -32,8 +32,9 @@ import { getMaxHealthModifier } from '../systems/rebirthEffects';
 import { getDifficultyDisplayName } from '../systems/difficulty';
 import config from '../data/config.json';
 import { resetVajraCooldown } from '../entities/powerup';
+import { tryPlayCutscene } from '../systems/cutscene';
 
-export function createGameScene(k: KAPLAYCtx): void {
+export async function createGameScene(k: KAPLAYCtx): Promise<void> {
   // Clear all event listeners from previous scene
   events.clear();
 
@@ -42,6 +43,15 @@ export function createGameScene(k: KAPLAYCtx): void {
 
   // Reset Vajra wave cooldown for new game
   resetVajraCooldown();
+
+  // Play intro cutscene (first game only)
+  await tryPlayCutscene(k, 'intro');
+
+  // Play kalpa-specific intro cutscenes
+  const currentKalpa = getCycle();
+  if (currentKalpa === 2) await tryPlayCutscene(k, 'kalpa2');
+  else if (currentKalpa === 3) await tryPlayCutscene(k, 'kalpa3');
+  else if (currentKalpa >= 4) await tryPlayCutscene(k, 'kalpa4');
 
   // Play gameplay music
   playMusic('gameplay');
@@ -148,6 +158,18 @@ export function createGameScene(k: KAPLAYCtx): void {
   // Handle game over - go to game over scene
   events.on('game:over', () => {
     k.go('gameOver', getKarma());
+  });
+
+  // Boss intro cutscenes when wave 8 completes
+  events.on('wave:complete', async (data) => {
+    if (data.waveNumber === 8) {
+      const kalpa = getCycle();
+      if (kalpa === 1) {
+        await tryPlayCutscene(k, 'bossIntro');
+      } else {
+        await tryPlayCutscene(k, 'maraReturns');
+      }
+    }
   });
 
   // Spawn player

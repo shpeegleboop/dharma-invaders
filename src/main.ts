@@ -25,6 +25,7 @@ const k = kaplay({
 
 // Load sprites
 k.loadSprite('sufferScreen', '/sprites/suffer_sharp.jpg');
+k.loadSprite('raflinens', '/sprites/raflinens.jpg');
 
 // Register scenes
 k.scene('menu', () => createMenuScene(k));
