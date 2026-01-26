@@ -1,6 +1,6 @@
 // Audio settings - state and input handling
 import type { KAPLAYCtx, GameObj } from 'kaplay';
-import { getMusicVolume, getSFXVolume, setMusicVolume, setSFXVolume, playSFX } from '../systems/audio';
+import { getMusicVolume, getSFXVolume, setMusicVolume, setSFXVolume, playSFX, playMusic, type MusicTrack } from '../systems/audio';
 import { createAudioSettingsUI, formatVolume, SELECTABLE_TRACKS, getTrackDisplayName } from './audioSettingsUI';
 import { hideMenuLogo, showMenuLogo } from './htmlOverlays';
 import {
@@ -103,6 +103,12 @@ function cycleTrack(category: 'gameplay' | 'boss', delta: number): void {
     setSelectedBossTrack(newTrack);
   }
   updateTrackDisplays();
+
+  // Play the selected track immediately as preview
+  const trackToPlay = newTrack === 'default'
+    ? (category === 'gameplay' ? 'gameplay' : 'boss')
+    : newTrack;
+  playMusic(trackToPlay as MusicTrack);
 }
 
 export function showAudioSettings(onClose: () => void): void {
