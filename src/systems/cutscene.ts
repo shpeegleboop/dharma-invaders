@@ -1,7 +1,7 @@
 // Cutscene system - data-driven narrative overlays
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import cutsceneData from '../data/cutscenes.json';
-import { getCutsceneFlag, setCutsceneFlag } from './persistence';
+import { getCutsceneFlag, setCutsceneFlag, getShowAllCutscenes } from './persistence';
 import { getCycle } from '../stores/gameStore';
 
 type CutsceneId = keyof typeof cutsceneData;
@@ -85,7 +85,10 @@ function shouldPlayCutscene(id: CutsceneId): boolean {
   if (id === 'maraReturns') return getCycle() >= 2;
   if (id === 'rafLinens') return true;
   const flag = FLAG_MAP[id];
-  return flag ? !getCutsceneFlag(flag) : false;
+  if (!flag) return false;
+  // If "show all cutscenes" is enabled, always play
+  if (getShowAllCutscenes()) return true;
+  return !getCutsceneFlag(flag);
 }
 
 function markCutsceneSeen(id: CutsceneId): void {

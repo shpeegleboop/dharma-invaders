@@ -6,6 +6,7 @@ import { setupAudioSettings, showAudioSettings, hideAudioSettings, isAudioSettin
 import { getDifficulty, setDifficulty, getDifficulties } from '../stores/gameStore';
 import { getDifficultyDisplayName, getDifficultySubtitle } from '../systems/difficulty';
 import { showMenuLogo, hideMenuLogo } from '../ui/htmlOverlays';
+import { hasSeenAllCutscenes, getShowAllCutscenes, setShowAllCutscenes } from '../systems/persistence';
 
 export function createMenuScene(k: KAPLAYCtx): void {
   // Play menu music
@@ -113,6 +114,32 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
   // Reset arrow flag each frame
   k.onUpdate(() => { arrowClicked = false; });
+
+  // Cutscene toggle (only shown after player has seen all cutscenes)
+  if (hasSeenAllCutscenes()) {
+    let showCutscenes = getShowAllCutscenes();
+    const getCheckboxText = () => showCutscenes ? '☑ Show all cutscenes' : '☐ Show all cutscenes';
+
+    const cutsceneToggle = k.add([
+      k.text(getCheckboxText(), { size: 14 }),
+      k.pos(config.screen.width / 2, config.screen.height * 0.88),
+      k.anchor('center'),
+      k.color(showCutscenes ? 180 : 100, showCutscenes ? 180 : 100, showCutscenes ? 200 : 120),
+      k.area(),
+    ]);
+
+    cutsceneToggle.onClick(() => {
+      arrowClicked = true; // Prevent starting game
+      showCutscenes = !showCutscenes;
+      setShowAllCutscenes(showCutscenes);
+      cutsceneToggle.text = getCheckboxText();
+      cutsceneToggle.color = k.rgb(
+        showCutscenes ? 180 : 100,
+        showCutscenes ? 180 : 100,
+        showCutscenes ? 200 : 120
+      );
+    });
+  }
 
   // Menu hints
   k.add([

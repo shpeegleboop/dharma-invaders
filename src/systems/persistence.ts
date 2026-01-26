@@ -13,6 +13,7 @@ interface SaveData {
     hasSeenKalpa3: boolean;
     hasSeenKalpa4: boolean;
   };
+  showAllCutscenes: boolean;
   musicUnlocks: string[];
 }
 
@@ -28,6 +29,7 @@ const DEFAULT_SAVE: SaveData = {
     hasSeenKalpa3: false,
     hasSeenKalpa4: false,
   },
+  showAllCutscenes: true,
   musicUnlocks: [],
 };
 
@@ -82,6 +84,19 @@ export function setCutsceneFlag(flag: keyof SaveData['cutsceneFlags'], value: bo
 
 export function resetAllCutsceneFlags(): void {
   updateSave({ cutsceneFlags: { ...DEFAULT_SAVE.cutsceneFlags } });
+}
+
+export function hasSeenAllCutscenes(): boolean {
+  const flags = loadSave().cutsceneFlags;
+  return Object.values(flags).every(v => v === true);
+}
+
+export function getShowAllCutscenes(): boolean {
+  return loadSave().showAllCutscenes;
+}
+
+export function setShowAllCutscenes(value: boolean): void {
+  updateSave({ showAllCutscenes: value });
 }
 
 // Music unlock helpers
