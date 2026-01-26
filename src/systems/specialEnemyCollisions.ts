@@ -6,6 +6,7 @@ import { isShieldActive } from './powerupEffects';
 import { bounceAndStunEnemy } from './collisionHelpers';
 import { damagePlayer } from './playerDamage';
 import { absorbDamage } from './shieldSystem';
+import { playSFX } from './audio';
 import {
   addKlesha, getRandomKlesha, removeRandomParami,
   setKarmaThisLife, hasKlesha
@@ -69,6 +70,8 @@ export function handleManussaCollision(_k: KAPLAYCtx, player: any, enemy: any): 
 
 // Handle Manussa death: severe karmic penalty (or reward if Ahirika active)
 export function handleManussaDeath(k: KAPLAYCtx, x: number, y: number): void {
+  playSFX('manussa_death');
+
   if (hasKlesha('Ahirika')) {
     events.emit('human:killed:ahirika', {});
     spawnFloatingText(k, x, y - 50, '+1000 karma', [255, 215, 0]);
