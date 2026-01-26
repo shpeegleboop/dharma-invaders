@@ -6,7 +6,7 @@ import path from 'path';
 
 const SPRITES_DIR = './public/sprites';
 const OUTPUT_DIR = './public/sprites-png';
-const PADDING = 2; // pixels of transparent padding on each side
+const PADDING = 4; // pixels of transparent padding on each side (need more for linear filtering at high scale)
 const SCALE = 1; // render at native size to keep scaling math unchanged
 
 // SVGs to convert (game sprites only, not photos/logos)

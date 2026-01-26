@@ -3,8 +3,8 @@
   <defs>
     <radialGradient id="mandorlaGrad" cx="50%" cy="50%" r="50%">
       <stop offset="0%" style="stop-color:#EAE4F2;stop-opacity:0.9"/>
-      <stop offset="40%" style="stop-color:#9B8AC4;stop-opacity:0.6"/>
-      <stop offset="85%" style="stop-color:#5D4E8C;stop-opacity:0.1"/>
+      <stop offset="45%" style="stop-color:#9B8AC4;stop-opacity:0.5"/>
+      <stop offset="85%" style="stop-color:#5D4E8C;stop-opacity:0.05"/>
       <stop offset="100%" style="stop-color:#5D4E8C;stop-opacity:0"/>
     </radialGradient>
     <linearGradient id="robeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -22,7 +22,7 @@
   </defs>
   
   <!-- Mandorla glow - violet/indigo (shrunk to avoid edge artifacts) -->
-  <ellipse cx="16" cy="16" rx="12" ry="13" fill="url(#mandorlaGrad)"/>
+  <ellipse cx="16" cy="16" rx="11" ry="12" fill="url(#mandorlaGrad)"/>
   
   <!-- Ushnisha (crown bump) - GOLD -->
   <ellipse cx="16" cy="5" rx="2" ry="2" fill="url(#goldGrad)"/>

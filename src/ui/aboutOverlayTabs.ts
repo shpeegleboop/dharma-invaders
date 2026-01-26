@@ -43,7 +43,7 @@ export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
     y += 100;
   });
 
-  // Mara
+  // Mara (fine with k.fixed())
   y += 20;
   tabContent.push(k.add([k.sprite('mara'), k.pos(70, y), k.anchor('center'), k.scale(2), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Māra', { size: 22 }), k.pos(140, y - 20), k.color(139, 0, 0), k.fixed(), k.z(101)]));
@@ -60,15 +60,15 @@ export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
   tabContent.push(k.add([k.text('Nerayikā', { size: 22 }), k.pos(540, y - 20), k.color(255, 69, 0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('4 HP, +Klesha (K2+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 
-  // Tiracchānā
+  // Tiracchānā (fine with k.fixed())
   y += 100;
   tabContent.push(k.add([k.sprite('tiracchana'), k.pos(470, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Tiracchānā', { size: 22 }), k.pos(540, y - 20), k.color(65, 105, 225), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Pack, -Pāramī (K3+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 
-  // Manussā
+  // Manussā (taller sprite, use smaller scale) (fine with k.fixed())
   y += 100;
-  tabContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(1.8), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Manussā', { size: 22 }), k.pos(540, y - 20), k.color(0, 255, 0), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Peaceful (K4+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 }

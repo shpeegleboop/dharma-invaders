@@ -81,9 +81,9 @@ export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
   pageContent.push(k.add([k.text('Pack of 6, -Pāramī (K3+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Animal realm', { size: 14 }), k.pos(540, y + 22), k.color(100, 100, 120)]));
 
-  // Manussā
+  // Manussā (taller sprite, use smaller scale)
   y += 120;
-  pageContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(4)]));
+  pageContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(2)]));
   pageContent.push(k.add([k.text('Manussā', { size: 22 }), k.pos(540, y - 25), k.color(0, 255, 0)]));
   pageContent.push(k.add([k.text('Peaceful (K4+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Human realm', { size: 14 }), k.pos(540, y + 22), k.color(100, 100, 120)]));

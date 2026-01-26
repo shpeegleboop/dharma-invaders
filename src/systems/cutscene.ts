@@ -311,12 +311,12 @@ function createCharSprite(k: KAPLAYCtx, character: string, cx: number, cy: numbe
   const sprite = k.add([
     k.rect(64, 64), k.pos(cx, cy + 20),
     k.anchor('center'), k.color(k.Color.fromHex('#ffff00')),
-    k.fixed(), k.z(1001), 'cutsceneVisual',
+    k.z(1001), 'cutsceneVisual',
   ]);
   k.add([
     k.text(':)', { size: 32 }), k.pos(cx, cy + 20),
     k.anchor('center'), k.color(0, 0, 0),
-    k.fixed(), k.z(1002), 'cutsceneVisual',
+    k.z(1002), 'cutsceneVisual',
   ]);
   return sprite;
 }
