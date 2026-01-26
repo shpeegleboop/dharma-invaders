@@ -44,8 +44,8 @@ let isPlaying = false;
 const ROTATION_SPEED = 15; // degrees per second
 const BREATH_SPEED = 0.3; // cycles per second (~3.3 sec per breath)
 const BREATH_AMOUNT = 0.03; // 3% scale variation
-const ROCK_SPEED = 0.25; // cycles per second (4 sec per rock cycle)
-const ROCK_ANGLE = 12; // degrees to tilt each direction
+const ROCK_SPEED = 0.15; // cycles per second (~6.7 sec per rock cycle)
+const ROCK_ANGLE = 6; // degrees to tilt each direction
 
 // Add subtle breathing animation to a sprite
 function addBreathing(k: KAPLAYCtx, obj: GameObj, baseScale: number, phaseOffset = 0): void {
