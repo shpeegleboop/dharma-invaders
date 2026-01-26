@@ -15,6 +15,8 @@ interface SaveData {
   };
   showAllCutscenes: boolean;
   musicUnlocks: string[];
+  selectedGameplayTrack: string;
+  selectedBossTrack: string;
 }
 
 const DEFAULT_SAVE: SaveData = {
@@ -31,6 +33,8 @@ const DEFAULT_SAVE: SaveData = {
   },
   showAllCutscenes: false,
   musicUnlocks: [],
+  selectedGameplayTrack: 'gameplay',
+  selectedBossTrack: 'boss',
 };
 
 let cache: SaveData | null = null;
@@ -115,4 +119,21 @@ export function addMusicUnlock(track: string): void {
   if (!unlocks.includes(track)) {
     updateSave({ musicUnlocks: [...unlocks, track] });
   }
+}
+
+// Track selection helpers
+export function getSelectedGameplayTrack(): string {
+  return loadSave().selectedGameplayTrack || 'gameplay';
+}
+
+export function setSelectedGameplayTrack(track: string): void {
+  updateSave({ selectedGameplayTrack: track });
+}
+
+export function getSelectedBossTrack(): string {
+  return loadSave().selectedBossTrack || 'boss';
+}
+
+export function setSelectedBossTrack(track: string): void {
+  updateSave({ selectedBossTrack: track });
 }

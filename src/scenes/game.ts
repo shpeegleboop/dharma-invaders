@@ -19,7 +19,8 @@ import { setupAudioSettings, showAudioSettings, hideAudioSettings } from '../ui/
 import { resetRebirthOverlay } from '../ui/rebirthOverlay';
 import { setupRebirthHud } from '../ui/rebirthHud';
 import { events } from '../utils/events';
-import { playMusic } from '../systems/audio';
+import { playMusic, type MusicTrack } from '../systems/audio';
+import { getSelectedGameplayTrack } from '../systems/persistence';
 import {
   getCycle,
   saveHealth,
@@ -53,8 +54,8 @@ export async function createGameScene(k: KAPLAYCtx): Promise<void> {
   else if (currentKalpa === 3) await tryPlayCutscene(k, 'kalpa3');
   else if (currentKalpa >= 4) await tryPlayCutscene(k, 'kalpa4');
 
-  // Play gameplay music
-  playMusic('gameplay');
+  // Play selected gameplay music
+  playMusic(getSelectedGameplayTrack() as MusicTrack);
 
   // Draw HUD background bar
   k.add([

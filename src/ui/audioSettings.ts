@@ -1,82 +1,115 @@
 // Audio settings - state and input handling
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import { getMusicVolume, getSFXVolume, setMusicVolume, setSFXVolume, playSFX } from '../systems/audio';
-import { createAudioSettingsUI, formatVolume } from './audioSettingsUI';
+import { createAudioSettingsUI, formatVolume, SELECTABLE_TRACKS, getTrackDisplayName } from './audioSettingsUI';
+import { hideMenuLogo, showMenuLogo } from './htmlOverlays';
+import {
+  getMusicUnlocks,
+  getSelectedGameplayTrack,
+  setSelectedGameplayTrack,
+  getSelectedBossTrack,
+  setSelectedBossTrack,
+} from '../systems/persistence';
 
-type SelectedSlider = 'music' | 'sfx';
+type SelectedRow = 'music' | 'sfx' | 'gameplayTrack' | 'bossTrack';
 
 let isVisible = false;
-let selectedSlider: SelectedSlider = 'music';
+let selectedRow: SelectedRow = 'music';
 let uiElements: GameObj[] = [];
 let musicValueText: GameObj | null = null;
 let sfxValueText: GameObj | null = null;
 let musicHighlight: GameObj | null = null;
 let sfxHighlight: GameObj | null = null;
+let gameplayTrackText: GameObj | null = null;
+let bossTrackText: GameObj | null = null;
+let gameplayHighlight: GameObj | null = null;
+let bossHighlight: GameObj | null = null;
 let kRef: KAPLAYCtx | null = null;
 let onCloseCallback: (() => void) | null = null;
+
+const ROW_ORDER: SelectedRow[] = ['music', 'sfx', 'gameplayTrack', 'bossTrack'];
 
 export function setupAudioSettings(k: KAPLAYCtx): void {
   // Reset all state on scene change
   isVisible = false;
-  selectedSlider = 'music';
+  selectedRow = 'music';
   uiElements = [];
   musicValueText = null;
   sfxValueText = null;
   musicHighlight = null;
   sfxHighlight = null;
+  gameplayTrackText = null;
+  bossTrackText = null;
+  gameplayHighlight = null;
+  bossHighlight = null;
   onCloseCallback = null;
   kRef = k;
 
   // Navigation controls
-  k.onKeyPress('up', () => {
-    if (!isVisible) return;
-    selectedSlider = 'music';
-    updateHighlight();
-  });
+  k.onKeyPress('up', () => navigateRow(-1));
+  k.onKeyPress('w', () => navigateRow(-1));
+  k.onKeyPress('down', () => navigateRow(1));
+  k.onKeyPress('s', () => navigateRow(1));
 
-  k.onKeyPress('w', () => {
-    if (!isVisible) return;
-    selectedSlider = 'music';
-    updateHighlight();
-  });
-
-  k.onKeyPress('down', () => {
-    if (!isVisible) return;
-    selectedSlider = 'sfx';
-    updateHighlight();
-  });
-
-  k.onKeyPress('s', () => {
-    if (!isVisible) return;
-    selectedSlider = 'sfx';
-    updateHighlight();
-  });
-
-  // Volume adjustment
-  k.onKeyPress('left', () => adjustVolume(-0.1));
-  k.onKeyPress('right', () => adjustVolume(0.1));
+  // Value adjustment (volume or track selection)
+  k.onKeyPress('left', () => adjustValue(-1));
+  k.onKeyPress('right', () => adjustValue(1));
 }
 
-function adjustVolume(delta: number): void {
+function navigateRow(delta: number): void {
+  if (!isVisible) return;
+  const idx = ROW_ORDER.indexOf(selectedRow);
+  const newIdx = Math.max(0, Math.min(ROW_ORDER.length - 1, idx + delta));
+  selectedRow = ROW_ORDER[newIdx];
+  updateHighlight();
+}
+
+function adjustValue(delta: number): void {
   if (!isVisible) return;
 
-  if (selectedSlider === 'music') {
-    const newVol = Math.max(0, Math.min(1, getMusicVolume() + delta));
+  if (selectedRow === 'music') {
+    const newVol = Math.max(0, Math.min(1, getMusicVolume() + delta * 0.1));
     setMusicVolume(newVol);
-  } else {
-    const newVol = Math.max(0, Math.min(1, getSFXVolume() + delta));
+    updateValueDisplays();
+  } else if (selectedRow === 'sfx') {
+    const newVol = Math.max(0, Math.min(1, getSFXVolume() + delta * 0.1));
     setSFXVolume(newVol);
     playSFX('enemy_death');
+    updateValueDisplays();
+  } else if (selectedRow === 'gameplayTrack') {
+    cycleTrack('gameplay', delta);
+  } else if (selectedRow === 'bossTrack') {
+    cycleTrack('boss', delta);
   }
-  updateValueDisplays();
+}
+
+function cycleTrack(category: 'gameplay' | 'boss', delta: number): void {
+  const unlocks = getMusicUnlocks();
+  const unlockedTracks = SELECTABLE_TRACKS.filter(t => unlocks.includes(t.id));
+  if (unlockedTracks.length === 0) return;
+
+  const currentId = category === 'gameplay' ? getSelectedGameplayTrack() : getSelectedBossTrack();
+  const currentIdx = unlockedTracks.findIndex(t => t.id === currentId);
+  const newIdx = (currentIdx + delta + unlockedTracks.length) % unlockedTracks.length;
+  const newTrack = unlockedTracks[newIdx].id;
+
+  if (category === 'gameplay') {
+    setSelectedGameplayTrack(newTrack);
+  } else {
+    setSelectedBossTrack(newTrack);
+  }
+  updateTrackDisplays();
 }
 
 export function showAudioSettings(onClose: () => void): void {
   if (!kRef || isVisible) return;
 
   isVisible = true;
-  selectedSlider = 'music';
+  selectedRow = 'music';
   onCloseCallback = onClose;
+
+  // Hide logo overlay so it doesn't block the menu
+  hideMenuLogo();
 
   const refs = createAudioSettingsUI(kRef);
   uiElements = refs.elements;
@@ -84,8 +117,13 @@ export function showAudioSettings(onClose: () => void): void {
   sfxValueText = refs.sfxValueText;
   musicHighlight = refs.musicHighlight;
   sfxHighlight = refs.sfxHighlight;
+  gameplayTrackText = refs.gameplayTrackText;
+  bossTrackText = refs.bossTrackText;
+  gameplayHighlight = refs.gameplayHighlight;
+  bossHighlight = refs.bossHighlight;
 
   updateHighlight();
+  updateTrackDisplays();
 }
 
 export function hideAudioSettings(): void {
@@ -96,13 +134,37 @@ export function hideAudioSettings(): void {
   sfxValueText = null;
   musicHighlight = null;
   sfxHighlight = null;
+  gameplayTrackText = null;
+  bossTrackText = null;
+  gameplayHighlight = null;
+  bossHighlight = null;
+
+  // Restore logo overlay
+  showMenuLogo();
+
   if (onCloseCallback) onCloseCallback();
   onCloseCallback = null;
 }
 
 function updateHighlight(): void {
-  if (musicHighlight) musicHighlight.opacity = selectedSlider === 'music' ? 1 : 0;
-  if (sfxHighlight) sfxHighlight.opacity = selectedSlider === 'sfx' ? 1 : 0;
+  if (musicHighlight) musicHighlight.opacity = selectedRow === 'music' ? 1 : 0;
+  if (sfxHighlight) sfxHighlight.opacity = selectedRow === 'sfx' ? 1 : 0;
+  if (gameplayHighlight) gameplayHighlight.opacity = selectedRow === 'gameplayTrack' ? 1 : 0;
+  if (bossHighlight) bossHighlight.opacity = selectedRow === 'bossTrack' ? 1 : 0;
+}
+
+function updateTrackDisplays(): void {
+  const unlocks = getMusicUnlocks();
+  if (gameplayTrackText) {
+    const trackId = getSelectedGameplayTrack();
+    const isUnlocked = unlocks.includes(trackId);
+    gameplayTrackText.text = `< ${getTrackDisplayName(trackId, isUnlocked)} >`;
+  }
+  if (bossTrackText) {
+    const trackId = getSelectedBossTrack();
+    const isUnlocked = unlocks.includes(trackId);
+    bossTrackText.text = `< ${getTrackDisplayName(trackId, isUnlocked)} >`;
+  }
 }
 
 function updateValueDisplays(): void {

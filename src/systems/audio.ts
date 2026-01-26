@@ -3,8 +3,9 @@ import { Howl } from 'howler';
 import config from '../data/config.json';
 import { initSFX, playSFX as playSFXInternal, setSFXVolumeInternal } from './sfx';
 import type { SFXSound } from './sfx';
+import { addMusicUnlock } from './persistence';
 
-type MusicTrack = 'menu' | 'gameplay' | 'boss' | 'boss2' | 'boss3' | 'boss4' | 'nirvana' | 'gameover';
+export type MusicTrack = 'menu' | 'gameplay' | 'boss' | 'boss2' | 'boss3' | 'boss4' | 'nirvana' | 'gameover';
 
 // localStorage keys
 const MUSIC_VOLUME_KEY = 'dharma_musicVolume';
@@ -98,6 +99,8 @@ export function playMusic(track: MusicTrack): void {
     newMusic.play();
     currentMusic = newMusic;
     currentMusicTrack = track;
+    // Unlock track when first played
+    addMusicUnlock(track);
     console.log('Started playing:', track);
   } else {
     console.error('Music track not loaded:', track);
