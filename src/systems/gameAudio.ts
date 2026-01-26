@@ -57,11 +57,20 @@ export function setupGameAudio(): void {
     // No SFX yet
   });
 
-  // Boss sounds - use player-selected track
+  // Boss sounds - use player-selected track or kalpa-based default
   events.on('boss:started', () => {
     playSFX('boss_enter');
-    const selectedTrack = getSelectedBossTrack() as MusicTrack;
-    playMusic(selectedTrack);
+    const selectedTrack = getSelectedBossTrack();
+    if (selectedTrack === 'default') {
+      // Original kalpa-based behavior
+      const kalpa = getCycle();
+      if (kalpa >= 4) playMusic('boss4');
+      else if (kalpa === 3) playMusic('boss3');
+      else if (kalpa === 2) playMusic('boss2');
+      else playMusic('boss');
+    } else {
+      playMusic(selectedTrack as MusicTrack);
+    }
   });
 
   events.on('boss:phaseChange', () => {

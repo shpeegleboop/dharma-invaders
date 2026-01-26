@@ -85,13 +85,15 @@ function adjustValue(delta: number): void {
 
 function cycleTrack(category: 'gameplay' | 'boss', delta: number): void {
   const unlocks = getMusicUnlocks();
-  const unlockedTracks = SELECTABLE_TRACKS.filter(t => unlocks.includes(t.id));
-  if (unlockedTracks.length === 0) return;
+  // 'default' is always available, plus any unlocked tracks
+  const availableTracks = SELECTABLE_TRACKS.filter(t => t.id === 'default' || unlocks.includes(t.id));
+  if (availableTracks.length === 0) return;
 
   const currentId = category === 'gameplay' ? getSelectedGameplayTrack() : getSelectedBossTrack();
-  const currentIdx = unlockedTracks.findIndex(t => t.id === currentId);
-  const newIdx = (currentIdx + delta + unlockedTracks.length) % unlockedTracks.length;
-  const newTrack = unlockedTracks[newIdx].id;
+  const currentIdx = availableTracks.findIndex(t => t.id === currentId);
+  const safeIdx = currentIdx === -1 ? 0 : currentIdx;
+  const newIdx = (safeIdx + delta + availableTracks.length) % availableTracks.length;
+  const newTrack = availableTracks[newIdx].id;
 
   if (category === 'gameplay') {
     setSelectedGameplayTrack(newTrack);

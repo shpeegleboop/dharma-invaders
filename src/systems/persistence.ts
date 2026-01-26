@@ -33,8 +33,8 @@ const DEFAULT_SAVE: SaveData = {
   },
   showAllCutscenes: false,
   musicUnlocks: [],
-  selectedGameplayTrack: 'gameplay',
-  selectedBossTrack: 'boss',
+  selectedGameplayTrack: 'default',
+  selectedBossTrack: 'default',
 };
 
 let cache: SaveData | null = null;
@@ -123,7 +123,7 @@ export function addMusicUnlock(track: string): void {
 
 // Track selection helpers
 export function getSelectedGameplayTrack(): string {
-  return loadSave().selectedGameplayTrack || 'gameplay';
+  return loadSave().selectedGameplayTrack || 'default';
 }
 
 export function setSelectedGameplayTrack(track: string): void {
@@ -131,7 +131,7 @@ export function setSelectedGameplayTrack(track: string): void {
 }
 
 export function getSelectedBossTrack(): string {
-  return loadSave().selectedBossTrack || 'boss';
+  return loadSave().selectedBossTrack || 'default';
 }
 
 export function setSelectedBossTrack(track: string): void {

@@ -54,8 +54,9 @@ export async function createGameScene(k: KAPLAYCtx): Promise<void> {
   else if (currentKalpa === 3) await tryPlayCutscene(k, 'kalpa3');
   else if (currentKalpa >= 4) await tryPlayCutscene(k, 'kalpa4');
 
-  // Play selected gameplay music
-  playMusic(getSelectedGameplayTrack() as MusicTrack);
+  // Play selected gameplay music (default = 'gameplay')
+  const gameplayTrack = getSelectedGameplayTrack();
+  playMusic((gameplayTrack === 'default' ? 'gameplay' : gameplayTrack) as MusicTrack);
 
   // Background image (covers full screen behind everything)
   // Scale to cover screen (bg1.jpg is 1104x832, screen is 800x650)

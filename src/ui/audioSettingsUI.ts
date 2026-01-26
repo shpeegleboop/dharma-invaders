@@ -18,6 +18,7 @@ export type AudioSettingsUIRefs = {
 
 // Selectable tracks for both gameplay and boss
 export const SELECTABLE_TRACKS = [
+  { id: 'default', name: 'Default' },
   { id: 'gameplay', name: 'Mindful Focus' },
   { id: 'boss', name: "Mara's Challenge" },
   { id: 'boss2', name: 'Rising Tension' },
@@ -28,6 +29,8 @@ export const SELECTABLE_TRACKS = [
 export function getTrackDisplayName(trackId: string, isUnlocked: boolean): string {
   const track = SELECTABLE_TRACKS.find(t => t.id === trackId);
   const name = track ? track.name : trackId;
+  // 'default' is always available
+  if (trackId === 'default') return name;
   return isUnlocked ? name : `${name} 🔒`;
 }
 
