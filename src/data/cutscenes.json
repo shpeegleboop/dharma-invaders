@@ -39,7 +39,9 @@
       {
         "background": "#0a0a1a",
         "text": "Your karma follows you. High karma grants Perfections. Low karma invites Defilements.",
-        "textColor": "#aaaaaa"
+        "textColor": "#aaaaaa",
+        "image": "karma",
+        "imageScale": 0.4
       },
       {
         "background": "#0a0a1a",
