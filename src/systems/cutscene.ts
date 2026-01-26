@@ -44,6 +44,8 @@ let isPlaying = false;
 const ROTATION_SPEED = 15; // degrees per second
 const BREATH_SPEED = 0.3; // cycles per second (~3.3 sec per breath)
 const BREATH_AMOUNT = 0.03; // 3% scale variation
+const ROCK_SPEED = 0.25; // cycles per second (4 sec per rock cycle)
+const ROCK_ANGLE = 12; // degrees to tilt each direction
 
 // Add subtle breathing animation to a sprite
 function addBreathing(k: KAPLAYCtx, obj: GameObj, baseScale: number, phaseOffset = 0): void {
@@ -52,6 +54,19 @@ function addBreathing(k: KAPLAYCtx, obj: GameObj, baseScale: number, phaseOffset
     const t = (k.time() - startTime) * BREATH_SPEED * Math.PI * 2 + phaseOffset;
     const breathScale = 1 + Math.sin(t) * BREATH_AMOUNT;
     obj.scale = k.vec2(baseScale * breathScale);
+  });
+}
+
+// Add breathing + gentle rocking (for non-rotating images)
+function addBreathingAndRocking(k: KAPLAYCtx, obj: GameObj, baseScale: number, phaseOffset = 0): void {
+  const startTime = k.time();
+  obj.onUpdate(() => {
+    const bt = (k.time() - startTime) * BREATH_SPEED * Math.PI * 2 + phaseOffset;
+    const breathScale = 1 + Math.sin(bt) * BREATH_AMOUNT;
+    obj.scale = k.vec2(baseScale * breathScale);
+
+    const rt = (k.time() - startTime) * ROCK_SPEED * Math.PI * 2 + phaseOffset * 0.7;
+    obj.angle = Math.sin(rt) * ROCK_ANGLE;
   });
 }
 
@@ -153,16 +168,19 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         ]);
         if (ly.background.rotate) {
           bgImg.onUpdate(() => { bgImg.angle += ROTATION_SPEED * k.dt(); });
+          addBreathing(k, bgImg, bgScale);
+        } else {
+          addBreathingAndRocking(k, bgImg, bgScale);
         }
-        addBreathing(k, bgImg, bgScale);
         const fgSprite = k.add([
           k.sprite(ly.foreground.sprite),
           k.pos(cx, cy),
           k.anchor('center'),
           k.scale(ly.foreground.scale),
+          k.rotate(0),
           k.fixed(), k.z(1002), 'cutsceneVisual',
         ]);
-        addBreathing(k, fgSprite, ly.foreground.scale, Math.PI * 0.5);
+        addBreathingAndRocking(k, fgSprite, ly.foreground.scale, Math.PI * 0.5);
         return;
       }
 
@@ -179,8 +197,10 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         ]);
         if (beat.imageRotate) {
           img.onUpdate(() => { img.angle += ROTATION_SPEED * k.dt(); });
+          addBreathing(k, img, imgScale);
+        } else {
+          addBreathingAndRocking(k, img, imgScale);
         }
-        addBreathing(k, img, imgScale);
       }
 
       // Multiple sprites with positions (round to avoid sub-pixel artifacts)
@@ -191,10 +211,11 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
             k.pos(Math.round(spr.x), Math.round(spr.y)),
             k.anchor('center'),
             k.scale(spr.scale),
+            k.rotate(0),
             k.fixed(), k.z(1001), 'cutsceneVisual',
           ]);
-          // Desynchronize breathing with different phase offsets
-          addBreathing(k, sprObj, spr.scale, i * Math.PI * 0.4);
+          // Desynchronize breathing and rocking with different phase offsets
+          addBreathingAndRocking(k, sprObj, spr.scale, i * Math.PI * 0.4);
         });
       }
 
@@ -255,9 +276,10 @@ function createCharSprite(k: KAPLAYCtx, character: string, cx: number, cy: numbe
       k.pos(cx, cy),
       k.anchor('center'),
       k.scale(charConfig.scale),
+      k.rotate(0),
       k.fixed(), k.z(1001), 'cutsceneVisual',
     ]);
-    addBreathing(k, spr, charConfig.scale);
+    addBreathingAndRocking(k, spr, charConfig.scale);
 
     if (character === 'raflinens') {
       k.add([
