@@ -172,3 +172,41 @@ See `playerline.png` for reference.
 - All other sprites render correctly
 
 The bug remains open.
+
+---
+
+## Update: The Whack-a-Mole Effect
+
+### Attempt 11: Simplify Player Gradient (commit after a728e0f)
+
+**Theory:** Working sprites (peta, asura) have simple 2-3 stop gradients. Player had complex 4-stop multi-color gradient. Simplify to match.
+
+**Change:**
+```svg
+<!-- FROM: 4 stops, multiple colors -->
+<stop offset="0%" style="stop-color:#EAE4F2;stop-opacity:0.9"/>
+<stop offset="45%" style="stop-color:#9B8AC4;stop-opacity:0.5"/>
+<stop offset="85%" style="stop-color:#5D4E8C;stop-opacity:0.05"/>
+<stop offset="100%" style="stop-color:#5D4E8C;stop-opacity:0"/>
+
+<!-- TO: 3 stops, single color family -->
+<stop offset="0%" style="stop-color:#C9B8E0;stop-opacity:0.8"/>
+<stop offset="60%" style="stop-color:#9B8AC4;stop-opacity:0.4"/>
+<stop offset="100%" style="stop-color:#7E6BAD;stop-opacity:0"/>
+```
+
+**Result:** Player sprite FIXED! But now peta shows the line artifact.
+
+You cannot make this up.
+
+---
+
+## Final Conclusion
+
+This is likely a **Kaplay/WebGL texture loading bug** that manifests randomly based on unknowable factors. The artifact appears to jump between sprites when changes are made, suggesting it's not about any specific SVG structure but about how textures are loaded/cached/sampled at runtime.
+
+**The only guaranteed fix would be:**
+1. Switch to a different rendering engine, or
+2. Accept the artifact exists and ship anyway
+
+We're moving on.
