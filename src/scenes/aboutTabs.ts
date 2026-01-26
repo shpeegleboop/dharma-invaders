@@ -85,7 +85,7 @@ export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
   y += 120;
   pageContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(4)]));
   pageContent.push(k.add([k.text('Manussā', { size: 22 }), k.pos(540, y - 25), k.color(0, 255, 0)]));
-  pageContent.push(k.add([k.text('+1000 if spared (K4+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
+  pageContent.push(k.add([k.text('Peaceful (K4+)', { size: 16 }), k.pos(540, y), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Human realm', { size: 14 }), k.pos(540, y + 22), k.color(100, 100, 120)]));
 }
 

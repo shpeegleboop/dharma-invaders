@@ -70,7 +70,7 @@ export function renderBestiary(k: KAPLAYCtx, tabContent: GameObj[]): void {
   y += 100;
   tabContent.push(k.add([k.sprite('manussa'), k.pos(470, y), k.anchor('center'), k.scale(3.5), k.fixed(), k.z(101)]));
   tabContent.push(k.add([k.text('Manussā', { size: 22 }), k.pos(540, y - 20), k.color(0, 255, 0), k.fixed(), k.z(101)]));
-  tabContent.push(k.add([k.text('+1000 karma (K4+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
+  tabContent.push(k.add([k.text('Peaceful (K4+)', { size: 16 }), k.pos(540, y + 5), k.color(150, 150, 170), k.fixed(), k.z(101)]));
 }
 
 export function renderRebirth(k: KAPLAYCtx, tabContent: GameObj[]): void {
