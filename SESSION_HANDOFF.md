@@ -1,7 +1,7 @@
 # Dharma Invaders â€” Session Handoff
 
 **Last Updated:** 2026-01-26 (Session 12)
-**Status:** Phase 9.8 COMPLETE — Cutscene toggle fix, ready for Phase 10
+**Status:** Phase 9.9 COMPLETE — Music selection + gameplay background
 **Codebase Audit:** A (2026-01-23) — player.ts split, hardcoded timers fixed
 
 ---
@@ -359,6 +359,68 @@ Fixed "Show all cutscenes" toggle not appearing after seeing all cutscenes:
 - `src/utils/debug.ts` — P key now calls `markCutsceneSeen()` before playing
 - `src/scenes/menu.ts` — Toggle positioned below menu hints
 - `src/main.ts` — Added karma.jpg sprite load
+
+---
+
+## Part 4.9: Session 12 Continued — Music Selection Feature ✅
+
+### Music Track Selection in Audio Settings
+
+Added gameplay and boss music selection to the Audio Settings menu:
+
+**UI Layout:**
+- Two new rows below volume sliders: "Gameplay Music" and "Boss Music"
+- Divider line separates volume controls from track selection
+- Uses same `< ... >` pattern as volume bars
+- UP/DOWN navigates rows, LEFT/RIGHT cycles tracks
+
+**Track Options:**
+| Track ID | Display Name | Unlock Condition |
+|----------|--------------|------------------|
+| `default` | "Default" | Always available |
+| `gameplay` | "Mindful Focus" | First game start |
+| `boss` | "Mara's Challenge" | First kalpa 1 boss |
+| `boss2` | "Rising Tension" | First kalpa 2 boss |
+| `boss3` | "Deeper Struggle" | First kalpa 3 boss |
+| `boss4` | "Final Confrontation" | First kalpa 4 boss |
+
+**Default Behavior:**
+- Gameplay: Default = plays 'gameplay' track
+- Boss: Default = kalpa-based (boss/boss2/boss3/boss4 per kalpa)
+- Locked tracks show 🔒 icon
+
+**Unlock Mechanic:**
+- Tracks unlock automatically when first played via `addMusicUnlock()` in `playMusic()`
+- Unlocks persist to localStorage
+
+**Logo Overlay Fix:**
+- Logo overlay now hides when Audio Settings opens
+- Restores when Audio Settings closes
+
+### Gameplay Background
+
+Added bg1.jpg as gameplay background:
+- Loaded in main.ts, displayed in game.ts
+- Scaled to cover full screen (z=-100, behind all gameplay)
+
+### Files Modified
+- `src/systems/persistence.ts` — Added `selectedGameplayTrack`, `selectedBossTrack`, getters/setters
+- `src/systems/audio.ts` — Added `addMusicUnlock()` call in `playMusic()`, exported `MusicTrack` type
+- `src/ui/audioSettings.ts` — Track selection state, cycling logic, logo hide/show
+- `src/ui/audioSettingsUI.ts` — `SELECTABLE_TRACKS` constant, track selection UI rows
+- `src/systems/gameAudio.ts` — Boss music uses selected track or kalpa-based default
+- `src/scenes/game.ts` — Gameplay music selection, bg1.jpg background
+- `src/main.ts` — Added bg1.jpg sprite load
+
+### Architect Notes
+- `audioSettings.ts` at 180 lines (slightly over guideline, acceptable)
+- `audioSettingsUI.ts` at 177 lines (slightly over guideline, acceptable)
+- `game.ts` at 214 lines (flagged for eventual refactoring)
+
+### Designer Recommendations (Future)
+- Show locked tracks in cycle with lock indicator (discovery)
+- Add audio preview when cycling tracks
+- Update hint text to include W/S keys
 
 ---
 
