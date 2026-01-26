@@ -179,12 +179,23 @@
       {
         "background": "#0a1a2a",
         "text": "The third kalpa. Samsara's grip tightens.",
-        "textColor": "#66aaff"
+        "textColor": "#66aaff",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
       },
       {
         "background": "#0a1a2a",
         "text": "Tiracchana, beings of the animal realm, will now hunt you in packs.",
-        "textColor": "#4488ff"
+        "textColor": "#4488ff",
+        "sprites": [
+          { "name": "tiracchana", "x": 250, "y": 200, "scale": 4 },
+          { "name": "tiracchana", "x": 350, "y": 280, "scale": 4 },
+          { "name": "tiracchana", "x": 450, "y": 220, "scale": 4 },
+          { "name": "tiracchana", "x": 550, "y": 300, "scale": 4 },
+          { "name": "tiracchana", "x": 300, "y": 320, "scale": 4 },
+          { "name": "tiracchana", "x": 500, "y": 250, "scale": 4 }
+        ]
       },
       {
         "background": "#0a1a2a",
@@ -201,7 +212,8 @@
       {
         "background": "#0a1a2a",
         "text": "Guard your paramis carefully.",
-        "textColor": "#66aaff"
+        "textColor": "#66aaff",
+        "character": "player"
       }
     ]
   },
@@ -210,7 +222,10 @@
       {
         "background": "#0a2a1a",
         "text": "The fourth kalpa. A test of wisdom approaches.",
-        "textColor": "#66ff99"
+        "textColor": "#66ff99",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
       },
       {
         "background": "#0a2a1a",
@@ -228,7 +243,7 @@
           { "name": "manussa", "x": 400, "y": 255, "scale": 4 }
         ],
         "overlayTexts": [
-          { "text": "+1000 karma", "x": 400, "y": 190, "color": "#88ff88" }
+          { "text": "+1000 karma", "x": 400, "y": 170, "color": "#88ff88" }
         ]
       },
       {
@@ -251,7 +266,6 @@
       {
         "background": "#2a1a0a",
         "character": "raflinens",
-        "image": "/sprites/raflinens.jpg",
         "text": "cheeky parinirvana lofi Dubai chocolate labubu samsara",
         "textColor": "#ffcc88"
       },

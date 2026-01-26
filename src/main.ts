@@ -22,6 +22,7 @@ const k = kaplay({
   stretch: true, // Stretch canvas to fill browser window
   letterbox: true, // Maintain aspect ratio with letterboxing
   pixelDensity: window.devicePixelRatio || 2, // Crisp text on high-DPI displays
+  texFilter: "linear", // Smooth scaling for photo images in cutscenes
 });
 
 // Move canvas into overlay container
