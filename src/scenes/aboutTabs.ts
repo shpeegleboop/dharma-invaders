@@ -41,7 +41,7 @@ export function showControls(k: KAPLAYCtx, pageContent: GameObj[]): void {
 export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
   // Base enemies with sprites (left column)
   const spriteEnemies = [
-    { name: 'Petā', sprite: 'peta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Hungry spirits' },
+    { name: 'Petā', sprite: 'peta', color: [255, 68, 68], desc: 'Erratic, 1 HP, 10 karma', realm: 'Hungry ghosts' },
     { name: 'Asurā', sprite: 'asura', color: [255, 140, 0], desc: 'Aggressive, 2 HP, 25 karma', realm: 'Jealous demigods' },
     { name: 'Devā', sprite: 'deva', color: [147, 112, 219], desc: 'Graceful, 3 HP, 50 karma', realm: 'Heavenly realm' },
   ];
