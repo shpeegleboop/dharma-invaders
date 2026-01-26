@@ -42,7 +42,7 @@ interface CutsceneBeat {
 
 let isPlaying = false;
 const ROTATION_SPEED = 15; // degrees per second
-const BREATH_SPEED = 0.15; // cycles per second (~7 sec per breath, very relaxing)
+const BREATH_SPEED = 0.3; // cycles per second (~3.3 sec per breath)
 const BREATH_AMOUNT = 0.03; // 3% scale variation
 
 // Add subtle breathing animation to a sprite
@@ -153,9 +153,8 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         ]);
         if (ly.background.rotate) {
           bgImg.onUpdate(() => { bgImg.angle += ROTATION_SPEED * k.dt(); });
-        } else {
-          addBreathing(k, bgImg, bgScale);
         }
+        addBreathing(k, bgImg, bgScale);
         const fgSprite = k.add([
           k.sprite(ly.foreground.sprite),
           k.pos(cx, cy),
@@ -180,9 +179,8 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         ]);
         if (beat.imageRotate) {
           img.onUpdate(() => { img.angle += ROTATION_SPEED * k.dt(); });
-        } else {
-          addBreathing(k, img, imgScale);
         }
+        addBreathing(k, img, imgScale);
       }
 
       // Multiple sprites with positions (round to avoid sub-pixel artifacts)
