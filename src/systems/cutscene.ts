@@ -82,13 +82,25 @@ const FLAG_MAP: Partial<Record<CutsceneId, FlagId>> = {
 };
 
 function shouldPlayCutscene(id: CutsceneId): boolean {
-  if (id === 'maraReturns') return getCycle() >= 2;
+  const kalpa = getCycle();
+
+  // Cutscenes with special trigger conditions (not just flags)
+  if (id === 'maraReturns') return kalpa >= 2;
   if (id === 'rafLinens') return true;
+
+  // Kalpa-specific cutscenes only play in their kalpa
+  if (id === 'intro' && kalpa > 1) return false;
+  if (id === 'kalpa2' && kalpa !== 2) return false;
+  if (id === 'kalpa3' && kalpa !== 3) return false;
+  if (id === 'kalpa4' && kalpa < 4) return false;
+
   const flag = FLAG_MAP[id];
   if (!flag) return false;
-  // If "show all cutscenes" is enabled, always play
-  if (getShowAllCutscenes()) return true;
-  return !getCutsceneFlag(flag);
+
+  // Check if already seen
+  const alreadySeen = getCutsceneFlag(flag);
+  // Play if: never seen, OR (already seen AND "show all" is enabled)
+  return !alreadySeen || getShowAllCutscenes();
 }
 
 function markCutsceneSeen(id: CutsceneId): void {

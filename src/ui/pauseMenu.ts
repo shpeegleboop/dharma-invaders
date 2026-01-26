@@ -3,15 +3,16 @@ import type { KAPLAYCtx, GameObj } from 'kaplay';
 import { createPauseUI, createQuitConfirmUI } from './pauseMenuUI';
 import { setupAboutOverlay, showAboutOverlay, hideAboutOverlay } from './aboutOverlay';
 import { showPauseEffects, hidePauseEffects } from './htmlOverlays';
+import { isCutscenePlaying } from '../systems/cutscene';
 
 type PauseState = 'playing' | 'paused' | 'audioSettings' | 'aboutOverlay' | 'quitConfirm';
 
 // Private pause flag
 let paused = false;
 
-// Getter function for pause state
+// Getter function for pause state (also pauses during cutscenes)
 export function getIsPaused(): boolean {
-  return paused;
+  return paused || isCutscenePlaying();
 }
 
 let state: PauseState = 'playing';

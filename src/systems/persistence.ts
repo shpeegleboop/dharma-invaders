@@ -29,7 +29,7 @@ const DEFAULT_SAVE: SaveData = {
     hasSeenKalpa3: false,
     hasSeenKalpa4: false,
   },
-  showAllCutscenes: true,
+  showAllCutscenes: false,
   musicUnlocks: [],
 };
 
