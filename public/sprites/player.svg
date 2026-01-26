@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 40 40" width="32" height="32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <!-- Buddha figure - Violet robes, peach skin, gold ushnisha -->
   <defs>
     <radialGradient id="mandorlaGrad" cx="50%" cy="50%" r="50%">
       <stop offset="0%" style="stop-color:#EAE4F2;stop-opacity:0.9"/>
-      <stop offset="35%" style="stop-color:#9B8AC4;stop-opacity:0.6"/>
-      <stop offset="95%" style="stop-color:#5D4E8C;stop-opacity:0.01"/>
+      <stop offset="40%" style="stop-color:#9B8AC4;stop-opacity:0.6"/>
+      <stop offset="85%" style="stop-color:#5D4E8C;stop-opacity:0.1"/>
       <stop offset="100%" style="stop-color:#5D4E8C;stop-opacity:0"/>
     </radialGradient>
     <linearGradient id="robeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -21,8 +21,8 @@
     </radialGradient>
   </defs>
   
-  <!-- Mandorla glow - violet/indigo -->
-  <ellipse cx="16" cy="16" rx="14" ry="15" fill="url(#mandorlaGrad)"/>
+  <!-- Mandorla glow - violet/indigo (shrunk to avoid edge artifacts) -->
+  <ellipse cx="16" cy="16" rx="12" ry="13" fill="url(#mandorlaGrad)"/>
   
   <!-- Ushnisha (crown bump) - GOLD -->
   <ellipse cx="16" cy="5" rx="2" ry="2" fill="url(#goldGrad)"/>

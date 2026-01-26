@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 30 30" width="24" height="24">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
   <!-- Paduma (Lotus) - healing powerup, pink lotus on green lily pad -->
   <defs>
     <!-- Pink petal gradients -->
@@ -32,9 +32,9 @@
       <stop offset="100%" style="stop-color:#DAA520"/>
     </radialGradient>
     
-    <!-- Subtle glow -->
+    <!-- Subtle glow (reduced blur to avoid edge artifacts) -->
     <filter id="lotusGlow">
-      <feGaussianBlur stdDeviation="0.5" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="0.3" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -43,8 +43,8 @@
   </defs>
   
   <g filter="url(#lotusGlow)">
-    <!-- Lily pad base -->
-    <ellipse cx="12" cy="20" rx="10" ry="3.5" fill="url(#lilyPad)"/>
+    <!-- Lily pad base (shrunk to avoid edge artifacts) -->
+    <ellipse cx="12" cy="20" rx="9" ry="3.5" fill="url(#lilyPad)"/>
     <!-- Lily pad notch -->
     <path d="M12 16.5 L10 20 L12 19 L14 20 Z" fill="#1a1a2e"/>
     <!-- Lily pad vein lines -->
