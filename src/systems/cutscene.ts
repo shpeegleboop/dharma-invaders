@@ -42,6 +42,18 @@ interface CutsceneBeat {
 
 let isPlaying = false;
 const ROTATION_SPEED = 15; // degrees per second
+const BREATH_SPEED = 0.8; // cycles per second (slow, meditative)
+const BREATH_AMOUNT = 0.03; // 3% scale variation
+
+// Add subtle breathing animation to a sprite
+function addBreathing(k: KAPLAYCtx, obj: GameObj, baseScale: number, phaseOffset = 0): void {
+  const startTime = k.time();
+  obj.onUpdate(() => {
+    const t = (k.time() - startTime) * BREATH_SPEED * Math.PI * 2 + phaseOffset;
+    const breathScale = 1 + Math.sin(t) * BREATH_AMOUNT;
+    obj.scale = k.vec2(baseScale * breathScale);
+  });
+}
 
 const FLAG_MAP: Partial<Record<CutsceneId, FlagId>> = {
   intro: 'hasSeenIntro',
@@ -141,14 +153,17 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         ]);
         if (ly.background.rotate) {
           bgImg.onUpdate(() => { bgImg.angle += ROTATION_SPEED * k.dt(); });
+        } else {
+          addBreathing(k, bgImg, bgScale);
         }
-        k.add([
+        const fgSprite = k.add([
           k.sprite(ly.foreground.sprite),
           k.pos(cx, cy),
           k.anchor('center'),
           k.scale(ly.foreground.scale),
           k.fixed(), k.z(1002), 'cutsceneVisual',
         ]);
+        addBreathing(k, fgSprite, ly.foreground.scale, Math.PI * 0.5);
         return;
       }
 
@@ -165,20 +180,24 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         ]);
         if (beat.imageRotate) {
           img.onUpdate(() => { img.angle += ROTATION_SPEED * k.dt(); });
+        } else {
+          addBreathing(k, img, imgScale);
         }
       }
 
       // Multiple sprites with positions (round to avoid sub-pixel artifacts)
       if (beat.sprites) {
-        for (const spr of beat.sprites) {
-          k.add([
+        beat.sprites.forEach((spr, i) => {
+          const sprObj = k.add([
             k.sprite(spr.name),
             k.pos(Math.round(spr.x), Math.round(spr.y)),
             k.anchor('center'),
             k.scale(spr.scale),
             k.fixed(), k.z(1001), 'cutsceneVisual',
           ]);
-        }
+          // Desynchronize breathing with different phase offsets
+          addBreathing(k, sprObj, spr.scale, i * Math.PI * 0.4);
+        });
       }
 
       // Overlay texts (floating labels like +Klesha, -Parami)
@@ -240,6 +259,7 @@ function createCharSprite(k: KAPLAYCtx, character: string, cx: number, cy: numbe
       k.scale(charConfig.scale),
       k.fixed(), k.z(1001), 'cutsceneVisual',
     ]);
+    addBreathing(k, spr, charConfig.scale);
 
     if (character === 'raflinens') {
       k.add([
