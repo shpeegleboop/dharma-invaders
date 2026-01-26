@@ -179,7 +179,7 @@ export function showRebirth(k: KAPLAYCtx, pageContent: GameObj[]): void {
 
   // Kleshas section
   pageContent.push(k.add([
-    k.text('Kleshas (Afflictions)', { size: 18 }), k.pos(405, 210), k.color(255, 100, 100),
+    k.text('Kleshas (Defilements)', { size: 18 }), k.pos(405, 210), k.color(255, 100, 100),
   ]));
   pageContent.push(k.add([
     k.text('Max', { size: 14 }), k.pos(775, 212), k.color(100, 100, 120),
