@@ -42,7 +42,7 @@ interface CutsceneBeat {
 
 let isPlaying = false;
 const ROTATION_SPEED = 15; // degrees per second
-const BREATH_SPEED = 0.8; // cycles per second (slow, meditative)
+const BREATH_SPEED = 0.15; // cycles per second (~7 sec per breath, very relaxing)
 const BREATH_AMOUNT = 0.03; // 3% scale variation
 
 // Add subtle breathing animation to a sprite
