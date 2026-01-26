@@ -8,15 +8,40 @@ type CutsceneId = keyof typeof cutsceneData;
 type FlagId = 'hasSeenIntro' | 'hasSeenFirstDeath' | 'hasSeenBossIntro' |
   'hasSeenVictory' | 'hasSeenBodhisattva' | 'hasSeenKalpa2' | 'hasSeenKalpa3' | 'hasSeenKalpa4';
 
+interface SpriteConfig {
+  name: string;
+  x: number;
+  y: number;
+  scale: number;
+}
+
+interface OverlayText {
+  text: string;
+  x: number;
+  y: number;
+  color: string;
+}
+
+interface LayeredConfig {
+  background: { image: string; rotate?: boolean; scale?: number };
+  foreground: { sprite: string; scale: number };
+}
+
 interface CutsceneBeat {
   background: string;
-  character: string | null;
+  character?: string | null;
   text: string;
   textColor: string;
   image?: string;
+  imageScale?: number;
+  imageRotate?: boolean;
+  sprites?: SpriteConfig[];
+  overlayTexts?: OverlayText[];
+  layered?: LayeredConfig;
 }
 
 let isPlaying = false;
+const ROTATION_SPEED = 15; // degrees per second
 
 const FLAG_MAP: Partial<Record<CutsceneId, FlagId>> = {
   intro: 'hasSeenIntro',
@@ -30,10 +55,8 @@ const FLAG_MAP: Partial<Record<CutsceneId, FlagId>> = {
 };
 
 function shouldPlayCutscene(id: CutsceneId): boolean {
-  // maraReturns plays every kalpa 2+, rafLinens plays every kalpa 4 boss beat
   if (id === 'maraReturns') return getCycle() >= 2;
-  if (id === 'rafLinens') return true; // Triggered manually after kalpa 4 boss
-
+  if (id === 'rafLinens') return true;
   const flag = FLAG_MAP[id];
   return flag ? !getCutsceneFlag(flag) : false;
 }
@@ -56,7 +79,6 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
 
     const config = cutsceneData[id] as { beats: CutsceneBeat[] };
     let beatIndex = 0;
-    let charSprite: GameObj | null = null;
 
     // Overlay background
     const overlay = k.add([
@@ -91,19 +113,93 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
       k.fixed(), k.z(1002), 'cutscene',
     ]);
 
+    function clearBeatVisuals(): void {
+      k.get('cutsceneVisual').forEach((obj) => k.destroy(obj));
+    }
+
     function showBeat(beat: CutsceneBeat): void {
       overlay.color = k.Color.fromHex(beat.background);
       textContent.text = beat.text;
       textContent.color = k.Color.fromHex(beat.textColor);
-      if (charSprite) { k.destroy(charSprite); charSprite = null; }
-      k.get('cutsceneHandle').forEach((obj) => k.destroy(obj)); // Clean up handle text
-      if (beat.character) charSprite = createCharSprite(k, beat.character);
+      clearBeatVisuals();
+
+      // Layered composition (sprite inside rotating image)
+      if (beat.layered) {
+        const ly = beat.layered;
+        const bgScale = ly.background.scale ?? 0.5;
+        const bgImg = k.add([
+          k.sprite(ly.background.image),
+          k.pos(k.center().x, k.center().y - 70),
+          k.anchor('center'),
+          k.scale(bgScale),
+          k.rotate(0),
+          k.fixed(), k.z(1001), 'cutsceneVisual',
+        ]);
+        if (ly.background.rotate) {
+          bgImg.onUpdate(() => { bgImg.angle += ROTATION_SPEED * k.dt(); });
+        }
+        k.add([
+          k.sprite(ly.foreground.sprite),
+          k.pos(k.center().x, k.center().y - 70),
+          k.anchor('center'),
+          k.scale(ly.foreground.scale),
+          k.fixed(), k.z(1002), 'cutsceneVisual',
+        ]);
+        return;
+      }
+
+      // Single image (centered, optional rotation)
+      if (beat.image) {
+        const imgScale = beat.imageScale ?? 0.5;
+        const img = k.add([
+          k.sprite(beat.image),
+          k.pos(k.center().x, k.center().y - 70),
+          k.anchor('center'),
+          k.scale(imgScale),
+          k.rotate(0),
+          k.fixed(), k.z(1001), 'cutsceneVisual',
+        ]);
+        if (beat.imageRotate) {
+          img.onUpdate(() => { img.angle += ROTATION_SPEED * k.dt(); });
+        }
+      }
+
+      // Multiple sprites with positions
+      if (beat.sprites) {
+        for (const spr of beat.sprites) {
+          k.add([
+            k.sprite(spr.name),
+            k.pos(spr.x, spr.y),
+            k.anchor('center'),
+            k.scale(spr.scale),
+            k.fixed(), k.z(1001), 'cutsceneVisual',
+          ]);
+        }
+      }
+
+      // Overlay texts (floating labels like +Klesha, -Parami)
+      if (beat.overlayTexts) {
+        for (const ot of beat.overlayTexts) {
+          k.add([
+            k.text(ot.text, { size: 16 }),
+            k.pos(ot.x, ot.y),
+            k.anchor('center'),
+            k.color(k.Color.fromHex(ot.color)),
+            k.outline(2, k.rgb(0, 0, 0)),
+            k.fixed(), k.z(1003), 'cutsceneVisual',
+          ]);
+        }
+      }
+
+      // Legacy character support
+      if (beat.character) {
+        createCharSprite(k, beat.character);
+      }
     }
 
     function cleanup(): void {
       k.get('cutscene').forEach((obj) => k.destroy(obj));
-      k.get('cutsceneHandle').forEach((obj) => k.destroy(obj));
-      if (charSprite) k.destroy(charSprite);
+      k.get('cutsceneVisual').forEach((obj) => k.destroy(obj));
       isPlaying = false;
       resolve();
     }
@@ -117,18 +213,14 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
     const clickHandler = k.onMousePress('left', advance);
     const keyHandler = k.onKeyPress(['space', 'enter'], advance);
 
-    // Show initial character
-    if (config.beats[0].character) {
-      charSprite = createCharSprite(k, config.beats[0].character);
-    }
+    // Show initial beat visuals
+    showBeat(config.beats[0]);
 
-    // Store handlers for cleanup
     overlay.onDestroy(() => { clickHandler.cancel(); keyHandler.cancel(); });
   });
 }
 
 function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
-  // Characters that use actual sprites
   const spriteChars: Record<string, { sprite: string; scale: number }> = {
     player: { sprite: 'player', scale: 4 },
     mara: { sprite: 'mara', scale: 3 },
@@ -142,35 +234,31 @@ function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
       k.pos(k.center().x, k.center().y - 70),
       k.anchor('center'),
       k.scale(charConfig.scale),
-      k.fixed(), k.z(1001), 'cutsceneChar',
+      k.fixed(), k.z(1001), 'cutsceneVisual',
     ]);
 
-    // Add handle text below raflinens image
     if (character === 'raflinens') {
       k.add([
         k.text('@raflinens', { size: 16 }),
         k.pos(k.center().x, k.center().y + 80),
         k.anchor('center'), k.color(0, 0, 0),
-        k.fixed(), k.z(1002), 'cutsceneHandle',
+        k.fixed(), k.z(1002), 'cutsceneVisual',
       ]);
     }
-
     return spr;
   }
 
-  // Fallback: generic smiley placeholder for unknown characters
+  // Fallback placeholder
   const sprite = k.add([
     k.rect(64, 64), k.pos(k.center().x, k.center().y - 50),
     k.anchor('center'), k.color(k.Color.fromHex('#ffff00')),
-    k.fixed(), k.z(1001), 'cutsceneChar',
+    k.fixed(), k.z(1001), 'cutsceneVisual',
   ]);
-
   k.add([
     k.text(':)', { size: 32 }), k.pos(k.center().x, k.center().y - 50),
     k.anchor('center'), k.color(0, 0, 0),
-    k.fixed(), k.z(1002), 'cutscene',
+    k.fixed(), k.z(1002), 'cutsceneVisual',
   ]);
-
   return sprite;
 }
 

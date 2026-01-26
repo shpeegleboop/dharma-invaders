@@ -30,6 +30,12 @@ initOverlays();
 // Load sprites
 k.loadSprite('sufferScreen', '/sprites/suffer_sharp.jpg');
 k.loadSprite('raflinens', '/sprites/raflinens.jpg');
+k.loadSprite('bhavachakra', '/sprites/bhavachakra_transparent.png');
+k.loadSprite('sting', '/sprites/sting.jpg');
+k.loadSprite('deathrebirth', '/sprites/deathrebirth.jpg');
+k.loadSprite('hemad', '/sprites/hemad.jpg');
+k.loadSprite('headback', '/sprites/headback.jpg');
+k.loadSprite('bodhisattva', '/sprites/bodhisattva.jpg');
 k.loadSprite('player', '/sprites/player.svg');
 k.loadSprite('peta', '/sprites/peta.svg');
 k.loadSprite('asura', '/sprites/asura.svg');
