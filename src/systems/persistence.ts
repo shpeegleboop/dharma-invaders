@@ -2,6 +2,7 @@
 const STORAGE_KEY = 'dharmaInvaders_save';
 
 interface SaveData {
+  version?: number; // Migration version
   difficulty: string;
   cutsceneFlags: {
     hasSeenIntro: boolean;
@@ -19,7 +20,10 @@ interface SaveData {
   selectedBossTrack: string;
 }
 
+const CURRENT_VERSION = 1; // Bump when adding migrations
+
 const DEFAULT_SAVE: SaveData = {
+  version: CURRENT_VERSION,
   difficulty: 'sakadagami',
   cutsceneFlags: {
     hasSeenIntro: false,
@@ -48,8 +52,26 @@ export function loadSave(): SaveData {
   } catch {
     loaded = { ...DEFAULT_SAVE };
   }
+  // Run migrations if needed
+  loaded = runMigrations(loaded);
   cache = loaded;
   return loaded;
+}
+
+function runMigrations(data: SaveData): SaveData {
+  const oldVersion = data.version || 0;
+
+  // Migration to v1: Reset track selection to 'default'
+  // Old saves had 'boss'/'gameplay' as defaults, we want 'default' now
+  if (oldVersion < 1) {
+    data.selectedGameplayTrack = 'default';
+    data.selectedBossTrack = 'default';
+    data.version = 1;
+    // Persist the migration
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  return data;
 }
 
 function saveToDisk(): void {

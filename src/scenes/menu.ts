@@ -150,7 +150,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
   }
 
   // Setup audio settings
-  setupAudioSettings(k);
+  setupAudioSettings(k, true);
 
   // Go to title screen on input
   const startGame = () => {

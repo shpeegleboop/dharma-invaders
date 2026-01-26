@@ -26,10 +26,11 @@ let gameplayHighlight: GameObj | null = null;
 let bossHighlight: GameObj | null = null;
 let kRef: KAPLAYCtx | null = null;
 let onCloseCallback: (() => void) | null = null;
+let isOnMenuScene = false; // Track if we're on menu to control logo overlay
 
 const ROW_ORDER: SelectedRow[] = ['music', 'sfx', 'gameplayTrack', 'bossTrack'];
 
-export function setupAudioSettings(k: KAPLAYCtx): void {
+export function setupAudioSettings(k: KAPLAYCtx, onMenu = false): void {
   // Reset all state on scene change
   isVisible = false;
   selectedRow = 'music';
@@ -44,6 +45,7 @@ export function setupAudioSettings(k: KAPLAYCtx): void {
   bossHighlight = null;
   onCloseCallback = null;
   kRef = k;
+  isOnMenuScene = onMenu;
 
   // Navigation controls
   k.onKeyPress('up', () => navigateRow(-1));
@@ -110,8 +112,8 @@ export function showAudioSettings(onClose: () => void): void {
   selectedRow = 'music';
   onCloseCallback = onClose;
 
-  // Hide logo overlay so it doesn't block the menu
-  hideMenuLogo();
+  // Hide logo overlay so it doesn't block the menu (only on menu scene)
+  if (isOnMenuScene) hideMenuLogo();
 
   const refs = createAudioSettingsUI(kRef);
   uiElements = refs.elements;
@@ -141,8 +143,8 @@ export function hideAudioSettings(): void {
   gameplayHighlight = null;
   bossHighlight = null;
 
-  // Restore logo overlay
-  showMenuLogo();
+  // Restore logo overlay (only on menu scene)
+  if (isOnMenuScene) showMenuLogo();
 
   if (onCloseCallback) onCloseCallback();
   onCloseCallback = null;
