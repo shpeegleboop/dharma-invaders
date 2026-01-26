@@ -123,13 +123,17 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
       textContent.color = k.Color.fromHex(beat.textColor);
       clearBeatVisuals();
 
+      // Round positions to avoid sub-pixel rendering artifacts with linear filtering
+      const cx = Math.round(k.center().x);
+      const cy = Math.round(k.center().y - 70);
+
       // Layered composition (sprite inside rotating image)
       if (beat.layered) {
         const ly = beat.layered;
         const bgScale = ly.background.scale ?? 0.5;
         const bgImg = k.add([
           k.sprite(ly.background.image),
-          k.pos(k.center().x, k.center().y - 70),
+          k.pos(cx, cy),
           k.anchor('center'),
           k.scale(bgScale),
           k.rotate(0),
@@ -140,7 +144,7 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         }
         k.add([
           k.sprite(ly.foreground.sprite),
-          k.pos(k.center().x, k.center().y - 70),
+          k.pos(cx, cy),
           k.anchor('center'),
           k.scale(ly.foreground.scale),
           k.fixed(), k.z(1002), 'cutsceneVisual',
@@ -153,7 +157,7 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         const imgScale = beat.imageScale ?? 0.5;
         const img = k.add([
           k.sprite(beat.image),
-          k.pos(k.center().x, k.center().y - 70),
+          k.pos(cx, cy),
           k.anchor('center'),
           k.scale(imgScale),
           k.rotate(0),
@@ -164,12 +168,12 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         }
       }
 
-      // Multiple sprites with positions
+      // Multiple sprites with positions (round to avoid sub-pixel artifacts)
       if (beat.sprites) {
         for (const spr of beat.sprites) {
           k.add([
             k.sprite(spr.name),
-            k.pos(spr.x, spr.y),
+            k.pos(Math.round(spr.x), Math.round(spr.y)),
             k.anchor('center'),
             k.scale(spr.scale),
             k.fixed(), k.z(1001), 'cutsceneVisual',
@@ -182,7 +186,7 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
         for (const ot of beat.overlayTexts) {
           k.add([
             k.text(ot.text, { size: 16 }),
-            k.pos(ot.x, ot.y),
+            k.pos(Math.round(ot.x), Math.round(ot.y)),
             k.anchor('center'),
             k.color(k.Color.fromHex(ot.color)),
             k.outline(2, k.rgb(0, 0, 0)),
@@ -193,7 +197,7 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
 
       // Legacy character support
       if (beat.character) {
-        createCharSprite(k, beat.character);
+        createCharSprite(k, beat.character, cx, cy);
       }
     }
 
@@ -220,7 +224,7 @@ export function playCutscene(k: KAPLAYCtx, id: CutsceneId): Promise<void> {
   });
 }
 
-function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
+function createCharSprite(k: KAPLAYCtx, character: string, cx: number, cy: number): GameObj {
   const spriteChars: Record<string, { sprite: string; scale: number }> = {
     player: { sprite: 'player', scale: 4 },
     mara: { sprite: 'mara', scale: 3 },
@@ -231,7 +235,7 @@ function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
   if (charConfig) {
     const spr = k.add([
       k.sprite(charConfig.sprite),
-      k.pos(k.center().x, k.center().y - 70),
+      k.pos(cx, cy),
       k.anchor('center'),
       k.scale(charConfig.scale),
       k.fixed(), k.z(1001), 'cutsceneVisual',
@@ -240,7 +244,7 @@ function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
     if (character === 'raflinens') {
       k.add([
         k.text('@raflinens', { size: 16 }),
-        k.pos(k.center().x, k.center().y + 80),
+        k.pos(cx, cy + 150),
         k.anchor('center'), k.color(0, 0, 0),
         k.fixed(), k.z(1002), 'cutsceneVisual',
       ]);
@@ -250,12 +254,12 @@ function createCharSprite(k: KAPLAYCtx, character: string): GameObj {
 
   // Fallback placeholder
   const sprite = k.add([
-    k.rect(64, 64), k.pos(k.center().x, k.center().y - 50),
+    k.rect(64, 64), k.pos(cx, cy + 20),
     k.anchor('center'), k.color(k.Color.fromHex('#ffff00')),
     k.fixed(), k.z(1001), 'cutsceneVisual',
   ]);
   k.add([
-    k.text(':)', { size: 32 }), k.pos(k.center().x, k.center().y - 50),
+    k.text(':)', { size: 32 }), k.pos(cx, cy + 20),
     k.anchor('center'), k.color(0, 0, 0),
     k.fixed(), k.z(1002), 'cutsceneVisual',
   ]);
