@@ -88,7 +88,13 @@ export function resetAllCutsceneFlags(): void {
 
 export function hasSeenAllCutscenes(): boolean {
   const flags = loadSave().cutsceneFlags;
-  return Object.values(flags).every(v => v === true);
+  const allSeen = Object.values(flags).every(v => v === true);
+  // Debug: log which flags are missing
+  if (!allSeen) {
+    const missing = Object.entries(flags).filter(([, v]) => !v).map(([k]) => k);
+    console.log('[Cutscenes] Missing flags:', missing.join(', '));
+  }
+  return allSeen;
 }
 
 export function getShowAllCutscenes(): boolean {

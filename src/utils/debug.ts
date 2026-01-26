@@ -9,7 +9,7 @@ import { createNerayika } from '../entities/enemies/nerayika';
 import { createTiracchana } from '../entities/enemies/tiracchana';
 import { createManussa } from '../entities/enemies/manussa';
 import { createVajra } from '../entities/powerup';
-import { playCutscene } from '../systems/cutscene';
+import { playCutscene, markCutsceneSeen } from '../systems/cutscene';
 import { resetAllCutsceneFlags } from '../systems/persistence';
 
 // Paduma not included - it's an instant heal, not a timed powerup
@@ -185,10 +185,11 @@ export function setupDebug(k: KAPLAYCtx): void {
     console.log('Cutscene flags reset');
   });
 
-  // P: Play next cutscene (cycles through all)
+  // P: Play next cutscene (cycles through all, also marks as seen)
   k.onKeyPress('p', () => {
     const id = CUTSCENE_IDS[state.cutsceneIndex];
     console.log(`Playing cutscene: ${id}`);
+    markCutsceneSeen(id);
     playCutscene(k, id);
     state.cutsceneIndex = (state.cutsceneIndex + 1) % CUTSCENE_IDS.length;
   });

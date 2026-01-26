@@ -103,7 +103,7 @@ function shouldPlayCutscene(id: CutsceneId): boolean {
   return !alreadySeen || getShowAllCutscenes();
 }
 
-function markCutsceneSeen(id: CutsceneId): void {
+export function markCutsceneSeen(id: CutsceneId): void {
   const flag = FLAG_MAP[id];
   if (flag) setCutsceneFlag(flag, true);
 }

@@ -115,6 +115,14 @@ export function createMenuScene(k: KAPLAYCtx): void {
   // Reset arrow flag each frame
   k.onUpdate(() => { arrowClicked = false; });
 
+  // Menu hints
+  k.add([
+    k.text('(A) Audio   (B) About   (D) Difficulty', { size: 14 }),
+    k.pos(config.screen.width / 2, config.screen.height - 50),
+    k.anchor('center'),
+    k.color(120, 120, 140),
+  ]);
+
   // Cutscene toggle (only shown after player has seen all cutscenes)
   if (hasSeenAllCutscenes()) {
     let showCutscenes = getShowAllCutscenes();
@@ -122,7 +130,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
 
     const cutsceneToggle = k.add([
       k.text(getCheckboxText(), { size: 14 }),
-      k.pos(config.screen.width / 2, config.screen.height * 0.88),
+      k.pos(config.screen.width / 2, config.screen.height - 25),
       k.anchor('center'),
       k.color(showCutscenes ? 180 : 100, showCutscenes ? 180 : 100, showCutscenes ? 200 : 120),
       k.area(),
@@ -140,14 +148,6 @@ export function createMenuScene(k: KAPLAYCtx): void {
       );
     });
   }
-
-  // Menu hints
-  k.add([
-    k.text('(A) Audio   (B) About   (D) Difficulty', { size: 14 }),
-    k.pos(config.screen.width / 2, config.screen.height - 50),
-    k.anchor('center'),
-    k.color(120, 120, 140),
-  ]);
 
   // Setup audio settings
   setupAudioSettings(k);
