@@ -57,7 +57,7 @@ export function showBestiary(k: KAPLAYCtx, pageContent: GameObj[]): void {
 
   // Mara
   y += 20;
-  pageContent.push(k.add([k.sprite('mara'), k.pos(70, y), k.anchor('center'), k.scale(2.5)]));
+  pageContent.push(k.add([k.sprite('mara'), k.pos(70, y), k.anchor('center'), k.scale(2.3)]));
   pageContent.push(k.add([k.text('Māra', { size: 22 }), k.pos(140, y - 25), k.color(139, 0, 0)]));
   pageContent.push(k.add([k.text('Lord of Illusion - Boss', { size: 16 }), k.pos(140, y), k.color(150, 150, 170)]));
   pageContent.push(k.add([k.text('Master of Samsara', { size: 14 }), k.pos(140, y + 22), k.color(100, 100, 120)]));
