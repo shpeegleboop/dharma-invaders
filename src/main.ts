@@ -9,6 +9,7 @@ import { createCreditsScene } from './scenes/credits';
 import { createAboutScene } from './scenes/about';
 import { createTitleScreen } from './scenes/titleScreen';
 import { initAudio } from './systems/audio';
+import { initOverlays } from './ui/htmlOverlays';
 // gameStore imports persistence and calls loadSave() on module init
 import './stores/gameStore';
 
@@ -18,9 +19,13 @@ const k = kaplay({
   height: config.screen.height,
   background: [26, 26, 46], // #1a1a2e
   global: false,
-  letterbox: true, // Maintain aspect ratio in fullscreen
+  stretch: true, // Stretch canvas to fill browser window
+  letterbox: true, // Maintain aspect ratio with letterboxing
   pixelDensity: window.devicePixelRatio || 2, // Crisp text on high-DPI displays
 });
+
+// Move canvas into overlay container
+initOverlays();
 
 // Load sprites
 k.loadSprite('sufferScreen', '/sprites/suffer_sharp.jpg');

@@ -29,17 +29,35 @@ let currentKalpa = 1;
 // Get movement config for current kalpa and phase, merging with defaults
 function getMovementConfig(kalpa: number, phase: number): MovementConfig {
   const defaultCfg = config.boss.movement.default as MovementConfig;
-  const kalpaKey = String(Math.min(kalpa, 4)) as keyof typeof config.boss.movement.byKalpa;
-  const phaseKey = `phase${phase}` as 'phase1' | 'phase2' | 'phase3';
+  const clampedKalpa = Math.min(kalpa, 4);
 
-  const kalpaConfig = config.boss.movement.byKalpa[kalpaKey];
-  const phaseOverride = kalpaConfig?.[phaseKey];
+  // Access byKalpa config using bracket notation for robustness
+  const byKalpa = config.boss.movement.byKalpa as Record<string, Record<string, Partial<MovementConfig> | null>>;
+  const kalpaConfig = byKalpa[String(clampedKalpa)];
+  const phaseOverride = kalpaConfig?.[`phase${phase}`] as Partial<MovementConfig> | null;
+
+  // Debug log - shows actual values being used
+  console.log(`[Mara] Kalpa ${kalpa} (clamped: ${clampedKalpa}), Phase ${phase}`);
+  console.log(`[Mara] kalpaConfig exists:`, !!kalpaConfig);
+  console.log(`[Mara] phaseOverride:`, phaseOverride);
 
   if (!phaseOverride) {
+    console.log(`[Mara] Using default: figure8`);
     return { ...defaultCfg };
   }
 
-  return { ...defaultCfg, ...phaseOverride };
+  // Explicitly merge to ensure all fields are included
+  const result: MovementConfig = {
+    pattern: phaseOverride.pattern ?? defaultCfg.pattern,
+    amplitudeX: phaseOverride.amplitudeX ?? defaultCfg.amplitudeX,
+    amplitudeY: phaseOverride.amplitudeY ?? defaultCfg.amplitudeY,
+    speed: phaseOverride.speed ?? defaultCfg.speed,
+    centerY: phaseOverride.centerY ?? defaultCfg.centerY,
+    tilt: phaseOverride.tilt,
+  };
+
+  console.log(`[Mara] Using pattern: ${result.pattern}, centerY: ${result.centerY}`);
+  return result;
 }
 
 // Calculate figure-8 position
@@ -94,6 +112,28 @@ function calculatePosition(t: number, cfg: MovementConfig): { x: number; y: numb
     default:
       return calculateFigure8(t, cfg);
   }
+}
+
+// Find the t value on a pattern that produces the position closest to target
+function findClosestT(targetX: number, targetY: number, cfg: MovementConfig): number {
+  const samples = 360; // Sample every degree
+  const period = 2 * Math.PI;
+  let bestT = 0;
+  let bestDist = Infinity;
+
+  for (let i = 0; i < samples; i++) {
+    const t = (i / samples) * period;
+    const pos = calculatePosition(t, cfg);
+    const dx = pos.x - targetX;
+    const dy = pos.y - targetY;
+    const dist = dx * dx + dy * dy;
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestT = t;
+    }
+  }
+
+  return bestT;
 }
 
 export function spawnMara(k: KAPLAYCtx): void {
@@ -155,6 +195,9 @@ function updateEntering(k: KAPLAYCtx): void {
     mara.pos.y = cfg.targetY;
     currentPhase = 'phase1';
     mara.phase = 'phase1';
+    // Snap to closest point on phase1 pattern to avoid jumping across screen
+    const moveCfg = getMovementConfig(currentKalpa, 1);
+    movementTimer = findClosestT(mara.pos.x, mara.pos.y, moveCfg);
     events.emit('boss:started', {});
   }
 }
@@ -185,6 +228,11 @@ function updateCombat(k: KAPLAYCtx): void {
 
   // Get movement config for current kalpa/phase
   const moveCfg = getMovementConfig(currentKalpa, getPhaseNumber());
+
+  // On phase change, snap to closest point on new pattern to avoid glitching
+  if (oldPhase !== currentPhase) {
+    movementTimer = findClosestT(mara.pos.x, mara.pos.y, moveCfg);
+  }
 
   // Apply phase 3 speed multiplier
   const speedMult = currentPhase === 'phase3' ? cfg.movement.phase3SpeedMultiplier : 1.0;

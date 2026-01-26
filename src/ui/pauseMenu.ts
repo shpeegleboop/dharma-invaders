@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import { createPauseUI, createQuitConfirmUI } from './pauseMenuUI';
 import { setupAboutOverlay, showAboutOverlay, hideAboutOverlay } from './aboutOverlay';
+import { showPauseEffects, hidePauseEffects } from './htmlOverlays';
 
 type PauseState = 'playing' | 'paused' | 'audioSettings' | 'aboutOverlay' | 'quitConfirm';
 
@@ -124,6 +125,7 @@ function showPauseUI(): void {
   const result = createPauseUI(kRef);
   overlay = result.overlay;
   menuItems = result.items;
+  showPauseEffects();
 }
 
 function showQuitConfirmUI(): void {
@@ -140,6 +142,7 @@ function hidePauseUI(): void {
   }
   menuItems.forEach((item) => item.destroy());
   menuItems = [];
+  hidePauseEffects();
 }
 
 export function getPauseState(): PauseState {

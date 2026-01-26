@@ -5,10 +5,15 @@ import { playMusic } from '../systems/audio';
 import { setupAudioSettings, showAudioSettings, hideAudioSettings, isAudioSettingsVisible } from '../ui/audioSettings';
 import { getDifficulty, setDifficulty, getDifficulties } from '../stores/gameStore';
 import { getDifficultyDisplayName, getDifficultySubtitle } from '../systems/difficulty';
+import { showMenuLogo, hideMenuLogo } from '../ui/htmlOverlays';
 
 export function createMenuScene(k: KAPLAYCtx): void {
   // Play menu music
   playMusic('menu');
+
+  // Show HTML logo overlay
+  showMenuLogo();
+
   // Dark background
   k.add([
     k.rect(config.screen.width, config.screen.height),
@@ -16,21 +21,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
     k.color(15, 15, 30),
   ]);
 
-  // Title
-  k.add([
-    k.text('Dharma Invaders', { size: 48 }),
-    k.pos(config.screen.width / 2, config.screen.height / 3),
-    k.anchor('center'),
-    k.color(255, 215, 0),
-  ]);
-
-  // Subtitle
-  k.add([
-    k.text('"Escape" from Samsara', { size: 20 }),
-    k.pos(config.screen.width / 2, config.screen.height / 3 + 50),
-    k.anchor('center'),
-    k.color(180, 180, 200),
-  ]);
+  // Title and subtitle are now rendered via HTML overlay (dharma_logo_final.svg)
 
   // Start prompt (pulsing)
   const prompt = k.add([
@@ -138,6 +129,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
   const startGame = () => {
     if (isAudioSettingsVisible()) return;
     if (arrowClicked) return;
+    hideMenuLogo();
     k.go('titleScreen');
   };
 
@@ -153,6 +145,7 @@ export function createMenuScene(k: KAPLAYCtx): void {
   // About/Bestiary
   k.onKeyPress('b', () => {
     if (isAudioSettingsVisible()) return;
+    hideMenuLogo();
     k.go('about');
   });
 
