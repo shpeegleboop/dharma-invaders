@@ -38,6 +38,7 @@ k.loadSprite('hemad', '/sprites/hemad.jpg');
 k.loadSprite('headback', '/sprites/headback.jpg');
 k.loadSprite('bodhisattva', '/sprites/bodhisattva.jpg');
 k.loadSprite('karma', '/sprites/karma.jpg');
+k.loadSprite('bg1', '/sprites/bg1.jpg');
 k.loadSprite('player', '/sprites/player.svg');
 k.loadSprite('peta', '/sprites/peta.svg');
 k.loadSprite('asura', '/sprites/asura.svg');

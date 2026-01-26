@@ -57,6 +57,20 @@ export async function createGameScene(k: KAPLAYCtx): Promise<void> {
   // Play selected gameplay music
   playMusic(getSelectedGameplayTrack() as MusicTrack);
 
+  // Background image (covers full screen behind everything)
+  // Scale to cover screen (bg1.jpg is 1104x832, screen is 800x650)
+  const bgScaleX = config.screen.width / 1104;
+  const bgScaleY = config.screen.height / 832;
+  const bgScale = Math.max(bgScaleX, bgScaleY); // Cover, not contain
+  k.add([
+    k.sprite('bg1'),
+    k.pos(config.screen.width / 2, config.screen.height / 2),
+    k.anchor('center'),
+    k.scale(bgScale),
+    k.z(-100),
+    'background',
+  ]);
+
   // Draw HUD background bar
   k.add([
     k.rect(config.screen.width, config.hud.height),
