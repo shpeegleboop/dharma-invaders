@@ -26,9 +26,15 @@ import {
 
 // Track player death state for powerup freeze
 let isPlayerDead = false;
+let playerRef: GameObj | null = null;
 
 export function getIsPlayerDead(): boolean {
   return isPlayerDead;
+}
+
+// Check if player is invulnerable (for boss freeze during respawn)
+export function getIsPlayerInvulnerable(): boolean {
+  return playerRef?.invincible ?? false;
 }
 
 // Calculate effective max health with rebirth modifiers
@@ -39,6 +45,7 @@ function getEffectiveMaxHealth(): number {
 export function createPlayer(k: KAPLAYCtx): GameObj {
   // Reset state on new player creation
   isPlayerDead = false;
+  playerRef = null;
   resetCombatState();
 
   // Initialize systems
@@ -59,6 +66,9 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
     'player',
     { invincible: false },
   ]);
+
+  // Store reference for invulnerability checks
+  playerRef = player;
 
   // Setup combat (shooting + push)
   setupPlayerShooting(k, player);
@@ -129,6 +139,7 @@ export function createPlayer(k: KAPLAYCtx): GameObj {
   player.onDestroy(() => {
     cleanupPlayerIndicators();
     cleanupKeyTracking();
+    playerRef = null;
   });
 
   return player;

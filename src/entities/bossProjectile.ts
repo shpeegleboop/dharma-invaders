@@ -2,6 +2,7 @@
 import type { KAPLAYCtx, GameObj } from 'kaplay';
 import config from '../data/config.json';
 import { getIsPaused } from '../ui/pauseMenu';
+import { getIsPlayerDead, getIsPlayerInvulnerable } from './player';
 
 export function createBossProjectile(
   k: KAPLAYCtx,
@@ -27,6 +28,8 @@ export function createBossProjectile(
 
   projectile.onUpdate(() => {
     if (getIsPaused()) return;
+    // Freeze during player death/respawn invulnerability
+    if (getIsPlayerDead() || getIsPlayerInvulnerable()) return;
 
     // Move in set direction
     projectile.pos.x += Math.cos(projectile.moveAngle) * projectile.speed * k.dt();

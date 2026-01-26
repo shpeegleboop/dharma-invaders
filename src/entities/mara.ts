@@ -4,29 +4,106 @@ import config from '../data/config.json';
 import { events } from '../utils/events';
 import { updateMaraAttacks, resetAttackTimers } from './maraCombat';
 import { getIsPaused } from '../ui/pauseMenu';
+import { getIsPlayerDead, getIsPlayerInvulnerable } from './player';
 import { getBossBaseHP, getBossHPScaling } from '../systems/cycleScaling';
 import { getCycle } from '../stores/gameStore';
 
 type MaraPhase = 'entering' | 'phase1' | 'phase2' | 'phase3' | 'defeated';
+
+interface MovementConfig {
+  pattern: string;
+  amplitudeX: number;
+  amplitudeY: number;
+  speed: number;
+  centerY: number;
+  tilt?: number;
+}
 
 let mara: GameObj | null = null;
 let currentPhase: MaraPhase = 'entering';
 let deathAnimTimer = 0;
 let movementTimer = 0;
 let scaledMaxHealth = 0;
-let isRageMode = false;
+let currentKalpa = 1;
+
+// Get movement config for current kalpa and phase, merging with defaults
+function getMovementConfig(kalpa: number, phase: number): MovementConfig {
+  const defaultCfg = config.boss.movement.default as MovementConfig;
+  const kalpaKey = String(Math.min(kalpa, 4)) as keyof typeof config.boss.movement.byKalpa;
+  const phaseKey = `phase${phase}` as 'phase1' | 'phase2' | 'phase3';
+
+  const kalpaConfig = config.boss.movement.byKalpa[kalpaKey];
+  const phaseOverride = kalpaConfig?.[phaseKey];
+
+  if (!phaseOverride) {
+    return { ...defaultCfg };
+  }
+
+  return { ...defaultCfg, ...phaseOverride };
+}
+
+// Calculate figure-8 position
+function calculateFigure8(t: number, cfg: MovementConfig): { x: number; y: number } {
+  const centerX = config.screen.width / 2;
+  return {
+    x: centerX + Math.sin(t) * cfg.amplitudeX,
+    y: cfg.centerY + Math.sin(t * 2) * cfg.amplitudeY,
+  };
+}
+
+// Calculate 4-petal rose curve position
+function calculateRoseCurve(t: number, cfg: MovementConfig): { x: number; y: number } {
+  const centerX = config.screen.width / 2;
+  const r = Math.cos(2 * t);
+  return {
+    x: centerX + r * Math.cos(t) * cfg.amplitudeX,
+    y: cfg.centerY + r * Math.sin(t) * cfg.amplitudeY,
+  };
+}
+
+// Calculate swooping lemniscate (tilted asymmetric figure-8)
+function calculateSwoopingLemniscate(t: number, cfg: MovementConfig): { x: number; y: number } {
+  const centerX = config.screen.width / 2;
+  const tiltRad = ((cfg.tilt ?? 30) * Math.PI) / 180;
+
+  // Base lemniscate with asymmetry
+  const scale = 1 / (1 + Math.sin(t) * Math.sin(t) * 0.3);
+  let x = Math.sin(t) * cfg.amplitudeX * scale;
+  let y = Math.sin(t * 2) * cfg.amplitudeY * scale;
+
+  // Apply tilt rotation
+  const cosT = Math.cos(tiltRad);
+  const sinT = Math.sin(tiltRad);
+  const rotX = x * cosT - y * sinT;
+  const rotY = x * sinT + y * cosT;
+
+  return {
+    x: centerX + rotX,
+    y: cfg.centerY + rotY,
+  };
+}
+
+// Get position based on pattern type
+function calculatePosition(t: number, cfg: MovementConfig): { x: number; y: number } {
+  switch (cfg.pattern) {
+    case 'roseCurve':
+      return calculateRoseCurve(t, cfg);
+    case 'swoopingLemniscate':
+      return calculateSwoopingLemniscate(t, cfg);
+    case 'figure8':
+    default:
+      return calculateFigure8(t, cfg);
+  }
+}
 
 export function spawnMara(k: KAPLAYCtx): void {
   const cfg = config.boss;
-  const kalpa = getCycle();
+  currentKalpa = getCycle();
 
   currentPhase = 'entering';
   movementTimer = 0;
   resetAttackTimers();
   scaledMaxHealth = Math.round(getBossBaseHP() * getBossHPScaling());
-
-  // Kalpa 4+: Rage mode - starts with phase 3 behavior
-  isRageMode = kalpa >= cfg.evolution.rageMode.minKalpa;
 
   mara = k.add([
     k.sprite('mara'),
@@ -45,6 +122,7 @@ export function spawnMara(k: KAPLAYCtx): void {
   mara.onUpdate(() => {
     if (getIsPaused()) return;
     if (!mara) return;
+    if (getIsPlayerDead() || getIsPlayerInvulnerable()) return;
     updateMara(k);
   });
 }
@@ -71,7 +149,6 @@ function updateEntering(k: KAPLAYCtx): void {
   if (!mara) return;
   const cfg = config.boss;
 
-  // Descend to target position
   if (mara.pos.y < cfg.targetY) {
     mara.pos.y += cfg.entranceSpeed * k.dt();
   } else {
@@ -82,20 +159,23 @@ function updateEntering(k: KAPLAYCtx): void {
   }
 }
 
+function getPhaseNumber(): number {
+  if (currentPhase === 'phase1') return 1;
+  if (currentPhase === 'phase2') return 2;
+  return 3;
+}
+
 function updateCombat(k: KAPLAYCtx): void {
   if (!mara) return;
   const cfg = config.boss;
 
-  // Check phase transitions based on health (use scaled max health)
+  // Check phase transitions
   const healthPercent = (mara.hp() / scaledMaxHealth) * 100;
+  const oldPhase = currentPhase;
 
   if (healthPercent <= cfg.phase3Threshold && currentPhase !== 'phase3') {
     currentPhase = 'phase3';
     mara.phase = 'phase3';
-    // Adjust timer so position stays continuous when speed changes (skip if rage mode)
-    if (!isRageMode) {
-      movementTimer = movementTimer * (1.0 / cfg.movement.phase3SpeedMultiplier);
-    }
     events.emit('boss:phaseChange', { phase: 3 });
   } else if (healthPercent <= cfg.phase2Threshold && currentPhase === 'phase1') {
     currentPhase = 'phase2';
@@ -103,35 +183,26 @@ function updateCombat(k: KAPLAYCtx): void {
     events.emit('boss:phaseChange', { phase: 2 });
   }
 
-  // Movement pattern
-  movementTimer += k.dt();
-  const centerX = config.screen.width / 2;
-  const arenaCenter = config.arena.offsetY + config.arena.height / 2;
+  // Get movement config for current kalpa/phase
+  const moveCfg = getMovementConfig(currentKalpa, getPhaseNumber());
 
-  if (isRageMode) {
-    // Kalpa 4+: 4-petal rose pattern covering full arena
-    const rageCfg = cfg.movement.rageMode;
-    const t = movementTimer * rageCfg.speedMultiplier;
-    // Rose curve: r = cos(2θ) creates 4 petals
-    const r = Math.cos(2 * t);
-    mara.pos.x = centerX + r * Math.cos(t) * rageCfg.amplitudeX;
-    mara.pos.y = arenaCenter + r * Math.sin(t) * rageCfg.amplitudeY;
-  } else {
-    // Normal: Figure-8 in upper half
-    const baseY = cfg.targetY + cfg.movement.offsetY;
-    const usePhase3Speed = currentPhase === 'phase3';
-    const speed = usePhase3Speed ? cfg.movement.phase3SpeedMultiplier : 1.0;
-    mara.pos.x = centerX + Math.sin(movementTimer * speed) * cfg.movement.amplitudeX;
-    mara.pos.y = baseY + Math.sin(movementTimer * speed * 2) * cfg.movement.amplitudeY;
-  }
+  // Apply phase 3 speed multiplier
+  const speedMult = currentPhase === 'phase3' ? cfg.movement.phase3SpeedMultiplier : 1.0;
+  movementTimer += k.dt() * moveCfg.speed * speedMult;
 
-  // Delegate attacks to maraCombat (handles kalpa-based evolution)
+  // Calculate position using pattern
+  const pos = calculatePosition(movementTimer, moveCfg);
+  mara.pos.x = pos.x;
+  mara.pos.y = pos.y;
+
+  // Delegate attacks to maraCombat
+  const isRageMode = currentKalpa >= cfg.evolution.rageMode.minKalpa;
   const usePhase3Projectiles = currentPhase === 'phase3' || isRageMode;
   const spawnMinions = currentPhase === 'phase2' || currentPhase === 'phase3' || isRageMode;
-  const isActualPhase3 = currentPhase === 'phase3'; // For nerayika swarm (HP below 30%)
+  const isActualPhase3 = currentPhase === 'phase3';
   updateMaraAttacks(k, mara, usePhase3Projectiles, spawnMinions, isActualPhase3);
 
-  // Phase 3 / Rage mode flash effect
+  // Flash effect for phase 3 or rage mode
   if (currentPhase === 'phase3' || isRageMode) {
     const flash = Math.sin(k.time() * 10) > 0;
     mara.opacity = flash ? 1 : cfg.phase3Opacity;
@@ -143,11 +214,8 @@ function updateDefeated(k: KAPLAYCtx): void {
   const cfg = config.boss;
 
   deathAnimTimer += k.dt() * 1000;
-
-  // Flash rapidly
   mara.opacity = Math.sin(deathAnimTimer * 0.05) > 0 ? 1 : 0.2;
 
-  // After death animation duration, destroy and emit victory
   if (deathAnimTimer >= cfg.deathAnimDuration) {
     mara.destroy();
     mara = null;
@@ -164,7 +232,6 @@ export function damageMara(amount: number): void {
     currentPhase = 'defeated';
     mara.phase = 'defeated';
     deathAnimTimer = 0;
-    // Emit immediately so enemies flee during death animation
     events.emit('boss:defeated', {});
   }
 }

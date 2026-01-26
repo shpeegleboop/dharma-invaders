@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250" width="700" height="250">
+  <defs>
+    <!-- Saffron/gold gradient -->
+    <linearGradient id="saffronGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE4B5"/>
+      <stop offset="30%" style="stop-color:#FFD700"/>
+      <stop offset="70%" style="stop-color:#FF8C00"/>
+      <stop offset="100%" style="stop-color:#CD853F"/>
+    </linearGradient>
+    
+    <!-- Purple mystic gradient -->
+    <linearGradient id="mysticPurple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#DDA0DD"/>
+      <stop offset="50%" style="stop-color:#9370DB"/>
+      <stop offset="100%" style="stop-color:#663399"/>
+    </linearGradient>
+    
+    <!-- Outer glow -->
+    <filter id="outerGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#FFD700" flood-opacity="0.6"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spinning-wheel {
+      transform-origin: 350px 200px;
+      animation: spin 8s linear infinite;
+    }
+  </style>
+  
+  <!-- Top decorative arch -->
+  <path d="M150,60 Q200,20 350,15 Q500,20 550,60" 
+        stroke="url(#saffronGold)" stroke-width="3" fill="none" opacity="0.7"/>
+  <path d="M170,55 Q200,30 350,25 Q500,30 530,55" 
+        stroke="url(#saffronGold)" stroke-width="1.5" fill="none" opacity="0.5"/>
+  
+  <!-- Left ornate decoration -->
+  <g transform="translate(100, 125)">
+    <path d="M0,0 Q-15,-40 0,-60 Q15,-40 0,0" fill="url(#saffronGold)" opacity="0.8"/>
+    <path d="M0,0 Q-25,-20 -35,-35 Q-20,-25 0,0" fill="url(#saffronGold)" opacity="0.6"/>
+    <path d="M0,0 Q25,-20 35,-35 Q20,-25 0,0" fill="url(#saffronGold)" opacity="0.6"/>
+    <path d="M0,0 Q-30,5 -40,-10 Q-25,0 0,0" fill="url(#saffronGold)" opacity="0.4"/>
+    <path d="M0,0 Q30,5 40,-10 Q25,0 0,0" fill="url(#saffronGold)" opacity="0.4"/>
+    <circle cx="0" cy="5" r="8" fill="#FFB6C1" opacity="0.7"/>
+    <circle cx="0" cy="5" r="4" fill="#FFD700"/>
+  </g>
+  
+  <!-- Right ornate decoration -->
+  <g transform="translate(600, 125)">
+    <path d="M0,0 Q-15,-40 0,-60 Q15,-40 0,0" fill="url(#saffronGold)" opacity="0.8"/>
+    <path d="M0,0 Q-25,-20 -35,-35 Q-20,-25 0,0" fill="url(#saffronGold)" opacity="0.6"/>
+    <path d="M0,0 Q25,-20 35,-35 Q20,-25 0,0" fill="url(#saffronGold)" opacity="0.6"/>
+    <path d="M0,0 Q-30,5 -40,-10 Q-25,0 0,0" fill="url(#saffronGold)" opacity="0.4"/>
+    <path d="M0,0 Q30,5 40,-10 Q25,0 0,0" fill="url(#saffronGold)" opacity="0.4"/>
+    <circle cx="0" cy="5" r="8" fill="#FFB6C1" opacity="0.7"/>
+    <circle cx="0" cy="5" r="4" fill="#FFD700"/>
+  </g>
+  
+  <!-- Text frame lines -->
+  <line x1="150" y1="90" x2="250" y2="90" stroke="#FFD700" stroke-width="2" opacity="0.6"/>
+  <line x1="450" y1="90" x2="550" y2="90" stroke="#FFD700" stroke-width="2" opacity="0.6"/>
+  <line x1="150" y1="165" x2="250" y2="165" stroke="#FFD700" stroke-width="2" opacity="0.6"/>
+  <line x1="450" y1="165" x2="550" y2="165" stroke="#FFD700" stroke-width="2" opacity="0.6"/>
+  
+  <!-- Corner ornaments -->
+  <circle cx="150" cy="90" r="4" fill="#FFD700"/>
+  <circle cx="550" cy="90" r="4" fill="#FFD700"/>
+  <circle cx="150" cy="165" r="4" fill="#FFD700"/>
+  <circle cx="550" cy="165" r="4" fill="#FFD700"/>
+  
+  <!-- Main title -->
+  <text x="350" y="115" text-anchor="middle" font-family="Palatino, Georgia, serif" font-size="58" font-weight="bold" fill="url(#saffronGold)" filter="url(#outerGlow)" letter-spacing="6" font-style="italic">
+    Dharma
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="350" y="158" text-anchor="middle" font-family="Georgia, serif" font-size="32" fill="url(#mysticPurple)" letter-spacing="10">
+    INVADERS
+  </text>
+  
+  <!-- PROPER 8-SPOKE DHARMA WHEEL - centered at 350, 200 with radius 22 -->
+  <g class="spinning-wheel">
+    <!-- Outer ring -->
+    <circle cx="350" cy="200" r="22" fill="none" stroke="#FFD700" stroke-width="3"/>
+    <!-- Hub -->
+    <circle cx="350" cy="200" r="5" fill="#FFD700"/>
+    
+    <!-- 8 spokes - from hub (r=5) to rim (r=22) -->
+    <!-- 0° (up) -->
+    <line x1="350" y1="195" x2="350" y2="178" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 45° -->
+    <line x1="353.5" y1="196.5" x2="365.6" y2="184.4" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 90° (right) -->
+    <line x1="355" y1="200" x2="372" y2="200" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 135° -->
+    <line x1="353.5" y1="203.5" x2="365.6" y2="215.6" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 180° (down) -->
+    <line x1="350" y1="205" x2="350" y2="222" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 225° -->
+    <line x1="346.5" y1="203.5" x2="334.4" y2="215.6" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 270° (left) -->
+    <line x1="345" y1="200" x2="328" y2="200" stroke="#FFD700" stroke-width="2.5"/>
+    <!-- 315° -->
+    <line x1="346.5" y1="196.5" x2="334.4" y2="184.4" stroke="#FFD700" stroke-width="2.5"/>
+  </g>
+  
+  <!-- Bottom decorative curve -->
+  <path d="M200,235 Q350,248 500,235" stroke="url(#saffronGold)" stroke-width="2" fill="none" opacity="0.5"/>
+</svg>

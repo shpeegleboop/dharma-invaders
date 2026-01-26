@@ -120,14 +120,67 @@
     "entranceSpeed": 50,
     "targetY": 120,
     "movement": {
-      "offsetY": 40,
-      "amplitudeX": 200,
-      "amplitudeY": 60,
       "phase3SpeedMultiplier": 1.5,
-      "rageMode": {
-        "amplitudeX": 300,
-        "amplitudeY": 200,
-        "speedMultiplier": 0.8
+      "default": {
+        "pattern": "figure8",
+        "amplitudeX": 200,
+        "amplitudeY": 60,
+        "speed": 1.0,
+        "centerY": 160
+      },
+      "byKalpa": {
+        "1": {
+          "phase1": null,
+          "phase2": { "amplitudeX": 220 },
+          "phase3": { "amplitudeX": 220 }
+        },
+        "2": {
+          "phase1": null,
+          "phase2": { "amplitudeX": 250, "amplitudeY": 80 },
+          "phase3": { "amplitudeX": 250, "amplitudeY": 80 }
+        },
+        "3": {
+          "phase1": null,
+          "phase2": {
+            "pattern": "swoopingLemniscate",
+            "amplitudeX": 300,
+            "amplitudeY": 200,
+            "centerY": 325,
+            "tilt": 30,
+            "speed": 0.8
+          },
+          "phase3": {
+            "pattern": "swoopingLemniscate",
+            "amplitudeX": 300,
+            "amplitudeY": 200,
+            "centerY": 325,
+            "tilt": 30,
+            "speed": 1.0
+          }
+        },
+        "4": {
+          "phase1": {
+            "pattern": "roseCurve",
+            "amplitudeX": 300,
+            "amplitudeY": 200,
+            "centerY": 325,
+            "speed": 0.8
+          },
+          "phase2": {
+            "pattern": "roseCurve",
+            "amplitudeX": 300,
+            "amplitudeY": 200,
+            "centerY": 325,
+            "speed": 0.8
+          },
+          "phase3": {
+            "pattern": "roseCurve",
+            "amplitudeX": 300,
+            "amplitudeY": 200,
+            "centerY": 325,
+            "speed": 0.8
+          }
+        }
       }
     },
     "phase3Opacity": 0.6,
@@ -282,7 +335,8 @@
       "spawnMultiplier": 0.75,
       "enemySpeedMultiplier": 0.85,
       "bossHealthMultiplier": 0.75,
-      "dropRateMultiplier": 1.25
+      "dropRateMultiplier": 1.25,
+      "bossDeathLimit": null
     },
     "sakadagami": {
       "displayName": "Sakadāgāmī",
@@ -290,7 +344,8 @@
       "spawnMultiplier": 1,
       "enemySpeedMultiplier": 1,
       "bossHealthMultiplier": 1,
-      "dropRateMultiplier": 1
+      "dropRateMultiplier": 1,
+      "bossDeathLimit": 7
     },
     "anagami": {
       "displayName": "Anāgāmī",
@@ -298,7 +353,8 @@
       "spawnMultiplier": 1.3,
       "enemySpeedMultiplier": 1.15,
       "bossHealthMultiplier": 1.25,
-      "dropRateMultiplier": 0.8
+      "dropRateMultiplier": 0.8,
+      "bossDeathLimit": 5
     },
     "noah": {
       "displayName": "NOAH",
@@ -306,7 +362,8 @@
       "spawnMultiplier": 2,
       "enemySpeedMultiplier": 1.35,
       "bossHealthMultiplier": 1.75,
-      "dropRateMultiplier": 0.6
+      "dropRateMultiplier": 0.6,
+      "bossDeathLimit": 3
     }
   }
 }

@@ -19,6 +19,7 @@ const k = kaplay({
   background: [26, 26, 46], // #1a1a2e
   global: false,
   letterbox: true, // Maintain aspect ratio in fullscreen
+  pixelDensity: window.devicePixelRatio || 2, // Crisp text on high-DPI displays
 });
 
 // Load sprites

@@ -41,6 +41,8 @@ interface GameState {
   kleshas: string[];
   savedHealth: number | null; // Health to restore on next kalpa (null = use max)
   savedShieldCharges: number | null; // Shield charges to restore on next kalpa
+  bossDeathCount: number; // Deaths during current boss fight
+  inBossFight: boolean; // Whether currently in boss fight
 }
 
 const defaultState: GameState = {
@@ -53,6 +55,8 @@ const defaultState: GameState = {
   kleshas: [],
   savedHealth: null,
   savedShieldCharges: null,
+  bossDeathCount: 0,
+  inBossFight: false,
 };
 
 let state: GameState = { ...defaultState };
@@ -216,6 +220,31 @@ export function getKleshaTypes(): string[] {
 // Check if player has a specific klesha
 export function hasKlesha(klesha: string): boolean {
   return state.kleshas.includes(klesha);
+}
+
+// Boss fight death tracking
+export function startBossFight(): void {
+  state.inBossFight = true;
+  state.bossDeathCount = 0;
+}
+
+export function endBossFight(): void {
+  state.inBossFight = false;
+  state.bossDeathCount = 0;
+}
+
+export function isInBossFight(): boolean {
+  return state.inBossFight;
+}
+
+export function recordBossDeath(): void {
+  if (state.inBossFight) {
+    state.bossDeathCount += 1;
+  }
+}
+
+export function getBossDeathCount(): number {
+  return state.bossDeathCount;
 }
 
 // Difficulty system - delegates to persistence module

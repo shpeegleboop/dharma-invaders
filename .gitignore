@@ -27,3 +27,6 @@ src-tauri/target/
 
 # Dev docs (keep private)
 *.md
+
+# Claude Code agents
+Agents/

@@ -103,15 +103,6 @@ export function setupPauseMenu(
       showPauseUI();
     }
   });
-
-  k.onKeyPress('f', () => {
-    if (state === 'paused') {
-      k.setFullscreen(!k.isFullscreen());
-      // Rebuild UI to update fullscreen label
-      hidePauseUI();
-      showPauseUI();
-    }
-  });
 }
 
 function pause(): void {
