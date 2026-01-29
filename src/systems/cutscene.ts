@@ -92,7 +92,7 @@ function shouldPlayCutscene(id: CutsceneId): boolean {
   if (id === 'intro' && kalpa > 1) return false;
   if (id === 'kalpa2' && kalpa !== 2) return false;
   if (id === 'kalpa3' && kalpa !== 3) return false;
-  if (id === 'kalpa4' && kalpa < 4) return false;
+  if (id === 'kalpa4' && kalpa !== 4) return false;
 
   const flag = FLAG_MAP[id];
   if (!flag) return false;

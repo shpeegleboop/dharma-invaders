@@ -137,48 +137,48 @@
         "2": {
           "phase1": null,
           "phase2": { "amplitudeX": 250, "amplitudeY": 80 },
-          "phase3": { "amplitudeX": 250, "amplitudeY": 80 }
+          "phase3": { "pattern": "triangularFigure8", "amplitudeX": 250, "amplitudeY": 80 }
         },
         "3": {
           "phase1": null,
           "phase2": {
             "pattern": "swoopingLemniscate",
-            "amplitudeX": 300,
-            "amplitudeY": 200,
+            "amplitudeX": 240,
+            "amplitudeY": 160,
             "centerY": 325,
             "tilt": 30,
             "speed": 0.8
           },
           "phase3": {
             "pattern": "swoopingLemniscate",
-            "amplitudeX": 300,
-            "amplitudeY": 200,
+            "amplitudeX": 240,
+            "amplitudeY": 160,
             "centerY": 325,
             "tilt": 30,
-            "speed": 1.0
+            "speed": 0.85
           }
         },
         "4": {
           "phase1": {
             "pattern": "roseCurve",
-            "amplitudeX": 300,
-            "amplitudeY": 200,
+            "amplitudeX": 285,
+            "amplitudeY": 190,
             "centerY": 325,
             "speed": 0.8
           },
           "phase2": {
             "pattern": "roseCurve",
-            "amplitudeX": 300,
-            "amplitudeY": 200,
+            "amplitudeX": 285,
+            "amplitudeY": 190,
             "centerY": 325,
             "speed": 0.8
           },
           "phase3": {
             "pattern": "roseCurve",
-            "amplitudeX": 300,
-            "amplitudeY": 200,
+            "amplitudeX": 285,
+            "amplitudeY": 190,
             "centerY": 325,
-            "speed": 0.8
+            "speed": 0.9
           }
         }
       }

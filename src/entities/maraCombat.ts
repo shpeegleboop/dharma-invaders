@@ -18,7 +18,7 @@ export function resetAttackTimers(): void {
   spreadShotTimer = 0;
   sweepBeamTimer = 0;
   minionTimer = 0;
-  nerayikaSwarmTimer = 0;
+  nerayikaSwarmTimer = config.boss.evolution.nerayikaSwarm.cooldown;
 }
 
 // Orchestrate all attacks based on kalpa and phase

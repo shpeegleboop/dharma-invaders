@@ -69,6 +69,22 @@ function calculateFigure8(t: number, cfg: MovementConfig): { x: number; y: numbe
   };
 }
 
+// Calculate figure-8 with triangular perturbation (Kalpa 2 Phase 3 variety)
+function calculateTriangularFigure8(t: number, cfg: MovementConfig): { x: number; y: number } {
+  const centerX = config.screen.width / 2;
+  // Base figure-8
+  const baseX = Math.sin(t) * cfg.amplitudeX;
+  const baseY = Math.sin(t * 2) * cfg.amplitudeY;
+  // Triangular perturbation using triangle wave at 3x frequency
+  const triWave = (2 / Math.PI) * Math.asin(Math.sin(3 * t));
+  const perturbX = triWave * cfg.amplitudeX * 0.15;
+  const perturbY = triWave * cfg.amplitudeY * 0.2;
+  return {
+    x: centerX + baseX + perturbX,
+    y: cfg.centerY + baseY + perturbY,
+  };
+}
+
 // Calculate 4-petal rose curve position
 function calculateRoseCurve(t: number, cfg: MovementConfig): { x: number; y: number } {
   const centerX = config.screen.width / 2;
@@ -108,6 +124,8 @@ function calculatePosition(t: number, cfg: MovementConfig): { x: number; y: numb
       return calculateRoseCurve(t, cfg);
     case 'swoopingLemniscate':
       return calculateSwoopingLemniscate(t, cfg);
+    case 'triangularFigure8':
+      return calculateTriangularFigure8(t, cfg);
     case 'figure8':
     default:
       return calculateFigure8(t, cfg);
