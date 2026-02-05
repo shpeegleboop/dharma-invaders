@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create vite@latest . -- --template vanilla-ts)",
+      "Bash(npm install:*)",
+      "Bash(timeout:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(git config:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run dev:*)",
+      "Bash(git add:*)",
+      "Bash(npm run build:*)",
+      "Bash(git reset:*)",
+      "Bash(curl:*)",
+      "Bash(python -c:*)",
+      "Bash(grep:*)",
+      "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && head -20 {}')",
+      "Bash(wc:*)",
+      "WebFetch(domain:kaplayjs.com)",
+      "Bash(where:*)",
+      "Bash(where magick)",
+      "Bash(where convert:*)",
+      "Bash(node scripts/convert-sprites.mjs:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}

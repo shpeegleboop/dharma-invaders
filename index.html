@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dharma Invaders</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #1a1a2e;
+      }
+      canvas {
+        border-radius: 4px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Game container for overlay positioning */
+      #game-container {
+        position: relative;
+      }
+
+      /* Menu logo overlay */
+      #menu-logo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 12%;
+      }
+      #menu-logo-overlay.visible {
+        display: flex;
+      }
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        animation: breathe 4s ease-in-out infinite;
+      }
+      .logo-container img {
+        width: 126%;
+        max-width: 1000px;
+        height: auto;
+      }
+      @keyframes breathe {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+      }
+
+      /* Pause menu effects overlay */
+      #pause-effects-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      #pause-effects-overlay.visible {
+        display: flex;
+      }
+      .effects-container {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 5%;
+      }
+      .effects-column {
+        width: 45%;
+      }
+      .effects-column h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .effects-column.paramis h3 {
+        color: #64dc64;
+      }
+      .effects-column.kleshas h3 {
+        color: #ff6464;
+        text-align: right;
+      }
+      .effects-column ul {
+        list-style: none;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .effects-column.paramis ul {
+        color: #96ff96;
+      }
+      .effects-column.kleshas ul {
+        color: #ff9696;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <!-- Menu logo overlay -->
+      <div id="menu-logo-overlay">
+        <div class="logo-container">
+          <img src="/sprites/dharma_logo_final.svg" alt="Dharma Invaders" />
+        </div>
+      </div>
+
+      <!-- Pause menu effects overlay -->
+      <div id="pause-effects-overlay">
+        <div class="effects-container">
+          <div class="effects-column paramis">
+            <h3>Perfections</h3>
+            <ul id="paramis-list"></ul>
+          </div>
+          <div class="effects-column kleshas">
+            <h3>Defilements</h3>
+            <ul id="kleshas-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

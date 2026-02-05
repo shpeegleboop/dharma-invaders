@@ -1,0 +1,74 @@
+{
+  "waves": [
+    {
+      "number": 1,
+      "spawnInterval": 0.67,
+      "enemies": [
+        { "type": "hungryGhost", "count": 10 }
+      ]
+    },
+    {
+      "number": 2,
+      "spawnInterval": 0.6,
+      "enemies": [
+        { "type": "hungryGhost", "count": 12 },
+        { "type": "asura", "count": 4 }
+      ]
+    },
+    {
+      "number": 3,
+      "spawnInterval": 0.53,
+      "enemies": [
+        { "type": "hungryGhost", "count": 10 },
+        { "type": "asura", "count": 6 },
+        { "type": "deva", "count": 2 }
+      ]
+    },
+    {
+      "number": 4,
+      "spawnInterval": 0.5,
+      "enemies": [
+        { "type": "hungryGhost", "count": 12 },
+        { "type": "asura", "count": 8 },
+        { "type": "deva", "count": 4 }
+      ]
+    },
+    {
+      "number": 5,
+      "spawnInterval": 0.47,
+      "enemies": [
+        { "type": "hungryGhost", "count": 16 },
+        { "type": "asura", "count": 10 },
+        { "type": "deva", "count": 4 }
+      ]
+    },
+    {
+      "number": 6,
+      "spawnInterval": 0.43,
+      "enemies": [
+        { "type": "hungryGhost", "count": 12 },
+        { "type": "asura", "count": 12 },
+        { "type": "deva", "count": 6 }
+      ]
+    },
+    {
+      "number": 7,
+      "spawnInterval": 0.4,
+      "enemies": [
+        { "type": "hungryGhost", "count": 16 },
+        { "type": "asura", "count": 14 },
+        { "type": "deva", "count": 8 }
+      ]
+    },
+    {
+      "number": 8,
+      "spawnInterval": 0.33,
+      "enemies": [
+        { "type": "hungryGhost", "count": 20 },
+        { "type": "asura", "count": 16 },
+        { "type": "deva", "count": 10 }
+      ]
+    }
+  ],
+  "timeBetweenWaves": 1500
+}

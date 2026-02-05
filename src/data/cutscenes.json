@@ -1,0 +1,282 @@
+{
+  "intro": {
+    "beats": [
+      {
+        "background": "#1a0a2e",
+        "text": "The wheel of samsara turns endlessly...",
+        "textColor": "#e0d0ff",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
+      },
+      {
+        "background": "#1a0a2e",
+        "text": "You will battle against hungry ghosts, jealous demigods, and deities.",
+        "textColor": "#e0d0ff",
+        "sprites": [
+          { "name": "peta", "x": 280, "y": 255, "scale": 4 },
+          { "name": "asura", "x": 400, "y": 255, "scale": 4 },
+          { "name": "deva", "x": 520, "y": 255, "scale": 4 }
+        ]
+      },
+      {
+        "background": "#1a0a2e",
+        "text": "Defeating these illusions will bring you closer to ending the cycle of rebirth.",
+        "textColor": "#e0d0ff",
+        "character": "player"
+      }
+    ]
+  },
+  "firstDeath": {
+    "beats": [
+      {
+        "background": "#0a0a1a",
+        "text": "Death is illusory. It is not the end. It is a transformation.",
+        "textColor": "#aaaaaa",
+        "image": "sting",
+        "imageScale": 0.4
+      },
+      {
+        "background": "#0a0a1a",
+        "text": "Your karma follows you. High karma grants Perfections. Low karma invites Defilements.",
+        "textColor": "#aaaaaa",
+        "image": "karma",
+        "imageScale": 0.4
+      },
+      {
+        "background": "#0a0a1a",
+        "text": "Just as death is inevitable for the living, so birth is inevitable for the dead.",
+        "textColor": "#aaaaaa",
+        "image": "deathrebirth",
+        "imageScale": 0.4
+      }
+    ]
+  },
+  "bossIntro": {
+    "beats": [
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "Mara, the demon of death, desire, and delusion, blocks your path.",
+        "textColor": "#ff6666"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "\"You think there is escape? I am your doubt. Your fear. Your attachment to this imperfect world.\"",
+        "textColor": "#ff6666"
+      }
+    ]
+  },
+  "victory": {
+    "beats": [
+      {
+        "background": "#1a1a0a",
+        "character": "player",
+        "text": "Mara is defeated... for now.",
+        "textColor": "#ffdd88"
+      },
+      {
+        "background": "#1a1a0a",
+        "text": "Do not get attached to his absence... He may return.",
+        "textColor": "#ffdd88",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
+      },
+      {
+        "background": "#1a1a0a",
+        "text": "But so will you.",
+        "textColor": "#ffdd88",
+        "layered": {
+          "background": { "image": "bhavachakra", "rotate": true, "scale": 0.4 },
+          "foreground": { "sprite": "player", "scale": 4 }
+        }
+      }
+    ]
+  },
+  "bodhisattva": {
+    "beats": [
+      {
+        "background": "#0a2a0a",
+        "text": "You could have ended the cycle of rebirth. Parinirvana, final liberation, was at your fingertips.",
+        "textColor": "#88ff88",
+        "image": "hemad",
+        "imageScale": 0.4
+      },
+      {
+        "background": "#0a2a0a",
+        "text": "But you chose to return — for the sake of all beings.",
+        "textColor": "#88ff88",
+        "image": "headback",
+        "imageScale": 0.4
+      },
+      {
+        "background": "#0a2a0a",
+        "text": "This is the Bodhisattva path.",
+        "textColor": "#88ff88",
+        "image": "bodhisattva",
+        "imageScale": 0.4
+      }
+    ]
+  },
+  "maraReturns": {
+    "beats": [
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "\"As long as you take rebirth, so shall I.\"",
+        "textColor": "#ff4444"
+      },
+      {
+        "background": "#2a0a0a",
+        "character": "mara",
+        "text": "Mara returns, stronger than before.",
+        "textColor": "#ff4444"
+      }
+    ]
+  },
+  "kalpa2": {
+    "beats": [
+      {
+        "background": "#1a0a1a",
+        "text": "The second kalpa begins. The realms grow restless.",
+        "textColor": "#ff9966",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
+      },
+      {
+        "background": "#2a0a0a",
+        "text": "Nerayika, tortured beings from hell, now join the ranks of those obstructing you on the Noble Eightfold Path.",
+        "textColor": "#ff6644",
+        "sprites": [
+          { "name": "nerayika", "x": 400, "y": 255, "scale": 4 }
+        ]
+      },
+      {
+        "background": "#2a0a0a",
+        "text": "They charge with fury and inflict Defilements. Beware their touch.",
+        "textColor": "#ff6644",
+        "sprites": [
+          { "name": "nerayika", "x": 340, "y": 255, "scale": 4 },
+          { "name": "player", "x": 460, "y": 255, "scale": 4 }
+        ],
+        "overlayTexts": [
+          { "text": "+Klesha", "x": 460, "y": 190, "color": "#ff6666" }
+        ]
+      },
+      {
+        "background": "#1a1a2a",
+        "text": "But hope blooms as well. The Paduma lotus may appear, offering healing.",
+        "textColor": "#ffaacc",
+        "sprites": [
+          { "name": "paduma", "x": 400, "y": 255, "scale": 4 }
+        ]
+      }
+    ]
+  },
+  "kalpa3": {
+    "beats": [
+      {
+        "background": "#0a1a2a",
+        "text": "The third kalpa. Samsara's grip tightens.",
+        "textColor": "#66aaff",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
+      },
+      {
+        "background": "#0a1a2a",
+        "text": "Tiracchana, beings of the animal realm, will now hunt you in packs.",
+        "textColor": "#4488ff",
+        "sprites": [
+          { "name": "tiracchana", "x": 250, "y": 200, "scale": 4 },
+          { "name": "tiracchana", "x": 350, "y": 280, "scale": 4 },
+          { "name": "tiracchana", "x": 450, "y": 220, "scale": 4 },
+          { "name": "tiracchana", "x": 550, "y": 300, "scale": 4 },
+          { "name": "tiracchana", "x": 300, "y": 320, "scale": 4 },
+          { "name": "tiracchana", "x": 500, "y": 250, "scale": 4 }
+        ]
+      },
+      {
+        "background": "#0a1a2a",
+        "text": "Small and swift, they strip away your Perfections on contact.",
+        "textColor": "#4488ff",
+        "sprites": [
+          { "name": "tiracchana", "x": 340, "y": 255, "scale": 4 },
+          { "name": "player", "x": 460, "y": 255, "scale": 4 }
+        ],
+        "overlayTexts": [
+          { "text": "-Parami", "x": 460, "y": 190, "color": "#88ff88" }
+        ]
+      },
+      {
+        "background": "#0a1a2a",
+        "text": "Guard your paramis carefully.",
+        "textColor": "#66aaff",
+        "character": "player"
+      }
+    ]
+  },
+  "kalpa4": {
+    "beats": [
+      {
+        "background": "#0a2a1a",
+        "text": "The fourth kalpa. A test of wisdom approaches.",
+        "textColor": "#66ff99",
+        "image": "bhavachakra",
+        "imageScale": 0.4,
+        "imageRotate": true
+      },
+      {
+        "background": "#0a2a1a",
+        "text": "The bodymind now perceives Manussa, humans, wandering the battlefield.",
+        "textColor": "#44dd77",
+        "sprites": [
+          { "name": "manussa", "x": 400, "y": 255, "scale": 4 }
+        ]
+      },
+      {
+        "background": "#0a2a1a",
+        "text": "They seek not conflict. Let them survive the kalpa and earn great karma.",
+        "textColor": "#44dd77",
+        "sprites": [
+          { "name": "manussa", "x": 400, "y": 255, "scale": 4 }
+        ],
+        "overlayTexts": [
+          { "text": "+1000 karma", "x": 400, "y": 170, "color": "#88ff88" }
+        ]
+      },
+      {
+        "background": "#2a0a0a",
+        "text": "But strike them down? Only one afflicted with Ahirika — shamelessness — would think such an act would be beneficial.",
+        "textColor": "#ff4444",
+        "sprites": [
+          { "name": "manussa", "x": 400, "y": 255, "scale": 4 }
+        ],
+        "overlayTexts": [
+          { "text": "Karma wiped!", "x": 400, "y": 170, "color": "#ff6666" },
+          { "text": "-Parami", "x": 320, "y": 200, "color": "#88ff88" },
+          { "text": "+Klesha", "x": 480, "y": 200, "color": "#ff6666" }
+        ]
+      }
+    ]
+  },
+  "rafLinens": {
+    "beats": [
+      {
+        "background": "#2a1a0a",
+        "character": "raflinens",
+        "text": "cheeky parinirvana lofi Dubai chocolate labubu samsara",
+        "textColor": "#ffcc88"
+      },
+      {
+        "background": "#1a1a2e",
+        "character": "player",
+        "text": "what?",
+        "textColor": "#aaaaff"
+      }
+    ]
+  }
+}

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Dharma Wheel (Dharmachakra) - 8 spokes for the Noble Eightfold Path -->
+  <defs>
+    <linearGradient id="wheelGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8DC"/>
+      <stop offset="25%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#DAA520"/>
+      <stop offset="75%" style="stop-color:#FFD700"/>
+      <stop offset="100%" style="stop-color:#B8860B"/>
+    </linearGradient>
+    <linearGradient id="wheelShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFACD"/>
+      <stop offset="100%" style="stop-color:#FFD700"/>
+    </linearGradient>
+    <radialGradient id="wheelGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.8"/>
+      <stop offset="70%" style="stop-color:#FFA500;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="goldGlow">
+      <feGaussianBlur stdDeviation="0.4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Spin animation -->
+    <style>
+      .wheel-spin {
+        transform-origin: center;
+        animation: spin 0.5s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </defs>
+  
+  <!-- Outer glow -->
+  <circle cx="8" cy="8" r="7.5" fill="url(#wheelGlow)"/>
+  
+  <g class="wheel-spin" filter="url(#goldGlow)">
+    <!-- Outer rim -->
+    <circle cx="8" cy="8" r="6.5" fill="none" stroke="url(#wheelGold)" stroke-width="1.2"/>
+    
+    <!-- Inner rim -->
+    <circle cx="8" cy="8" r="4.5" fill="none" stroke="url(#wheelGold)" stroke-width="0.6"/>
+    
+    <!-- 8 Spokes (Noble Eightfold Path) -->
+    <!-- Cardinal spokes -->
+    <line x1="8" y1="1.5" x2="8" y2="3.5" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="8" y1="12.5" x2="8" y2="14.5" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="1.5" y1="8" x2="3.5" y2="8" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="12.5" y1="8" x2="14.5" y2="8" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    
+    <!-- Diagonal spokes -->
+    <line x1="3.4" y1="3.4" x2="4.8" y2="4.8" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="11.2" y1="11.2" x2="12.6" y2="12.6" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="12.6" y1="3.4" x2="11.2" y2="4.8" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    <line x1="3.4" y1="12.6" x2="4.8" y2="11.2" stroke="url(#wheelGold)" stroke-width="1" stroke-linecap="round"/>
+    
+    <!-- Spoke connectors to hub -->
+    <line x1="8" y1="3.5" x2="8" y2="5.5" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="8" y1="10.5" x2="8" y2="12.5" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="3.5" y1="8" x2="5.5" y2="8" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="10.5" y1="8" x2="12.5" y2="8" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="4.8" y1="4.8" x2="6.2" y2="6.2" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="9.8" y1="9.8" x2="11.2" y2="11.2" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="11.2" y1="4.8" x2="9.8" y2="6.2" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    <line x1="4.8" y1="11.2" x2="6.2" y2="9.8" stroke="url(#wheelGold)" stroke-width="0.8"/>
+    
+    <!-- Center hub -->
+    <circle cx="8" cy="8" r="2" fill="url(#wheelGold)" stroke="#B8860B" stroke-width="0.3"/>
+    
+    <!-- Hub inner circle -->
+    <circle cx="8" cy="8" r="1" fill="url(#wheelShine)"/>
+    
+    <!-- Hub highlight -->
+    <circle cx="7.5" cy="7.5" r="0.4" fill="#FFFFFF" opacity="0.8"/>
+    
+    <!-- Outer rim decorative bumps (traditional style) -->
+    <circle cx="8" cy="1.5" r="0.6" fill="url(#wheelGold)"/>
+    <circle cx="8" cy="14.5" r="0.6" fill="url(#wheelGold)"/>
+    <circle cx="1.5" cy="8" r="0.6" fill="url(#wheelGold)"/>
+    <circle cx="14.5" cy="8" r="0.6" fill="url(#wheelGold)"/>
+    <circle cx="3.4" cy="3.4" r="0.5" fill="url(#wheelGold)"/>
+    <circle cx="12.6" cy="3.4" r="0.5" fill="url(#wheelGold)"/>
+    <circle cx="3.4" cy="12.6" r="0.5" fill="url(#wheelGold)"/>
+    <circle cx="12.6" cy="12.6" r="0.5" fill="url(#wheelGold)"/>
+  </g>
+</svg>

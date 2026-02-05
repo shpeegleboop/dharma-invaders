@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Buddha figure - Violet robes, peach skin, gold ushnisha -->
+  <defs>
+    <radialGradient id="mandorlaGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C9B8E0;stop-opacity:0.8"/>
+      <stop offset="60%" style="stop-color:#9B8AC4;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#7E6BAD;stop-opacity:0"/>
+    </radialGradient>
+    <linearGradient id="robeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7E6BAD"/>
+      <stop offset="100%" style="stop-color:#5D4E8C"/>
+    </linearGradient>
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFDDCC"/>
+      <stop offset="100%" style="stop-color:#FFCBB3"/>
+    </linearGradient>
+    <radialGradient id="goldGrad" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#FFE566"/>
+      <stop offset="100%" style="stop-color:#FFD700"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Mandorla glow - violet/indigo (shrunk to avoid edge artifacts) -->
+  <ellipse cx="16" cy="16" rx="11" ry="12" fill="url(#mandorlaGrad)"/>
+  
+  <!-- Ushnisha (crown bump) - GOLD -->
+  <ellipse cx="16" cy="5" rx="2" ry="2" fill="url(#goldGrad)"/>
+  
+  <!-- Head - peach skin -->
+  <circle cx="16" cy="9" r="4" fill="url(#skinGrad)"/>
+  
+  <!-- Eyes closed in meditation -->
+  <path d="M14 9 Q14.5 8.5 15 9" fill="none" stroke="#5D4037" stroke-width="0.5"/>
+  <path d="M17 9 Q17.5 8.5 18 9" fill="none" stroke="#5D4037" stroke-width="0.5"/>
+  
+  <!-- Serene smile -->
+  <path d="M14.5 11 Q16 12 17.5 11" fill="none" stroke="#5D4037" stroke-width="0.4"/>
+  
+  <!-- Robes - violet/indigo -->
+  <path d="M10 13 Q16 11 22 13 L24 24 Q16 22 8 24 Z" fill="url(#robeGrad)"/>
+  
+  <!-- Robe fold lines -->
+  <path d="M12 15 Q14 20 12 24" fill="none" stroke="#4A3D6E" stroke-width="0.5"/>
+  <path d="M20 15 Q18 20 20 24" fill="none" stroke="#4A3D6E" stroke-width="0.5"/>
+  
+  <!-- Hands in dhyana mudra - peach skin -->
+  <ellipse cx="16" cy="20" rx="4" ry="2" fill="url(#skinGrad)"/>
+  
+  <!-- Third eye subtle glow -->
+  <circle cx="16" cy="7" r="0.8" fill="#C9B8E0" opacity="0.7"/>
+</svg>

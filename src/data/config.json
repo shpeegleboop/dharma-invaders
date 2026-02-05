@@ -1,0 +1,384 @@
+{
+  "screen": {
+    "width": 800,
+    "height": 650
+  },
+  "hud": {
+    "height": 50
+  },
+  "bottomHud": {
+    "height": 50,
+    "offsetY": 600
+  },
+  "arena": {
+    "width": 800,
+    "height": 550,
+    "offsetY": 50
+  },
+  "player": {
+    "speed": 300,
+    "health": 3,
+    "invincibilityDuration": 1500,
+    "shootCooldown": 200,
+    "size": { "width": 32, "height": 32 },
+    "spreadAngle": 0.25,
+    "deathDelay": 0.5,
+    "respawnFlashInterval": 0.1,
+    "iFrameDuration": 0.5,
+    "flashDuration": 0.15,
+    "pushAbility": {
+      "cooldown": 5000,
+      "pushDistance": 150,
+      "ringColor": "#FFD700"
+    }
+  },
+  "projectile": {
+    "speed": 500,
+    "damage": 1,
+    "size": { "width": 8, "height": 16 },
+    "offscreenMargin": 50
+  },
+  "enemies": {
+    "hungryGhost": {
+      "speed": 100,
+      "health": 1,
+      "karmaValue": 10,
+      "size": { "width": 24, "height": 24 },
+      "color": "#FF4444"
+    },
+    "asura": {
+      "speed": 125,
+      "health": 2,
+      "karmaValue": 25,
+      "size": { "width": 28, "height": 28 },
+      "color": "#FF8C00"
+    },
+    "deva": {
+      "speed": 80,
+      "health": 3,
+      "karmaValue": 50,
+      "size": { "width": 32, "height": 32 },
+      "color": "#9370DB",
+      "angleSmoothing": 0.5,
+      "rotationAmplitude": 15
+    },
+    "spawnMargin": 30,
+    "offscreenMargin": 150,
+    "respawnPushDistance": 250
+  },
+  "waves": {
+    "timeBetweenWaves": 3000,
+    "timeBetweenSpawns": 500
+  },
+  "powerups": {
+    "dropChance": 0.15,
+    "fallSpeed": 100,
+    "duration": 8000,
+    "size": { "width": 16, "height": 16 },
+    "virtues": {
+      "compassion": { "color": "#FF69B4", "name": "Compassion" },
+      "wisdom": { "color": "#4169E1", "name": "Wisdom" },
+      "patience": { "color": "#32CD32", "name": "Patience" },
+      "diligence": { "color": "#FFD700", "name": "Diligence" },
+      "meditation": { "color": "#9370DB", "name": "Meditation" },
+      "paduma": { "color": "#FFB6C1", "name": "Paduma" }
+    },
+    "paduma": {
+      "dropChance": 0.05,
+      "minKalpa": 2,
+      "healAmount": 1,
+      "swayAmplitude": 30
+    },
+    "vajra": {
+      "size": { "width": 28, "height": 28 },
+      "color": "#FFD700",
+      "dropChance": 0.015,
+      "karmaGrant": 500,
+      "particleCount": { "idle": 3, "burst": 20 },
+      "particleSize": { "idle": 2, "burst": 5 },
+      "flashDuration": 100,
+      "waveCooldown": 2,
+      "clearDelay": 1000
+    },
+    "offscreenMargin": 50,
+    "stacking": {
+      "baseDuration": 8000,
+      "maxTimeCap": 40000,
+      "diligence": { "maxStacks": 3, "effectType": "multiplicative" },
+      "patience": { "maxStacks": 5, "effectType": "additive", "slowPerStack": 0.10 },
+      "compassion": { "maxStacks": 1, "effectType": "binary" },
+      "wisdom": { "maxStacks": 1, "effectType": "binary" }
+    }
+  },
+  "boss": {
+    "health": 80,
+    "healthByKalpa": [80, 120, 180, 250],
+    "phase2Threshold": 70,
+    "phase3Threshold": 30,
+    "size": { "width": 64, "height": 64 },
+    "color": "#8B0000",
+    "entranceSpeed": 50,
+    "targetY": 120,
+    "movement": {
+      "phase3SpeedMultiplier": 1.5,
+      "default": {
+        "pattern": "figure8",
+        "amplitudeX": 200,
+        "amplitudeY": 60,
+        "speed": 1.0,
+        "centerY": 160
+      },
+      "byKalpa": {
+        "1": {
+          "phase1": null,
+          "phase2": { "amplitudeX": 220 },
+          "phase3": { "amplitudeX": 220 }
+        },
+        "2": {
+          "phase1": null,
+          "phase2": { "amplitudeX": 250, "amplitudeY": 80 },
+          "phase3": { "pattern": "triangularFigure8", "amplitudeX": 250, "amplitudeY": 80 }
+        },
+        "3": {
+          "phase1": null,
+          "phase2": {
+            "pattern": "swoopingLemniscate",
+            "amplitudeX": 240,
+            "amplitudeY": 160,
+            "centerY": 325,
+            "tilt": 30,
+            "speed": 0.8
+          },
+          "phase3": {
+            "pattern": "swoopingLemniscate",
+            "amplitudeX": 240,
+            "amplitudeY": 160,
+            "centerY": 325,
+            "tilt": 30,
+            "speed": 0.85
+          }
+        },
+        "4": {
+          "phase1": {
+            "pattern": "roseCurve",
+            "amplitudeX": 285,
+            "amplitudeY": 190,
+            "centerY": 325,
+            "speed": 0.8
+          },
+          "phase2": {
+            "pattern": "roseCurve",
+            "amplitudeX": 285,
+            "amplitudeY": 190,
+            "centerY": 325,
+            "speed": 0.8
+          },
+          "phase3": {
+            "pattern": "roseCurve",
+            "amplitudeX": 285,
+            "amplitudeY": 190,
+            "centerY": 325,
+            "speed": 0.9
+          }
+        },
+        "5": {
+          "phase1": { "pattern": "triangularFigure8", "amplitudeX": 250, "amplitudeY": 80 },
+          "phase2": { "pattern": "xPattern", "speed": 0.7 },
+          "phase3": { "pattern": "xPattern", "speed": 0.85 }
+        }
+      },
+      "xPatternMargin": 60,
+      "kalpa5SpinSpeed": 180
+    },
+    "phase3Opacity": 0.6,
+    "deathAnimDuration": 2000,
+    "projectile": {
+      "speed": 200,
+      "speedPhase3": 400,
+      "cooldown": 2000,
+      "size": { "width": 12, "height": 12 },
+      "color": "#FF4500"
+    },
+    "minionSpawnInterval": 2000,
+    "karmaValue": 500,
+    "healthBar": {
+      "width": 300,
+      "height": 16
+    },
+    "evolution": {
+      "spreadShot": {
+        "minKalpa": 2,
+        "projectileCount": 5,
+        "arcAngle": 1.57,
+        "cooldown": 4000
+      },
+      "sweepBeam": {
+        "minKalpa": 3,
+        "projectileCount": 10,
+        "width": 600,
+        "cooldown": 5000
+      },
+      "rageMode": {
+        "minKalpa": 4,
+        "useAsuraMinions": true
+      },
+      "nerayikaSwarm": {
+        "minKalpa": 4,
+        "minPhase": 3,
+        "count": 6,
+        "cooldown": 15000
+      },
+      "spiralArms": {
+        "minKalpa": 5,
+        "minPhase": 3,
+        "armCount": 5,
+        "cooldown": 150,
+        "projectileSpeed": 180,
+        "angleStep": 0.15
+      }
+    }
+  },
+  "collision": {
+    "bounceDistance": 80,
+    "pushDistance": 100,
+    "stunDuration": 0.5,
+    "manussaPushDistance": 30
+  },
+  "spawner": {
+    "deathPauseDuration": 3.5
+  },
+  "audio": {
+    "musicVolume": 0.5,
+    "sfxVolume": 0.7
+  },
+  "debug": {
+    "showHitboxes": false,
+    "invincible": false,
+    "skipToWave": 0
+  },
+  "effects": {
+    "textRiseSpeed": 20,
+    "fastTextRiseSpeed": 40,
+    "deathTextRiseSpeed": 25,
+    "packSpread": 15,
+    "packVariance": 5,
+    "wobbleFrequency": 8,
+    "waveSpeedMultiplier": 0.025
+  },
+  "titleScreen": {
+    "scale": 0.52,
+    "offsetX": 167,
+    "buttons": {
+      "join": { "x": 373, "y": 385, "width": 79, "height": 29 },
+      "close": { "x": 497, "y": 282, "width": 19, "height": 16 }
+    }
+  },
+  "roguelike": {
+    "enabled": true,
+    "respawnInvincibility": 3000,
+    "mercyRuleDeaths": 3,
+    "karmaThresholds": {
+      "wretched": { "max": 99, "paramis": 0, "kleshas": 3 },
+      "poor": { "max": 299, "paramis": 0, "kleshas": 2 },
+      "humble": { "max": 499, "paramis": 1, "kleshas": 1 },
+      "balanced": { "max": 799, "paramis": 1, "kleshas": 0 },
+      "virtuous": { "max": 1199, "paramis": 2, "kleshas": 0 },
+      "enlightened": { "max": 999999, "paramis": 3, "kleshas": 0 }
+    },
+    "scaling": {
+      "enemySpeed": 1.875,
+      "enemyCount": 1.3,
+      "spawnRate": 1.4,
+      "bossHP": 2.0
+    }
+  },
+  "newEnemies": {
+    "nerayika": {
+      "size": { "width": 32, "height": 32 },
+      "color": "#FF4500",
+      "health": 4,
+      "speed": 200,
+      "chargeSpeed": 350,
+      "hesitateTime": 1000,
+      "karmaValue": 50,
+      "damage": 2,
+      "spawns": {
+        "minKalpa": 2,
+        "waves": { "1": 1, "2": 1, "3": 2, "4": 2, "5": 2, "6": 3, "7": 3, "8": 4 },
+        "stagger": 0.3
+      }
+    },
+    "tiracchana": {
+      "size": { "width": 20, "height": 20 },
+      "color": "#4169E1",
+      "health": 1,
+      "speed": 125,
+      "wobbleIntensity": 2.0,
+      "karmaValue": 20,
+      "damage": 1,
+      "packSize": 6,
+      "spawns": {
+        "minKalpa": 3,
+        "waves": { "2": 1, "3": 1, "4": 1, "5": 1, "6": 2, "7": 2, "8": 3 },
+        "packStagger": 0.5,
+        "individualStagger": 0.1
+      }
+    },
+    "manussa": {
+      "size": { "width": 20, "height": 40 },
+      "color": "#00FF00",
+      "health": 21,
+      "speed": 60,
+      "karmaValue": -1000,
+      "escapeKarma": 1000,
+      "damage": 0,
+      "escapeMessage": "Bhavatu Sabba Mangalam",
+      "chatBubbleDuration": 2000,
+      "wanderInterval": 2000,
+      "bounceMargin": 20,
+      "spawns": {
+        "minKalpa": 4,
+        "wave": 1,
+        "count": 1
+      }
+    }
+  },
+  "difficulty": {
+    "sotapanna": {
+      "displayName": "Sotāpanna",
+      "subtitle": "Stream-enterer",
+      "spawnMultiplier": 0.75,
+      "enemySpeedMultiplier": 0.85,
+      "bossHealthMultiplier": 0.75,
+      "dropRateMultiplier": 1.25,
+      "bossDeathLimit": null
+    },
+    "sakadagami": {
+      "displayName": "Sakadāgāmī",
+      "subtitle": "Once-returner",
+      "spawnMultiplier": 1,
+      "enemySpeedMultiplier": 1,
+      "bossHealthMultiplier": 1,
+      "dropRateMultiplier": 1,
+      "bossDeathLimit": 7
+    },
+    "anagami": {
+      "displayName": "Anāgāmī",
+      "subtitle": "Non-returner",
+      "spawnMultiplier": 1.3,
+      "enemySpeedMultiplier": 1.15,
+      "bossHealthMultiplier": 1.25,
+      "dropRateMultiplier": 0.8,
+      "bossDeathLimit": 5
+    },
+    "noah": {
+      "displayName": "NOAH",
+      "subtitle": "Suffering awaits",
+      "spawnMultiplier": 2,
+      "enemySpeedMultiplier": 1.35,
+      "bossHealthMultiplier": 1.75,
+      "dropRateMultiplier": 0.6,
+      "bossDeathLimit": 3
+    }
+  }
+}

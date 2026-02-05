@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Paduma (Lotus) - healing powerup, pink lotus on green lily pad -->
+  <defs>
+    <!-- Pink petal gradients -->
+    <linearGradient id="petalOuter" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF69B4"/>
+      <stop offset="50%" style="stop-color:#FF1493"/>
+      <stop offset="100%" style="stop-color:#DB7093"/>
+    </linearGradient>
+    
+    <linearGradient id="petalInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB6C1"/>
+      <stop offset="50%" style="stop-color:#FF69B4"/>
+      <stop offset="100%" style="stop-color:#FF1493"/>
+    </linearGradient>
+    
+    <linearGradient id="petalCenter" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFC0CB"/>
+      <stop offset="100%" style="stop-color:#FFB6C1"/>
+    </linearGradient>
+    
+    <!-- Lily pad gradient -->
+    <linearGradient id="lilyPad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#32CD32"/>
+      <stop offset="50%" style="stop-color:#228B22"/>
+      <stop offset="100%" style="stop-color:#006400"/>
+    </linearGradient>
+    
+    <!-- Yellow center gradient -->
+    <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="100%" style="stop-color:#DAA520"/>
+    </radialGradient>
+    
+    <!-- Subtle glow (reduced blur to avoid edge artifacts) -->
+    <filter id="lotusGlow">
+      <feGaussianBlur stdDeviation="0.3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g filter="url(#lotusGlow)">
+    <!-- Lily pad base (shrunk to avoid edge artifacts) -->
+    <ellipse cx="12" cy="20" rx="9" ry="3.5" fill="url(#lilyPad)"/>
+    <!-- Lily pad notch -->
+    <path d="M12 16.5 L10 20 L12 19 L14 20 Z" fill="#1a1a2e"/>
+    <!-- Lily pad vein lines -->
+    <path d="M12 19 Q8 19 4 20" fill="none" stroke="#006400" stroke-width="0.3" opacity="0.5"/>
+    <path d="M12 19 Q16 19 20 20" fill="none" stroke="#006400" stroke-width="0.3" opacity="0.5"/>
+    <!-- Lily pad highlight -->
+    <ellipse cx="8" cy="19" rx="3" ry="1" fill="#90EE90" opacity="0.3"/>
+    
+    <!-- Back row petals (outer, darker) -->
+    <path d="M4 14 Q3 10 5 7 Q6 6 7 7 Q8 10 7 14 Q5.5 15 4 14" fill="url(#petalOuter)" stroke="#C71585" stroke-width="0.3"/>
+    <path d="M20 14 Q21 10 19 7 Q18 6 17 7 Q16 10 17 14 Q18.5 15 20 14" fill="url(#petalOuter)" stroke="#C71585" stroke-width="0.3"/>
+    <path d="M7 12 Q6 7 8 4 Q9 3 10 4 Q11 7 10 12 Q8.5 13 7 12" fill="url(#petalOuter)" stroke="#C71585" stroke-width="0.3"/>
+    <path d="M17 12 Q18 7 16 4 Q15 3 14 4 Q13 7 14 12 Q15.5 13 17 12" fill="url(#petalOuter)" stroke="#C71585" stroke-width="0.3"/>
+    <path d="M10 10 Q10 5 12 2 Q12 1.5 12 2 Q14 5 14 10 Q12 11 10 10" fill="url(#petalOuter)" stroke="#C71585" stroke-width="0.3"/>
+    
+    <!-- Middle row petals -->
+    <path d="M5 16 Q4 12 6 9 Q7 8 8 9 Q9 12 8 16 Q6.5 17 5 16" fill="url(#petalInner)" stroke="#DB7093" stroke-width="0.3"/>
+    <path d="M19 16 Q20 12 18 9 Q17 8 16 9 Q15 12 16 16 Q17.5 17 19 16" fill="url(#petalInner)" stroke="#DB7093" stroke-width="0.3"/>
+    <path d="M8 14 Q7 10 9 7 Q10 6 11 7 Q12 10 11 14 Q9.5 15 8 14" fill="url(#petalInner)" stroke="#DB7093" stroke-width="0.3"/>
+    <path d="M16 14 Q17 10 15 7 Q14 6 13 7 Q12 10 13 14 Q14.5 15 16 14" fill="url(#petalInner)" stroke="#DB7093" stroke-width="0.3"/>
+    
+    <!-- Front row petals (inner, lighter) -->
+    <path d="M7 17 Q6 14 8 11 Q9 10 10 11 Q10 14 9 17 Q8 18 7 17" fill="url(#petalCenter)" stroke="#FFB6C1" stroke-width="0.3"/>
+    <path d="M17 17 Q18 14 16 11 Q15 10 14 11 Q14 14 15 17 Q16 18 17 17" fill="url(#petalCenter)" stroke="#FFB6C1" stroke-width="0.3"/>
+    <path d="M10 16 Q10 13 12 10 Q12 9.5 12 10 Q14 13 14 16 Q12 17 10 16" fill="url(#petalCenter)" stroke="#FFB6C1" stroke-width="0.3"/>
+    
+    <!-- Center (yellow with dots like lotus seed pod) -->
+    <ellipse cx="12" cy="14" rx="3" ry="2" fill="url(#centerGrad)" stroke="#B8860B" stroke-width="0.3"/>
+    <!-- Seed dots -->
+    <circle cx="11" cy="13.5" r="0.4" fill="#8B6914"/>
+    <circle cx="13" cy="13.5" r="0.4" fill="#8B6914"/>
+    <circle cx="12" cy="14.5" r="0.4" fill="#8B6914"/>
+    <circle cx="10.5" cy="14.5" r="0.3" fill="#8B6914"/>
+    <circle cx="13.5" cy="14.5" r="0.3" fill="#8B6914"/>
+    <!-- Yellow stamens -->
+    <path d="M10 13 L9 11.5" stroke="#FFD700" stroke-width="0.4" stroke-linecap="round"/>
+    <path d="M11 12.5 L10.5 11" stroke="#FFD700" stroke-width="0.4" stroke-linecap="round"/>
+    <path d="M12 12 L12 10.5" stroke="#FFD700" stroke-width="0.4" stroke-linecap="round"/>
+    <path d="M13 12.5 L13.5 11" stroke="#FFD700" stroke-width="0.4" stroke-linecap="round"/>
+    <path d="M14 13 L15 11.5" stroke="#FFD700" stroke-width="0.4" stroke-linecap="round"/>
+    <!-- Stamen tips -->
+    <circle cx="9" cy="11.5" r="0.5" fill="#FFA500"/>
+    <circle cx="10.5" cy="11" r="0.5" fill="#FFA500"/>
+    <circle cx="12" cy="10.5" r="0.5" fill="#FFA500"/>
+    <circle cx="13.5" cy="11" r="0.5" fill="#FFA500"/>
+    <circle cx="15" cy="11.5" r="0.5" fill="#FFA500"/>
+    
+    <!-- Petal highlights (white shine) -->
+    <ellipse cx="6" cy="11" rx="0.8" ry="1.5" fill="#FFFFFF" opacity="0.4"/>
+    <ellipse cx="18" cy="11" rx="0.8" ry="1.5" fill="#FFFFFF" opacity="0.4"/>
+    <ellipse cx="9" cy="9" rx="0.6" ry="1.2" fill="#FFFFFF" opacity="0.3"/>
+    <ellipse cx="15" cy="9" rx="0.6" ry="1.2" fill="#FFFFFF" opacity="0.3"/>
+    <ellipse cx="12" cy="6" rx="0.5" ry="1" fill="#FFFFFF" opacity="0.3"/>
+  </g>
+</svg>

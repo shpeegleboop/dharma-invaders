@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Wisdom - piercing projectiles, all-seeing eye -->
+  <defs>
+    <linearGradient id="eyeOuter" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB"/>
+      <stop offset="50%" style="stop-color:#4169E1"/>
+      <stop offset="100%" style="stop-color:#191970"/>
+    </linearGradient>
+    <linearGradient id="eyeInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00BFFF"/>
+      <stop offset="100%" style="stop-color:#0000CD"/>
+    </linearGradient>
+    <radialGradient id="wisdomGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#4169E1;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="wisdomBlur">
+      <feGaussianBlur stdDeviation="0.6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g filter="url(#wisdomBlur)">
+    <!-- Outer glow -->
+    <circle cx="12" cy="12" r="11" fill="url(#wisdomGlow)"/>
+    
+    <!-- Piercing rays going through (showing penetration) -->
+    <path d="M2 12 L22 12" stroke="#87CEEB" stroke-width="1" stroke-linecap="round" stroke-dasharray="2 1"/>
+    <path d="M4 8 L20 16" stroke="#87CEEB" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="2 1" opacity="0.7"/>
+    <path d="M4 16 L20 8" stroke="#87CEEB" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="2 1" opacity="0.7"/>
+    
+    <!-- Eye shape (almond) -->
+    <path d="M2 12 Q12 4 22 12 Q12 20 2 12Z" fill="url(#eyeOuter)" stroke="#191970" stroke-width="0.5"/>
+    
+    <!-- Eye white -->
+    <ellipse cx="12" cy="12" rx="6" ry="5" fill="#F0F8FF"/>
+    
+    <!-- Iris -->
+    <circle cx="12" cy="12" r="4" fill="url(#eyeInner)"/>
+    
+    <!-- Pupil -->
+    <circle cx="12" cy="12" r="2" fill="#0A0A1A"/>
+    
+    <!-- Pupil inner glow (wisdom shining through) -->
+    <circle cx="12" cy="12" r="1" fill="#4169E1"/>
+    <circle cx="12" cy="12" r="0.4" fill="#87CEEB"/>
+    
+    <!-- Eye highlight -->
+    <circle cx="10.5" cy="10.5" r="1.2" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="13" cy="13" r="0.6" fill="#FFFFFF" opacity="0.5"/>
+    
+    <!-- Diamond shapes at edges (crystal wisdom) -->
+    <path d="M1 12 L3 10 L5 12 L3 14 Z" fill="#87CEEB" opacity="0.8"/>
+    <path d="M19 12 L21 10 L23 12 L21 14 Z" fill="#87CEEB" opacity="0.8"/>
+  </g>
+</svg>

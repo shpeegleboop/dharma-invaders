@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Vite
+*.local
+
+# Tauri (if added later)
+src-tauri/target/
+
+# Dev docs (keep private)
+*.md
+
+# Claude Code agents
+Agents/
